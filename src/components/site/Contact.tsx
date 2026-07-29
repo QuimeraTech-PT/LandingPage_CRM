@@ -1,0 +1,125 @@
+import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Globe, Mail, Send } from "lucide-react";
+
+export function Contact() {
+  const [sent, setSent] = useState(false);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSent(true);
+  }
+
+  return (
+    <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
+          <div>
+            <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+              Contactos
+            </p>
+            <h2 className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
+              Vamos Construir o Futuro Juntos.
+            </h2>
+            <p className="mt-5 text-base leading-[1.6] text-surface-muted md:text-lg">
+              Tem um projeto em mente ou gostaria de saber mais sobre como podemos ajudar a sua
+              empresa? Entre em contacto connosco.
+            </p>
+
+            <div className="mt-10 space-y-4">
+              <a
+                href="mailto:hello@quimeratech.pt"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-colors hover:border-primary"
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Mail className="h-5 w-5" />
+                </span>
+                <span>
+                  <span className="block text-xs font-light tracking-wide text-surface-muted uppercase">
+                    Email
+                  </span>
+                  <span className="text-base font-semibold">hello@quimeratech.pt</span>
+                </span>
+              </a>
+              <a
+                href="https://quimeratech.pt"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-colors hover:border-primary"
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Globe className="h-5 w-5" />
+                </span>
+                <span>
+                  <span className="block text-xs font-light tracking-wide text-surface-muted uppercase">
+                    Website
+                  </span>
+                  <span className="text-base font-semibold">quimeratech.pt</span>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9"
+          >
+            <div className="grid gap-5">
+              <div className="grid gap-2">
+                <Label htmlFor="nome" className="text-surface-foreground">
+                  Nome
+                </Label>
+                <Input id="nome" name="nome" required placeholder="O seu nome" autoComplete="name" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email" className="text-surface-foreground">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="nome@empresa.pt"
+                  autoComplete="email"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="assunto" className="text-surface-foreground">
+                  Assunto
+                </Label>
+                <Input id="assunto" name="assunto" required placeholder="Como podemos ajudar?" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="mensagem" className="text-surface-foreground">
+                  Mensagem
+                </Label>
+                <Textarea
+                  id="mensagem"
+                  name="mensagem"
+                  required
+                  rows={5}
+                  placeholder="Descreva brevemente o seu projeto..."
+                />
+              </div>
+
+              <Button type="submit" size="lg" className="h-12 text-base font-semibold">
+                Enviar Mensagem
+                <Send className="ml-1 h-4 w-4" />
+              </Button>
+
+              {sent && (
+                <p role="status" className="text-sm font-medium text-primary">
+                  Obrigado! A sua mensagem foi registada — entraremos em contacto brevemente.
+                </p>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}
