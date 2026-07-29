@@ -1,0 +1,94 @@
+import { useEffect, useState } from "react";
+import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+
+const links = [
+  { href: "#sobre", label: "Sobre" },
+  { href: "#especialidades", label: "Especialidades" },
+  { href: "#metodologia", label: "Metodologia" },
+  { href: "#valores", label: "Valores" },
+  { href: "#contactos", label: "Contactos" },
+];
+
+export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        scrolled ? "border-b border-border bg-background/85 backdrop-blur-xl" : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+        <a href="#top" className="flex items-center" aria-label="QuimeraTech — início">
+          <img
+            src={logoAsset.url}
+            alt="Logótipo QuimeraTech"
+            className="h-9 w-auto md:h-10"
+            width={1774}
+            height={887}
+          />
+        </a>
+
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-accent"
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="hidden lg:block">
+          <Button asChild size="lg" className="font-semibold">
+            <a href="#contactos">Fale Connosco</a>
+          </Button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-foreground lg:hidden"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </div>
+
+      {open && (
+        <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
+          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
+            {links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-3 text-base font-medium text-foreground/90 transition-colors hover:bg-secondary hover:text-accent"
+              >
+                {l.label}
+              </a>
+            ))}
+            <Button asChild size="lg" className="mt-2 font-semibold">
+              <a href="#contactos" onClick={() => setOpen(false)}>
+                Fale Connosco
+              </a>
+            </Button>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
