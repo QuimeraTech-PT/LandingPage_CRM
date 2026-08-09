@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner } from "@/components/site/CookieBanner";
 import { Toaster } from "@/components/ui/sonner";
+import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
+import { getAnalyticsConfig } from "@/lib/analytics.functions";
 
 
 function NotFoundComponent() {
@@ -123,6 +125,27 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      try {
+        const config = await getAnalyticsConfig();
+        if (config.gtmId) {
+          initAnalytics(config.gtmId);
+          
+          // Check if consent was already given
+          const consent = localStorage.getItem("cookie-consent") as "all" | "essential" | null;
+          if (consent) {
+            updateAnalyticsConsent(consent);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load analytics config:", error);
+      }
+    };
+    
+    loadAnalytics();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
