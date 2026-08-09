@@ -33,7 +33,12 @@ export function Footer() {
           >
             Termos de Serviço
           </Link>
-
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("open-cookie-settings"))}
+            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+          >
+            Definições de Cookies
+          </button>
         </nav>
       </div>
     </footer>
