@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -125,6 +125,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const cookieBannerRef = useRef<CookieBannerHandle>(null);
+
+  useEffect(() => {
+    const handleOpenConsent = () => {
+      cookieBannerRef.current?.open();
+    };
+    window.addEventListener("open-cookie-settings", handleOpenConsent);
+    return () => window.removeEventListener("open-cookie-settings", handleOpenConsent);
+  }, []);
   const cookieBannerRef = useEffect(() => { return undefined; }, []) as any; // We'll use a real ref below
 
 
@@ -153,7 +162,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <CookieBanner />
+      <CookieBanner ref={cookieBannerRef} />
       <Toaster />
 
     </QueryClientProvider>
