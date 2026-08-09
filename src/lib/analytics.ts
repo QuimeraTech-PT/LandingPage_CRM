@@ -49,20 +49,24 @@ export const initAnalytics = (gtmId: string) => {
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
   if (typeof window === "undefined" || !window.gtag) return;
 
-  if (consent === "all") {
-    window.gtag("consent", "update", {
-      ad_storage: "granted",
-      analytics_storage: "granted",
-      ad_user_data: "granted",
-      ad_personalization: "granted",
-    });
-  } else {
-    // For 'essential' or 'none', we keep them denied or explicitly set to denied
-    window.gtag("consent", "update", {
-      ad_storage: "denied",
-      analytics_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-    });
-  }
+  const consentConfig = consent === "all" ? {
+    ad_storage: "granted",
+    analytics_storage: "granted",
+    ad_user_data: "granted",
+    ad_personalization: "granted",
+  } : {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  };
+
+  window.gtag("consent", "update", consentConfig);
+  
+  // Push a custom event to dataLayer to signal consent change to GTM tags
+  window.dataLayer.push({
+    event: "consent_updated",
+    consent_type: consent,
+    ...consentConfig
+  });
 };
