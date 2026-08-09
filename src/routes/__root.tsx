@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { CookieBanner } from "@/components/site/CookieBanner";
+import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
 import { Toaster } from "@/components/ui/sonner";
 import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
@@ -125,6 +125,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const cookieBannerRef = useEffect(() => { return undefined; }, []) as any; // We'll use a real ref below
+
 
   useEffect(() => {
     const loadAnalytics = async () => {
