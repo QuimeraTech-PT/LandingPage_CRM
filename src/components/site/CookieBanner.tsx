@@ -1,12 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/components/ui/button";
 import { Cookie, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
 
-export function CookieBanner() {
+export interface CookieBannerHandle {
+  open: () => void;
+}
+
+export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    open: () => setIsVisible(true),
+  }));
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
@@ -88,4 +96,4 @@ export function CookieBanner() {
       </div>
     </div>
   );
-}
+});
