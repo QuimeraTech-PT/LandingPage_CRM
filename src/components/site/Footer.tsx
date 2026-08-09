@@ -1,4 +1,6 @@
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
+import { Link } from "@tanstack/react-router";
+
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -19,12 +21,19 @@ export function Footer() {
         </p>
 
         <nav className="flex items-center gap-6" aria-label="Ligações legais">
-          <a href="#" className="text-xs font-light text-muted-foreground transition-colors hover:text-accent">
+          <Link
+            to="/politica-de-privacidade"
+            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+          >
             Política de Privacidade
-          </a>
-          <a href="#" className="text-xs font-light text-muted-foreground transition-colors hover:text-accent">
+          </Link>
+          <Link
+            to="/termos-de-servico"
+            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+          >
             Termos de Serviço
-          </a>
+          </Link>
+
         </nav>
       </div>
     </footer>
