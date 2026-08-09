@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Cookie, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { updateAnalyticsConsent } from "@/lib/analytics";
 
 export function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,11 +18,13 @@ export function CookieBanner() {
 
   const acceptAll = () => {
     localStorage.setItem("cookie-consent", "all");
+    updateAnalyticsConsent("all");
     setIsVisible(false);
   };
 
   const acceptEssential = () => {
     localStorage.setItem("cookie-consent", "essential");
+    updateAnalyticsConsent("essential");
     setIsVisible(false);
   };
 
