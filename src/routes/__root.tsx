@@ -134,7 +134,6 @@ function RootComponent() {
     window.addEventListener("open-cookie-settings", handleOpenConsent);
     return () => window.removeEventListener("open-cookie-settings", handleOpenConsent);
   }, []);
-  const cookieBannerRef = useEffect(() => { return undefined; }, []) as any; // We'll use a real ref below
 
 
   useEffect(() => {
