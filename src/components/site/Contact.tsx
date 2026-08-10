@@ -3,14 +3,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Globe, Mail, Send } from "lucide-react";
+import { Globe, Mail, Send, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+    const data = {
+      nome: formData.get("nome") as string,
+      email: formData.get("email") as string,
+      assunto: formData.get("assunto") as string,
+      mensagem: formData.get("mensagem") as string,
+    };
+
+    try {
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert([data]);
+
+      if (error) throw error;
+
+      setSent(true);
+      toast.success("Mensagem enviada com sucesso!");
+      (event.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      console.error("Erro ao enviar contacto:", error);
+      toast.error("Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -106,9 +134,23 @@ export function Contact() {
                 />
               </div>
 
-              <Button type="submit" size="lg" className="h-12 text-base font-semibold">
-                Enviar Mensagem
-                <Send className="ml-1 h-4 w-4" />
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="h-12 text-base font-semibold"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    A enviar...
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Enviar Mensagem
+                    <Send className="ml-1 h-4 w-4" />
+                  </>
+                )}
               </Button>
 
               {sent && (
