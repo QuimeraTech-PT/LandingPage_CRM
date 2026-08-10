@@ -82,15 +82,9 @@ export function Hero() {
         >
           <motion.div
             variants={itemVariants}
-            className="mb-8 hidden text-[10px] font-medium tracking-[0.3em] text-accent/60 uppercase lg:block"
-          >
-            Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.
-          </motion.div>
-          <motion.div
-            variants={itemVariants}
             className="mb-6 text-sm font-semibold tracking-wide text-primary/90 md:text-base lg:mb-8"
           >
-            Revisar tipografia, margens e espaçamentos para garantir hierarquia visual clara em todos os tamanhos de ecrã.
+            melhora os botoes todos presentes na no projeto e mantem a consistencia nas animaçoes, focus e styling
           </motion.div>
           <motion.h1 
             id="hero-heading"
@@ -112,7 +106,7 @@ export function Hero() {
             variants={itemVariants}
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Button asChild size="lg" className="h-12 w-full px-7 text-base font-semibold sm:w-auto">
+            <Button asChild size="lg" className="w-full sm:w-auto">
               <a href="#especialidades">
                 Descubra as Nossas Soluções
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -122,7 +116,7 @@ export function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="h-12 w-full border-accent/40 bg-transparent px-7 text-base font-semibold text-foreground hover:bg-accent/10 hover:text-accent sm:w-auto"
+              className="w-full sm:w-auto"
             >
               <a href="#contactos">Fale Connosco</a>
             </Button>

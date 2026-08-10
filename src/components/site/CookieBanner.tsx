@@ -91,7 +91,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                 variant="outline"
                 size="sm"
                 onClick={acceptEssential}
-                className="border-white/10 text-xs font-medium hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="text-xs font-medium"
                 aria-label="Aceitar apenas cookies essenciais"
               >
                 Apenas Essenciais
@@ -99,7 +99,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               <Button
                 size="sm"
                 onClick={acceptAll}
-                className="bg-primary text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="text-xs font-medium"
                 aria-label="Aceitar todos os cookies"
               >
                 Aceitar Todos

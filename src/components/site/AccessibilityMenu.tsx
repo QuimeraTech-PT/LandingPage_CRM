@@ -165,10 +165,10 @@ export const AccessibilityMenu = () => {
                     <button
                       key={size}
                       onClick={() => updateFontSize(size)}
-                      className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all ${
+                      className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
                         fontSize === size 
                           ? "border-primary bg-primary/5 text-primary" 
-                          : "border-border hover:border-muted-foreground/50"
+                          : "border-border hover:border-primary/40"
                       }`}
                       aria-pressed={fontSize === size}
                     >
