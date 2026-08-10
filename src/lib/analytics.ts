@@ -70,3 +70,20 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
     ...consentConfig
   });
 };
+
+/**
+ * Track a custom event to dataLayer.
+ */
+export const trackEvent = (eventName: string, params?: Record<string, any>) => {
+  if (typeof window === "undefined") return;
+  
+  if (window.gtag) {
+    window.gtag("event", eventName, params);
+  } else {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: eventName,
+      ...params
+    });
+  }
+};
