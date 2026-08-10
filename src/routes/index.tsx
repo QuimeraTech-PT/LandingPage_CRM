@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
+import { SITE_URL, seoMeta, seoLinks, breadcrumbList, jsonLd } from "@/lib/seo";
 
 import { lazy, Suspense } from "react";
 import { Header } from "@/components/site/Header";
@@ -25,33 +26,75 @@ export const Route = createFileRoute("/")({
   head: () => ({
     links: [
       { rel: "preload", href: logoAsset.url, as: "image", type: "image/png" },
-      { rel: "canonical", href: "https://quimeratech.pt/" },
-      { rel: "alternate", hrefLang: "pt-PT", href: "https://quimeratech.pt/" },
-      { rel: "alternate", hrefLang: "pt", href: "https://quimeratech.pt/" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://quimeratech.pt/" },
+      ...seoLinks("/"),
     ],
-    meta: [
-      { title },
-      { name: "description", content: description },
-      {
-        name: "keywords",
-        content:
-          "consultoria tecnológica, desenvolvimento de software, soluções digitais, plataformas SaaS, sistemas empresariais, React Tailwind, Flutter, SQL Server, Firebase, Azure, gestão de projetos ágil, web design, modelagem de dados",
-      },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://quimeratech.pt/" },
-      { property: "og:locale", content: "pt_PT" },
-      { property: "og:image", content: "https://quimeratech.pt/og-home.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "QuimeraTech — Soluções Inteligentes. Impacto Real." },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: title },
-      { name: "twitter:description", content: description },
-      { name: "twitter:image", content: "https://quimeratech.pt/og-home.jpg" },
-      { name: "robots", content: "index, follow" },
+    meta: seoMeta({
+      title,
+      description,
+      path: "/",
+      image: "/og-home.jpg",
+      imageAlt: "QuimeraTech — Soluções Inteligentes. Impacto Real.",
+      keywords:
+        "consultoria tecnológica, desenvolvimento de software, soluções digitais, plataformas SaaS, sistemas empresariais, React Tailwind, Flutter, SQL Server, Firebase, Azure, gestão de projetos ágil, web design, modelagem de dados",
+    }),
+    scripts: [
+      jsonLd([
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "@id": `${SITE_URL}/#organization`,
+          name: "QuimeraTech",
+          url: SITE_URL,
+          logo: `${SITE_URL}/favicon.png`,
+          image: `${SITE_URL}/og-home.jpg`,
+          description,
+          email: "hello@quimeratech.pt",
+          address: { "@type": "PostalAddress", addressCountry: "PT" },
+          sameAs: [
+            "https://www.linkedin.com/company/quimeratech/",
+            "https://github.com/quimeratech",
+          ],
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "@id": `${SITE_URL}/#website`,
+          url: SITE_URL,
+          name: "QuimeraTech",
+          description,
+          publisher: { "@id": `${SITE_URL}/#organization` },
+          inLanguage: "pt-PT",
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "@id": `${SITE_URL}/#webpage`,
+          url: `${SITE_URL}/`,
+          name: title,
+          description,
+          inLanguage: "pt-PT",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          about: { "@id": `${SITE_URL}/#organization` },
+          primaryImageOfPage: { "@type": "ImageObject", url: `${SITE_URL}/og-home.jpg`, width: 1200, height: 630 },
+          breadcrumb: breadcrumbList([{ name: "Início", path: "/" }]),
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          "@id": `${SITE_URL}/#service`,
+          name: "QuimeraTech",
+          url: SITE_URL,
+          description,
+          areaServed: "PT",
+          provider: { "@id": `${SITE_URL}/#organization` },
+          serviceType: [
+            "Desenvolvimento de software à medida",
+            "Consultoria tecnológica",
+            "Plataformas SaaS",
+            "Soluções cloud Azure",
+          ],
+        },
+      ]),
     ],
   }),
   component: Home,
@@ -86,39 +129,6 @@ function Home() {
       <Suspense fallback={<div className="h-20 border-t border-border bg-background" />}>
         <Footer />
       </Suspense>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
-            {
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "@id": "https://quimeratech.pt/#organization",
-              "name": "QuimeraTech",
-              "url": "https://quimeratech.pt",
-              "logo": "https://quimeratech.pt/favicon.png",
-              "description": description,
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "PT"
-              },
-              "sameAs": [
-                "https://www.linkedin.com/company/quimeratech/",
-                "https://github.com/quimeratech"
-              ]
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "@id": "https://quimeratech.pt/#website",
-              "url": "https://quimeratech.pt",
-              "name": "QuimeraTech",
-              "publisher": { "@id": "https://quimeratech.pt/#organization" },
-              "inLanguage": "pt-PT"
-            }
-          ]),
-        }}
-      />
     </div>
   );
 }
