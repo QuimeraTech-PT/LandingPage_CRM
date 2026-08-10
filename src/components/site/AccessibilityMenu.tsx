@@ -105,7 +105,8 @@ export const AccessibilityMenu = () => {
         <Accessibility className="h-5 w-5" />
       </Button>
 
-      <FocusTrap active={isOpen} focusTrapOptions={{ allowOutsideClick: true, initialFocus: false }}>
+      {isOpen && (
+        <FocusTrap focusTrapOptions={{ allowOutsideClick: true }}>
         <div 
           ref={menuRef}
           className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
@@ -204,7 +205,8 @@ export const AccessibilityMenu = () => {
             </div>
           </div>
         </div>
-      </FocusTrap>
+        </FocusTrap>
+      )}
     </div>
   );
 };
