@@ -182,7 +182,9 @@ export const AccessibilityMenu = () => {
           </div>
         </div>
         </FocusTrap>
+        </FocusTrap>
       )}
+
 
 
 
