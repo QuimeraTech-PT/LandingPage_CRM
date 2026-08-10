@@ -26,7 +26,9 @@ export const AccessibilityMenu = () => {
     setFontSize(savedFontSize);
     
     applySettings({ contrast: savedContrast, motion: savedMotion, size: savedFontSize });
+  }, []);
 
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isOpen && 
