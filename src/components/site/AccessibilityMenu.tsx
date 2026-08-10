@@ -85,6 +85,15 @@ export const AccessibilityMenu = () => {
       </Button>
 
       {isOpen && (
+        <FocusTrap
+          focusTrapOptions={{
+            onDeactivate: () => setIsOpen(false),
+            clickOutsideDeactivates: true,
+            escapeDeactivates: true,
+            initialFocus: false, // Don't steal focus immediately if it causes issues
+          }}
+        >
+
         <div 
           className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
           role="dialog"
