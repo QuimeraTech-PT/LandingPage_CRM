@@ -1,5 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import { motion, type Variants, useReducedMotion } from "framer-motion";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -11,14 +11,6 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5 },
-  },
-};
 
 const phases = [
   {
@@ -56,6 +48,17 @@ const principles = [
 ];
 
 export function Methodology() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
     <section id="metodologia" className="bg-surface py-24 text-surface-foreground md:py-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
