@@ -91,7 +91,7 @@ export function Hero() {
 
           <motion.p 
             variants={itemVariants}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-accent uppercase"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-accent uppercase"
           >
             Software House de Excelência
           </motion.p>
@@ -107,7 +107,7 @@ export function Hero() {
 
           <motion.h2 
             variants={itemVariants}
-            className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-normal text-muted-foreground md:text-lg"
+            className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
             A sua parceira estratégica em desenvolvimento de software e consultoria tecnológica.
           </motion.h2>
