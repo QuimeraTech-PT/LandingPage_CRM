@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import FocusTrap from "focus-trap-react";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -171,8 +170,6 @@ export const AccessibilityMenu = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
     </div>
   );
 };
