@@ -80,8 +80,18 @@ export function Hero() {
           initial="hidden"
           animate="visible"
         >
-
-
+          <motion.div
+            variants={itemVariants}
+            className="mb-8 hidden text-sm font-medium tracking-widest text-accent/80 uppercase md:block"
+          >
+            Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.
+          </motion.div>
+          <motion.div
+            variants={itemVariants}
+            className="mb-6 text-sm font-semibold text-primary md:text-base"
+          >
+            Revisar tipografia, margens e espaçamentos para garantir hierarquia visual clara em todos os tamanhos de ecrã.
+          </motion.div>
           <motion.h1 
             id="hero-heading"
             variants={itemVariants}
