@@ -10,18 +10,18 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-background py-8 lg:py-12" aria-labelledby="footer-heading">
+    <footer className="border-t border-border bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Rodapé</h2>
       
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:gap-8">
           {/* Logo & Sobre */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col gap-6 items-center lg:items-start lg:col-span-1"
+            className="flex flex-col gap-4 items-center lg:items-start lg:col-span-1"
           >
             <img
               src={logoAsset.url}
@@ -36,7 +36,7 @@ export function Footer() {
           </motion.div>
 
           {/* Sitemaps */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-3">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:col-span-3">
             <motion.nav 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -44,8 +44,8 @@ export function Footer() {
               transition={{ duration: 0.5, delay: 0.1 }}
               aria-labelledby="footer-nav-heading"
             >
-              <h3 id="footer-nav-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-6">Navegação</h3>
-              <ul role="list" className="space-y-4">
+              <h3 id="footer-nav-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Navegação</h3>
+              <ul role="list" className="space-y-2">
                 <li>
                   <Link to="/" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
                     <span className="relative">
@@ -88,8 +88,8 @@ export function Footer() {
               transition={{ duration: 0.5, delay: 0.2 }}
               aria-labelledby="footer-legal-heading"
             >
-              <h3 id="footer-legal-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-6">Legal</h3>
-              <ul role="list" className="space-y-4">
+              <h3 id="footer-legal-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Legal</h3>
+              <ul role="list" className="space-y-2">
                 <li>
                   <Link to="/politica-de-privacidade" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
                     <span className="relative">
@@ -126,8 +126,8 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h3 className="text-sm font-bold tracking-wider text-foreground uppercase mb-6">Contacto</h3>
-              <ul role="list" className="space-y-4">
+              <h3 className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Contacto</h3>
+              <ul role="list" className="space-y-2">
                 <li>
                   <a href="/#contact" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
                     <span className="relative">
@@ -147,7 +147,7 @@ export function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mt-8 pt-6 border-t border-border flex flex-col items-center justify-between gap-4 sm:flex-row"
+          className="mt-6 pt-4 border-t border-border flex flex-col items-center justify-between gap-4 sm:flex-row"
         >
           <p className="text-xs font-light text-muted-foreground text-center sm:text-left">
             © {year} QuimeraTech. Todos os direitos reservados.
