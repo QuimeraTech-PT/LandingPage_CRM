@@ -7,7 +7,12 @@ export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
     meta: [
       { title: "Política de Privacidade — QuimeraTech" },
-      { name: "description", content: "Política de Privacidade e Cookies da QuimeraTech." },
+      { name: "description", content: "Política de Privacidade e Cookies da QuimeraTech. Saiba como protegemos os seus dados e gerimos a sua privacidade." },
+      { property: "og:title", content: "Política de Privacidade — QuimeraTech" },
+      { property: "og:description", content: "Conheça as nossas práticas de privacidade e proteção de dados." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { rel: "canonical", href: "https://quimeratech.pt/politica-de-privacidade" },
     ],
   }),
   component: PrivacyPolicy,

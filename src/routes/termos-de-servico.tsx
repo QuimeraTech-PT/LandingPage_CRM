@@ -7,7 +7,12 @@ export const Route = createFileRoute("/termos-de-servico")({
   head: () => ({
     meta: [
       { title: "Termos de Serviço — QuimeraTech" },
-      { name: "description", content: "Termos e Condições de Serviço da QuimeraTech." },
+      { name: "description", content: "Termos e Condições de Serviço da QuimeraTech. Regras e diretrizes para a utilização das nossas soluções digitais." },
+      { property: "og:title", content: "Termos de Serviço — QuimeraTech" },
+      { property: "og:description", content: "Consulte os termos de utilização do website e serviços da QuimeraTech." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { rel: "canonical", href: "https://quimeratech.pt/termos-de-servico" },
     ],
   }),
   component: TermsOfService,
