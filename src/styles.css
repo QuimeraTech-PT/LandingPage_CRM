@@ -151,12 +151,18 @@
 @layer base {
   /* Accessibility Modifiers */
   html.high-contrast {
-    --background: oklch(0% 0 0);
-    --foreground: oklch(100% 0 0);
-    --primary: oklch(100% 0 0);
-    --accent: oklch(100% 0 0);
-    --border: oklch(100% 0 0 / 50%);
-    --muted-foreground: oklch(90% 0 0);
+    --background: oklch(0% 0 0) !important;
+    --foreground: oklch(100% 0 0) !important;
+    --primary: oklch(100% 0 0) !important;
+    --primary-foreground: oklch(0% 0 0) !important;
+    --secondary: oklch(20% 0 0) !important;
+    --accent: oklch(100% 0 0) !important;
+    --accent-foreground: oklch(0% 0 0) !important;
+    --border: oklch(100% 0 0 / 80%) !important;
+    --muted: oklch(15% 0 0) !important;
+    --muted-foreground: oklch(100% 0 0) !important;
+    --card: oklch(5% 0 0) !important;
+    --popover: oklch(5% 0 0) !important;
   }
 
   html.text-large {
@@ -174,6 +180,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Specific override for Framer Motion / CSS Transitions */
+  html.force-reduced-motion * {
+    transition-property: none !important;
+    transform: none !important;
+    animation: none !important;
   }
 
 

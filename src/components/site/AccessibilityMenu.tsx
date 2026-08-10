@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
@@ -15,7 +15,7 @@ export const AccessibilityMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Load preferences
     const savedContrast = localStorage.getItem("a11y-high-contrast") === "true";
     const savedMotion = localStorage.getItem("a11y-reduced-motion") === "true";
@@ -26,7 +26,9 @@ export const AccessibilityMenu = () => {
     setFontSize(savedFontSize);
     
     applySettings({ contrast: savedContrast, motion: savedMotion, size: savedFontSize });
+  }, []);
 
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isOpen && 
@@ -58,12 +60,18 @@ export const AccessibilityMenu = () => {
     const root = document.documentElement;
     
     // Contrast
-    if (contrast) root.classList.add("high-contrast");
-    else root.classList.remove("high-contrast");
+    if (contrast) {
+      root.classList.add("high-contrast");
+    } else {
+      root.classList.remove("high-contrast");
+    }
     
     // Motion
-    if (motion) root.classList.add("force-reduced-motion");
-    else root.classList.remove("force-reduced-motion");
+    if (motion) {
+      root.classList.add("force-reduced-motion");
+    } else {
+      root.classList.remove("force-reduced-motion");
+    }
     
     // Font size
     root.classList.remove("text-large", "text-extra");
