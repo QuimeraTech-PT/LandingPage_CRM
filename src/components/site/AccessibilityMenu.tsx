@@ -3,8 +3,6 @@ import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
 
-
-
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
@@ -15,9 +13,6 @@ export const AccessibilityMenu = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-
-
-
 
   useEffect(() => {
     // Load preferences
@@ -85,109 +80,108 @@ export const AccessibilityMenu = () => {
       </Button>
 
       {isOpen && (
-
-
-
-        <div 
-          className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
-          role="dialog"
-          aria-label="Opções de Acessibilidade"
+        <FocusTrap
+          focusTrapOptions={{
+            onDeactivate: () => setIsOpen(false),
+            clickOutsideDeactivates: true,
+            escapeDeactivates: true,
+          }}
         >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
-            <button 
-              onClick={() => setIsOpen(false)}
-              className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
-              aria-label="Fechar menu"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="space-y-6">
-            {/* High Contrast */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                  <Eye className="h-4 w-4" />
-                </div>
-                <span className="text-sm font-medium">Alto Contraste</span>
-              </div>
-              <button
-                role="switch"
-                aria-checked={highContrast}
-                onClick={toggleContrast}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                  highContrast ? "bg-primary" : "bg-muted"
-                }`}
+          <div 
+            className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
+            role="dialog"
+            aria-label="Opções de Acessibilidade"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="Fechar menu"
               >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    highContrast ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Reduced Motion */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                  <Move className="h-4 w-4" />
+            <div className="space-y-6">
+              {/* High Contrast */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <Eye className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium">Alto Contraste</span>
                 </div>
-                <span className="text-sm font-medium">Reduzir Movimento</span>
-              </div>
-              <button
-                role="switch"
-                aria-checked={reducedMotion}
-                onClick={toggleMotion}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                  reducedMotion ? "bg-primary" : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    reducedMotion ? "translate-x-6" : "translate-x-1"
+                <button
+                  role="switch"
+                  aria-checked={highContrast}
+                  onClick={toggleContrast}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                    highContrast ? "bg-primary" : "bg-muted"
                   }`}
-                />
-              </button>
-            </div>
-
-            {/* Font Size */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                  <Type className="h-4 w-4" />
-                </div>
-                <span className="text-sm font-medium">Tamanho da Fonte</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {(["normal", "large", "extra"] as const).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => updateFontSize(size)}
-                    className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all ${
-                      fontSize === size 
-                        ? "border-primary bg-primary/5 text-primary" 
-                        : "border-border hover:border-muted-foreground/50"
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      highContrast ? "translate-x-6" : "translate-x-1"
                     }`}
-                    aria-pressed={fontSize === size}
-                  >
-                    <span className={`font-bold ${size === 'normal' ? 'text-xs' : size === 'large' ? 'text-sm' : 'text-base'}`}>A</span>
-                    <span className="text-[10px] uppercase font-semibold mt-1">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
-                  </button>
-                ))}
+                  />
+                </button>
+              </div>
+
+              {/* Reduced Motion */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <Move className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium">Reduzir Movimento</span>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={reducedMotion}
+                  onClick={toggleMotion}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                    reducedMotion ? "bg-primary" : "bg-muted"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      reducedMotion ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Font Size */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <Type className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium">Tamanho da Fonte</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {(["normal", "large", "extra"] as const).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => updateFontSize(size)}
+                      className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all ${
+                        fontSize === size 
+                          ? "border-primary bg-primary/5 text-primary" 
+                          : "border-border hover:border-muted-foreground/50"
+                      }`}
+                      aria-pressed={fontSize === size}
+                    >
+                      <span className={`font-bold ${size === 'normal' ? 'text-xs' : size === 'large' ? 'text-sm' : 'text-base'}`}>A</span>
+                      <span className="text-[10px] uppercase font-semibold mt-1">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        </FocusTrap>
         </FocusTrap>
       )}
-
-
-
-
     </div>
   );
 };
