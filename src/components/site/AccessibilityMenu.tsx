@@ -8,6 +8,7 @@ export const AccessibilityMenu = () => {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -24,7 +25,33 @@ export const AccessibilityMenu = () => {
     setFontSize(savedFontSize);
     
     applySettings({ contrast: savedContrast, motion: savedMotion, size: savedFontSize });
-  }, []);
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen && 
+        menuRef.current && 
+        !menuRef.current.contains(event.target as Node) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (isOpen && event.key === "Escape") {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [isOpen]);
 
   const applySettings = ({ contrast, motion, size }: { contrast: boolean, motion: boolean, size: string }) => {
     const root = document.documentElement;
@@ -78,6 +105,7 @@ export const AccessibilityMenu = () => {
       </Button>
 
       <div 
+        ref={menuRef}
         className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
         role="dialog"
         aria-label="Opções de Acessibilidade"
