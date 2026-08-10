@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { lazy, Suspense } from "react";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { About } from "@/components/site/About";
-import { Specialties } from "@/components/site/Specialties";
-import { Methodology } from "@/components/site/Methodology";
-import { Pillars } from "@/components/site/Pillars";
-import { Contact } from "@/components/site/Contact";
-import { Footer } from "@/components/site/Footer";
+
+const Specialties = lazy(() => import("@/components/site/Specialties").then(m => ({ default: m.Specialties })));
+const Methodology = lazy(() => import("@/components/site/Methodology").then(m => ({ default: m.Methodology })));
+const Pillars = lazy(() => import("@/components/site/Pillars").then(m => ({ default: m.Pillars })));
+const Contact = lazy(() => import("@/components/site/Contact").then(m => ({ default: m.Contact })));
+const Footer = lazy(() => import("@/components/site/Footer").then(m => ({ default: m.Footer })));
 
 const title = "QuimeraTech — Desenvolvimento de Software e Consultoria Tecnológica";
 const description =
@@ -47,12 +49,16 @@ function Home() {
       <main id="main-content">
         <Hero />
         <About />
-        <Specialties />
-        <Methodology />
-        <Pillars />
-        <Contact />
+        <Suspense fallback={<div className="h-96" />}>
+          <Specialties />
+          <Methodology />
+          <Pillars />
+          <Contact />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={<div className="h-20" />}>
+        <Footer />
+      </Suspense>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

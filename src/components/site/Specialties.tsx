@@ -1,5 +1,5 @@
 import { Cloud, Database, KanbanSquare, PenTool, Smartphone } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import { motion, type Variants, useReducedMotion } from "framer-motion";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -11,14 +11,6 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
 
 const specialties = [
   {
@@ -49,6 +41,17 @@ const specialties = [
 ];
 
 export function Specialties() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
     <section id="especialidades" className="relative overflow-hidden bg-background py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40" />
