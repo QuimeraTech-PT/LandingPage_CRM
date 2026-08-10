@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 
 import { lazy, Suspense } from "react";
 import { Header } from "@/components/site/Header";
@@ -22,6 +23,9 @@ const description =
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      { rel: "preload", href: logoAsset.url, as: "image", type: "image/png" },
+    ],
     meta: [
       { title },
       { name: "description", content: description },

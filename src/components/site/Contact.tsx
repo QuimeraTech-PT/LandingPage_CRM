@@ -36,17 +36,21 @@ export function Contact() {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
+    setSent(false);
 
     try {
       await submitContact({ data });
       setSent(true);
-      toast.success("Mensagem enviada com sucesso!");
+      toast.success("Mensagem enviada com sucesso!", {
+        description: "Entraremos em contacto brevemente.",
+      });
       reset();
     } catch (error: any) {
       console.error("Erro ao enviar contacto:", error);
-      toast.error(
-        error.message || "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente."
-      );
+      const errorMessage = error.message || "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.";
+      toast.error("Erro no envio", {
+        description: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -108,7 +112,7 @@ export function Contact() {
           >
             <div className="grid gap-5">
               <div className="grid gap-2">
-                <Label htmlFor="nome" className="text-surface-foreground">
+                <Label htmlFor="nome" className="text-surface-foreground font-semibold">
                   Nome próprio e apelido
                 </Label>
                 <Input
@@ -126,7 +130,7 @@ export function Contact() {
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email" className="text-surface-foreground">
+                <Label htmlFor="email" className="text-surface-foreground font-semibold">
                   Email
                 </Label>
                 <Input
@@ -145,7 +149,7 @@ export function Contact() {
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="assunto" className="text-surface-foreground">
+                <Label htmlFor="assunto" className="text-surface-foreground font-semibold">
                   Assunto
                 </Label>
                 <Input
@@ -162,7 +166,7 @@ export function Contact() {
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="mensagem" className="text-surface-foreground">
+                <Label htmlFor="mensagem" className="text-surface-foreground font-semibold">
                   Mensagem
                 </Label>
                 <Textarea
@@ -199,11 +203,18 @@ export function Contact() {
                 )}
               </Button>
 
-              {sent && (
-                <p role="status" className="text-sm font-medium text-primary">
-                  Obrigado! A sua mensagem foi registada — entraremos em contacto brevemente.
-                </p>
-              )}
+              <div aria-live="polite" className="mt-2 min-h-[1.25rem]">
+                {sent && (
+                  <p role="status" className="text-sm font-semibold text-primary">
+                    Obrigado! A sua mensagem foi registada — entraremos em contacto brevemente.
+                  </p>
+                )}
+                {Object.keys(errors).length > 0 && (
+                  <p role="alert" className="sr-only">
+                    O formulário contém erros. Por favor, verifique os campos destacados.
+                  </p>
+                )}
+              </div>
             </div>
           </form>
         </div>
