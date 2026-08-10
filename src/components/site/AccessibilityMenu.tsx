@@ -93,6 +93,9 @@ export const AccessibilityMenu = () => {
 
   return (
     <div className="relative">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {isOpen ? "Menu de acessibilidade aberto" : "Menu de acessibilidade fechado"}
+      </div>
       <Button
         ref={triggerRef}
         variant="ghost"
