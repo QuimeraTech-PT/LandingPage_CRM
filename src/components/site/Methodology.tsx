@@ -60,13 +60,13 @@ export function Methodology() {
   };
 
   return (
-    <section id="metodologia" className="bg-surface py-24 text-surface-foreground md:py-32">
+    <section id="metodologia" className="bg-surface py-24 text-surface-foreground md:py-32" aria-labelledby="methodology-heading">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="max-w-3xl">
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
             Como Trabalhamos
           </p>
-          <h2 className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
+          <h2 id="methodology-heading" className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
             Abordagem Ágil e Colaborativa para o Sucesso.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-surface-muted md:text-lg">
