@@ -5,6 +5,8 @@ import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 
+
+
 const links = [
   { href: "#sobre", label: "Sobre" },
   { href: "#especialidades", label: "Especialidades" },

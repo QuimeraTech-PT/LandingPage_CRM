@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Accessibility, X, Type, Eye, Move, Check } from "lucide-react";
+import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import FocusTrap from "focus-trap-react";
 
-export function AccessibilityMenu() {
+
+export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -72,14 +72,10 @@ export function AccessibilityMenu() {
         <Accessibility className="h-5 w-5" />
       </Button>
 
-      {isOpen && (
-        <FocusTrap
-          focusTrapOptions={{
-            onDeactivate: () => setIsOpen(false),
-            clickOutsideDeactivates: true,
-          }}
-        >
-          <div className="absolute right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-50 animate-in fade-in zoom-in duration-200 motion-reduce:animate-none">
+      <div 
+        className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
+        style={{ display: isOpen ? 'block' : 'none' }}
+      >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
               <button 
@@ -167,9 +163,7 @@ export function AccessibilityMenu() {
                 </div>
               </div>
             </div>
-          </div>
-        </FocusTrap>
-      )}
+      </div>
     </div>
   );
 }
