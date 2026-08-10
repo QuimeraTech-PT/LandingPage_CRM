@@ -107,7 +107,7 @@ export const AccessibilityMenu = () => {
 
       <div 
         ref={menuRef}
-        className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
+        className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? '!block' : 'hidden'}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="accessibility-menu-title"
