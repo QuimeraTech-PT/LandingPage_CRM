@@ -33,7 +33,7 @@ export const Route = createFileRoute("/politica-de-privacidade")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "PrivacyPolicy",
+          "@type": "WebPage",
           "@id": "https://quimeratech.pt/politica-de-privacidade#webpage",
           name: "Política de Privacidade e Cookies",
           url: "https://quimeratech.pt/politica-de-privacidade",
