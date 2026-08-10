@@ -10,7 +10,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-background py-16" aria-labelledby="footer-heading">
+    <footer className="border-t border-border bg-background py-8 lg:py-12" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Rodapé</h2>
       
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
