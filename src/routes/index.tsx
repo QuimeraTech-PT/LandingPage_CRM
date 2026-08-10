@@ -4,6 +4,11 @@ import { lazy, Suspense } from "react";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { About } from "@/components/site/About";
+import { 
+  SpecialtiesSkeleton, 
+  MethodologySkeleton, 
+  ContactSkeleton 
+} from "@/components/site/Skeletons";
 
 const Specialties = lazy(() => import("@/components/site/Specialties").then(m => ({ default: m.Specialties })));
 const Methodology = lazy(() => import("@/components/site/Methodology").then(m => ({ default: m.Methodology })));
@@ -49,14 +54,20 @@ function Home() {
       <main id="main-content">
         <Hero />
         <About />
-        <Suspense fallback={<div className="h-96" />}>
+        <Suspense fallback={<SpecialtiesSkeleton />}>
           <Specialties />
+        </Suspense>
+        <Suspense fallback={<MethodologySkeleton />}>
           <Methodology />
+        </Suspense>
+        <Suspense fallback={<div className="h-[400px]" />}>
           <Pillars />
+        </Suspense>
+        <Suspense fallback={<ContactSkeleton />}>
           <Contact />
         </Suspense>
       </main>
-      <Suspense fallback={<div className="h-20" />}>
+      <Suspense fallback={<div className="h-20 border-t border-border bg-background" />}>
         <Footer />
       </Suspense>
       <script

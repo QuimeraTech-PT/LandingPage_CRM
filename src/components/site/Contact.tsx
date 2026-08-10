@@ -53,14 +53,14 @@ export function Contact() {
   };
 
   return (
-    <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32">
+    <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32" aria-labelledby="contact-heading">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
               Contactos
             </p>
-            <h2 className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
+            <h2 id="contact-heading" className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
               Vamos Construir o Futuro Juntos.
             </h2>
             <p className="mt-5 text-base leading-[1.6] text-surface-muted md:text-lg">
@@ -109,7 +109,7 @@ export function Contact() {
             <div className="grid gap-5">
               <div className="grid gap-2">
                 <Label htmlFor="nome" className="text-surface-foreground">
-                  Nome
+                  Nome próprio e apelido
                 </Label>
                 <Input
                   id="nome"
@@ -117,9 +117,12 @@ export function Contact() {
                   placeholder="O seu nome"
                   autoComplete="name"
                   className={errors.nome ? "border-destructive focus-visible:ring-destructive" : ""}
+                  aria-invalid={!!errors.nome}
+                  aria-describedby={errors.nome ? "nome-error" : undefined}
+                  required
                 />
                 {errors.nome && (
-                  <p className="text-xs text-destructive">{errors.nome.message}</p>
+                  <p className="text-xs text-destructive" id="nome-error" role="alert">{errors.nome.message}</p>
                 )}
               </div>
               <div className="grid gap-2">
@@ -133,9 +136,12 @@ export function Contact() {
                   placeholder="nome@empresa.pt"
                   autoComplete="email"
                   className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  required
                 />
                 {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
+                  <p className="text-xs text-destructive" id="email-error" role="alert">{errors.email.message}</p>
                 )}
               </div>
               <div className="grid gap-2">
@@ -147,9 +153,12 @@ export function Contact() {
                   {...register("assunto")}
                   placeholder="Como podemos ajudar?"
                   className={errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""}
+                  aria-invalid={!!errors.assunto}
+                  aria-describedby={errors.assunto ? "assunto-error" : undefined}
+                  required
                 />
                 {errors.assunto && (
-                  <p className="text-xs text-destructive">{errors.assunto.message}</p>
+                  <p className="text-xs text-destructive" id="assunto-error" role="alert">{errors.assunto.message}</p>
                 )}
               </div>
               <div className="grid gap-2">
@@ -162,9 +171,12 @@ export function Contact() {
                   rows={5}
                   placeholder="Descreva brevemente o seu projeto..."
                   className={errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""}
+                  aria-invalid={!!errors.mensagem}
+                  aria-describedby={errors.mensagem ? "mensagem-error" : undefined}
+                  required
                 />
                 {errors.mensagem && (
-                  <p className="text-xs text-destructive">{errors.mensagem.message}</p>
+                  <p className="text-xs text-destructive" id="mensagem-error" role="alert">{errors.mensagem.message}</p>
                 )}
               </div>
 

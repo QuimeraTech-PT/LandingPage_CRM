@@ -53,7 +53,7 @@ export function Specialties() {
   };
 
   return (
-    <section id="especialidades" className="relative overflow-hidden bg-background py-24 md:py-32">
+    <section id="especialidades" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="specialties-heading">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40" />
       <div
         aria-hidden
@@ -65,7 +65,7 @@ export function Specialties() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             O Que Fazemos
           </p>
-          <h2 className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 id="specialties-heading" className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
             Transformamos Ideias em Realidade Digital.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">
