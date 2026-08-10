@@ -44,23 +44,21 @@ export function Header() {
           />
         </a>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">
+        <nav className="hidden items-center gap-10 lg:flex" aria-label="Navegação principal">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               {l.label}
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-accent transition-all duration-300 group-hover:w-full" aria-hidden="true" />
             </a>
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-6 pl-6 border-l border-border/50">
           <AccessibilityMenu />
-          <Button asChild size="lg" className="font-semibold">
-            <a href="#contactos">Fale Connosco</a>
-          </Button>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
@@ -102,11 +100,6 @@ export function Header() {
                   {l.label}
                 </a>
               ))}
-              <Button asChild size="lg" className="mt-2 font-semibold">
-                <a href="#contactos" onClick={() => setOpen(false)}>
-                  Fale Connosco
-                </a>
-              </Button>
             </nav>
           </div>
         </FocusTrap>
