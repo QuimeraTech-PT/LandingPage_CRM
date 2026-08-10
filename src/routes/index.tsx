@@ -40,6 +40,8 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
+      { name: "robots", content: "index, follow" },
+      { rel: "canonical", href: "https://quimeratech.pt/" },
     ],
   }),
   component: Home,

@@ -47,7 +47,11 @@ export function Footer() {
               <h3 id="footer-nav-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Navegação</h3>
               <ul role="list" className="space-y-2">
                 <li>
-                  <Link to="/" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <Link 
+                    to="/" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('nav_click', { destination: 'home', location: 'footer' })}
+                  >
                     <span className="relative">
                       Início
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -55,7 +59,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <a href="/#about" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <a 
+                    href="/#about" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('nav_click', { destination: 'about', location: 'footer' })}
+                  >
                     <span className="relative">
                       Quem Somos
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -63,7 +71,11 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/#specialties" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <a 
+                    href="/#specialties" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('nav_click', { destination: 'specialties', location: 'footer' })}
+                  >
                     <span className="relative">
                       Especialidades
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -71,7 +83,11 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/#methodology" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <a 
+                    href="/#methodology" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('nav_click', { destination: 'methodology', location: 'footer' })}
+                  >
                     <span className="relative">
                       Metodologia
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -91,7 +107,11 @@ export function Footer() {
               <h3 id="footer-legal-heading" className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Legal</h3>
               <ul role="list" className="space-y-2">
                 <li>
-                  <Link to="/politica-de-privacidade" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <Link 
+                    to="/politica-de-privacidade" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('legal_click', { destination: 'privacy', location: 'footer' })}
+                  >
                     <span className="relative">
                       Política de Privacidade
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -99,7 +119,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/termos-de-servico" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <Link 
+                    to="/termos-de-servico" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('legal_click', { destination: 'terms', location: 'footer' })}
+                  >
                     <span className="relative">
                       Termos de Serviço
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
@@ -108,7 +132,10 @@ export function Footer() {
                 </li>
                 <li>
                   <button
-                    onClick={() => window.dispatchEvent(new CustomEvent("open-cookie-settings"))}
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent("open-cookie-settings"));
+                      trackEvent('legal_click', { destination: 'cookie_settings', location: 'footer' });
+                    }}
                     className="group cursor-pointer inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                   >
                     <span className="relative">
@@ -129,7 +156,11 @@ export function Footer() {
               <h3 className="text-sm font-bold tracking-wider text-foreground uppercase mb-4">Contacto</h3>
               <ul role="list" className="space-y-2">
                 <li>
-                  <a href="/#contact" className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+                  <a 
+                    href="/#contact" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('nav_click', { destination: 'contact', location: 'footer' })}
+                  >
                     <span className="relative">
                       Fale Connosco
                       <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
