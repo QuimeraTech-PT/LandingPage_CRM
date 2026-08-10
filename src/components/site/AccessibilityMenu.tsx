@@ -108,10 +108,12 @@ export const AccessibilityMenu = () => {
         ref={menuRef}
         className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
         role="dialog"
-        aria-label="Opções de Acessibilidade"
+        aria-modal="true"
+        aria-labelledby="accessibility-menu-title"
+        aria-hidden={!isOpen}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
+          <h2 id="accessibility-menu-title" className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
           <button 
             onClick={() => setIsOpen(false)}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
@@ -126,13 +128,14 @@ export const AccessibilityMenu = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4" aria-hidden="true" />
               </div>
-              <span className="text-sm font-medium">Alto Contraste</span>
+              <span id="label-contrast" className="text-sm font-medium">Alto Contraste</span>
             </div>
             <button
               role="switch"
               aria-checked={highContrast}
+              aria-labelledby="label-contrast"
               onClick={toggleContrast}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
                 highContrast ? "bg-primary" : "bg-muted"
@@ -150,13 +153,14 @@ export const AccessibilityMenu = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                <Move className="h-4 w-4" />
+                <Move className="h-4 w-4" aria-hidden="true" />
               </div>
-              <span className="text-sm font-medium">Reduzir Movimento</span>
+              <span id="label-motion" className="text-sm font-medium">Reduzir Movimento</span>
             </div>
             <button
               role="switch"
               aria-checked={reducedMotion}
+              aria-labelledby="label-motion"
               onClick={toggleMotion}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
                 reducedMotion ? "bg-primary" : "bg-muted"
@@ -171,12 +175,12 @@ export const AccessibilityMenu = () => {
           </div>
 
           {/* Font Size */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="group" aria-labelledby="label-font-size">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                <Type className="h-4 w-4" />
+                <Type className="h-4 w-4" aria-hidden="true" />
               </div>
-              <span className="text-sm font-medium">Tamanho da Fonte</span>
+              <span id="label-font-size" className="text-sm font-medium">Tamanho da Fonte</span>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {(["normal", "large", "extra"] as const).map((size) => (
