@@ -14,7 +14,7 @@ export function Footer() {
       <h2 id="footer-heading" className="sr-only">Rodapé</h2>
       
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-8">
           {/* Logo & Sobre */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -147,7 +147,7 @@ export function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mt-16 pt-8 border-t border-border flex flex-col items-center justify-between gap-4 sm:flex-row"
+          className="mt-8 pt-6 border-t border-border flex flex-col items-center justify-between gap-4 sm:flex-row"
         >
           <p className="text-xs font-light text-muted-foreground text-center sm:text-left">
             © {year} QuimeraTech. Todos os direitos reservados.
@@ -159,8 +159,18 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="LinkedIn da QuimeraTech"
+              onClick={() => trackEvent('linkedin_click', { location: 'footer' })}
             >
               <Linkedin className="h-5 w-5" />
+            </a>
+            <a 
+              href="https://github.com/quimeratech" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              aria-label="GitHub da QuimeraTech"
+            >
+              <Github className="h-5 w-5" />
             </a>
           </div>
         </motion.div>
