@@ -38,7 +38,7 @@ export function Header() {
           <img
             src={logoAsset.url}
             alt="Logótipo QuimeraTech"
-            className="h-9 w-auto md:h-10"
+            className="h-10 w-auto md:h-12 brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
             width={1774}
             height={887}
           />
