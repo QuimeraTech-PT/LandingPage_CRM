@@ -44,7 +44,7 @@ export function Header() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-accent"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-hidden"
             >
               {l.label}
             </a>
@@ -60,7 +60,7 @@ export function Header() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-foreground lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary lg:hidden"
           aria-label={open ? "Fechar menu" : "Abrir menu"}
           aria-expanded={open}
         >

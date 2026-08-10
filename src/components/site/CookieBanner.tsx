@@ -92,7 +92,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
         <button
           onClick={() => setIsVisible(false)}
-          className="absolute top-4 right-4 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
+          className="absolute top-4 right-4 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
           aria-label="Fechar banner de cookies"
         >
           <X className="h-4 w-4" />
