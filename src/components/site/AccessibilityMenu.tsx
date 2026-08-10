@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
@@ -15,7 +15,7 @@ export const AccessibilityMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Load preferences
     const savedContrast = localStorage.getItem("a11y-high-contrast") === "true";
     const savedMotion = localStorage.getItem("a11y-reduced-motion") === "true";

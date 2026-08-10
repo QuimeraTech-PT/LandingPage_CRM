@@ -182,6 +182,13 @@
     scroll-behavior: auto !important;
   }
 
+  /* Specific override for Framer Motion / CSS Transitions */
+  html.force-reduced-motion * {
+    transition-property: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
 
   * {
     border-color: var(--color-border);
