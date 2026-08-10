@@ -60,7 +60,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         role="region"
         aria-label="Gestão de Cookies"
         className={cn(
-          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-8 duration-500 md:bottom-8",
+          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-8 duration-500 md:bottom-8 motion-reduce:animate-none motion-reduce:transform-none",
           !isVisible && "hidden"
         )}
       >
