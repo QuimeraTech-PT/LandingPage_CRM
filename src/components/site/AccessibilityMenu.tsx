@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import FocusTrap from "focus-trap-react";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -104,14 +105,15 @@ export const AccessibilityMenu = () => {
         <Accessibility className="h-5 w-5" />
       </Button>
 
-      <div 
-        ref={menuRef}
-        className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="accessibility-menu-title"
-        aria-hidden={!isOpen}
-      >
+      <FocusTrap active={isOpen} focusTrapOptions={{ allowOutsideClick: true }}>
+        <div 
+          ref={menuRef}
+          className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="accessibility-menu-title"
+          aria-hidden={!isOpen}
+        >
         <div className="flex items-center justify-between mb-6">
           <h2 id="accessibility-menu-title" className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
           <button 
@@ -198,7 +200,8 @@ export const AccessibilityMenu = () => {
                   <span className="text-[10px] uppercase font-semibold mt-1">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
                 </button>
               ))}
-            </div>
+        </div>
+      </FocusTrap>
           </div>
         </div>
       </div>
