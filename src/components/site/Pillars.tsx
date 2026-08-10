@@ -25,7 +25,7 @@ const pillars = [
 
 export function Pillars() {
   return (
-    <section id="valores" className="relative overflow-hidden bg-background py-24 md:py-32">
+    <section id="valores" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="pillars-heading">
       <div
         aria-hidden
         className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/15 blur-[140px]"
@@ -36,7 +36,7 @@ export function Pillars() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             Nossos Pilares
           </p>
-          <h2 className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 id="pillars-heading" className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
             Os Valores que Nos Distinguem.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">
