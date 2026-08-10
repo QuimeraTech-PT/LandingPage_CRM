@@ -206,7 +206,7 @@ export const AccessibilityMenu = () => {
             </div>
           </div>
         </FocusTrap>
-      </div>
+      )}
     </div>
   );
 };
