@@ -107,9 +107,9 @@ export const AccessibilityMenu = () => {
 
       {isOpen && (
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true }}>
-        <div 
-          ref={menuRef}
-          className={`fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] ${isOpen ? 'block' : 'hidden'}`}
+          <div 
+            ref={menuRef}
+            className="fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
           role="dialog"
           aria-modal="true"
           aria-labelledby="accessibility-menu-title"
