@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import FocusTrap from "focus-trap-react";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     // Load preferences
@@ -62,25 +67,36 @@ export const AccessibilityMenu = () => {
   return (
     <div className="relative">
       <Button
+        ref={triggerRef}
         variant="ghost"
         size="icon"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleMenu}
         className="h-10 w-10 text-muted-foreground hover:text-accent focus-visible:ring-2 focus-visible:ring-primary"
         aria-label="Menu de acessibilidade"
         aria-expanded={isOpen}
+        aria-haspopup="dialog"
       >
         <Accessibility className="h-5 w-5" />
       </Button>
 
-      <div 
-        className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
-        style={{ display: isOpen ? 'block' : 'none' }}
-      >
+      {isOpen && (
+        <FocusTrap
+          focusTrapOptions={{
+            onDeactivate: () => setIsOpen(false),
+            clickOutsideDeactivates: true,
+            escapeDeactivates: true,
+          }}
+        >
+          <div 
+            className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
+            role="dialog"
+            aria-label="Opções de Acessibilidade"
+          >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label="Fechar menu"
               >
                 <X className="h-4 w-4" />
@@ -163,7 +179,9 @@ export const AccessibilityMenu = () => {
                 </div>
               </div>
             </div>
-      </div>
+          </div>
+        </FocusTrap>
+      )}
     </div>
   );
-}
+};
