@@ -71,10 +71,17 @@ export function Specialties() {
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.ul 
+          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {specialties.map(({ icon: Icon, title, description }) => (
-            <li
+            <motion.li
               key={title}
+              variants={itemVariants}
               className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-accent/50"
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-accent transition-colors group-hover:bg-accent/20">
@@ -86,9 +93,9 @@ export function Specialties() {
                 aria-hidden
                 className="absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
               />
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       </div>
     </section>
   );
