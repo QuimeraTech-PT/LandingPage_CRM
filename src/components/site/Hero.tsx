@@ -22,7 +22,7 @@ export function Hero() {
       y: 0,
       transition: { 
         duration: 0.8, 
-        ease: [0.21, 0.45, 0.32, 0.9] 
+        ease: [0.21, 0.45, 0.32, 0.9] as any
       },
     },
   };
