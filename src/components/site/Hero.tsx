@@ -29,7 +29,7 @@ export function Hero() {
     },
   };
   return (
-    <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32">
+    <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
       {/* Abstract geometric background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70" />
       <div
@@ -97,6 +97,7 @@ export function Hero() {
           </motion.p>
 
           <motion.h1 
+            id="hero-heading"
             variants={itemVariants}
             className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl"
           >
