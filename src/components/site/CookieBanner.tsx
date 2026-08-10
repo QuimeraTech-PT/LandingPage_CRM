@@ -41,7 +41,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-500 md:bottom-8",
+        "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-8 duration-500 md:bottom-8",
         !isVisible && "hidden"
       )}
     >
