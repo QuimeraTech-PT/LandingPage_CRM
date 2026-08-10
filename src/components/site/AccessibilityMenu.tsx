@@ -10,6 +10,12 @@ export const AccessibilityMenu = () => {
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
 
   useEffect(() => {
     // Load preferences
