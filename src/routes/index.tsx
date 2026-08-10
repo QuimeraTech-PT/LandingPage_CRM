@@ -129,39 +129,6 @@ function Home() {
       <Suspense fallback={<div className="h-20 border-t border-border bg-background" />}>
         <Footer />
       </Suspense>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
-            {
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "@id": "https://quimeratech.pt/#organization",
-              "name": "QuimeraTech",
-              "url": "https://quimeratech.pt",
-              "logo": "https://quimeratech.pt/favicon.png",
-              "description": description,
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "PT"
-              },
-              "sameAs": [
-                "https://www.linkedin.com/company/quimeratech/",
-                "https://github.com/quimeratech"
-              ]
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "@id": "https://quimeratech.pt/#website",
-              "url": "https://quimeratech.pt",
-              "name": "QuimeraTech",
-              "publisher": { "@id": "https://quimeratech.pt/#organization" },
-              "inLanguage": "pt-PT"
-            }
-          ]),
-        }}
-      />
     </div>
   );
 }
