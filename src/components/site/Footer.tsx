@@ -161,7 +161,7 @@ export function Footer() {
               aria-label="LinkedIn da QuimeraTech"
               onClick={() => trackEvent('linkedin_click', { location: 'footer' })}
             >
-              <Linkedin className="h-5 w-5" />
+              <Linkedin className="h-5 w-5" aria-hidden="true" />
             </a>
             <a 
               href="https://github.com/quimeratech" 
@@ -169,8 +169,9 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="GitHub da QuimeraTech"
+              onClick={() => trackEvent('github_click', { location: 'footer' })}
             >
-              <Github className="h-5 w-5" />
+              <Github className="h-5 w-5" aria-hidden="true" />
             </a>
           </div>
         </motion.div>
