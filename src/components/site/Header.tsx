@@ -3,6 +3,7 @@ import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
+import { AccessibilityMenu } from "./AccessibilityMenu";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -53,22 +54,26 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-4">
+          <AccessibilityMenu />
           <Button asChild size="lg" className="font-semibold">
             <a href="#contactos">Fale Connosco</a>
           </Button>
         </div>
 
-        <button
-          ref={menuButtonRef}
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 lg:hidden"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={open}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <AccessibilityMenu />
+          <button
+            ref={menuButtonRef}
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (

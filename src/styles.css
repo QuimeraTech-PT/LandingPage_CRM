@@ -149,6 +149,34 @@
 }
 
 @layer base {
+  /* Accessibility Modifiers */
+  html.high-contrast {
+    --background: oklch(0% 0 0);
+    --foreground: oklch(100% 0 0);
+    --primary: oklch(100% 0 0);
+    --accent: oklch(100% 0 0);
+    --border: oklch(100% 0 0 / 50%);
+    --muted-foreground: oklch(90% 0 0);
+  }
+
+  html.text-large {
+    font-size: 115%;
+  }
+
+  html.text-extra {
+    font-size: 130%;
+  }
+
+  html.force-reduced-motion *,
+  html.force-reduced-motion *::before,
+  html.force-reduced-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+
   * {
     border-color: var(--color-border);
   }
