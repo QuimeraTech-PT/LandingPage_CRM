@@ -1,6 +1,10 @@
 export function About() {
   return (
-    <section id="sobre" className="bg-surface py-24 text-surface-foreground md:py-32">
+    <section 
+      id="sobre" 
+      className="bg-surface py-24 text-surface-foreground md:py-32"
+      aria-labelledby="about-heading"
+    >
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="overflow-hidden rounded-3xl border border-surface-border bg-surface-card shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)]">
           <div className="grid lg:grid-cols-2">
@@ -10,7 +14,7 @@ export function About() {
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-[0.15em] text-primary uppercase">
                   Quem Somos
                 </span>
-                <h2 className="text-3xl leading-[1.15] font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
+                <h2 id="about-heading" className="text-3xl leading-[1.15] font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
                   QuimeraTech: Inovação e Excelência em{" "}
                   <span className="text-primary">Software.</span>
                 </h2>

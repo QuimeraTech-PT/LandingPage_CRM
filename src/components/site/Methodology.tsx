@@ -86,6 +86,7 @@ export function Methodology() {
             <motion.li
               key={phase.step}
               variants={itemVariants}
+              role="listitem"
               className="relative flex flex-col rounded-2xl border border-surface-border bg-surface-card p-6 transition-shadow duration-300 hover:shadow-[0_20px_45px_-28px_rgba(37,99,235,0.6)]"
             >
               <span className="text-sm font-bold tracking-widest text-primary">{phase.step}</span>
