@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense, lazy } from "react";
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
-import { AccessibilityMenu } from "./AccessibilityMenu";
+
+const AccessibilityMenu = lazy(() => import("./AccessibilityMenu").then(m => ({ default: m.AccessibilityMenu })));
+
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -55,14 +57,18 @@ export function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <AccessibilityMenu />
+          <Suspense fallback={<div className="w-10 h-10" />}>
+            <AccessibilityMenu />
+          </Suspense>
           <Button asChild size="lg" className="font-semibold">
             <a href="#contactos">Fale Connosco</a>
           </Button>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <AccessibilityMenu />
+          <Suspense fallback={<div className="w-10 h-10" />}>
+            <AccessibilityMenu />
+          </Suspense>
           <button
             ref={menuButtonRef}
             type="button"
