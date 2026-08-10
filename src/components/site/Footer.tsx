@@ -1,6 +1,7 @@
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { Linkedin } from "lucide-react";
 
 
 
@@ -151,7 +152,15 @@ export function Footer() {
             © {year} QuimeraTech. Todos os direitos reservados.
           </p>
           <div className="flex gap-6">
-            {/* Espaço para redes sociais no futuro */}
+            <a 
+              href="https://www.linkedin.com/company/quimeratech/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              aria-label="LinkedIn da QuimeraTech"
+            >
+              <Linkedin className="h-5 w-5" />
+            </a>
           </div>
         </motion.div>
       </div>
