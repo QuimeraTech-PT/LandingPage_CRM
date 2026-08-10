@@ -79,7 +79,7 @@ export function AccessibilityMenu() {
             clickOutsideDeactivates: true,
           }}
         >
-          <div className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] animate-in fade-in zoom-in duration-200 motion-reduce:animate-none">
+          <div className="fixed sm:absolute right-4 sm:right-0 top-20 sm:top-full mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] animate-in fade-in zoom-in duration-200 motion-reduce:animate-none">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
               <button 
