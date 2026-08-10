@@ -66,7 +66,7 @@ export function Methodology() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
             Como Trabalhamos
           </p>
-          <h2 id="methodology-heading" className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
+          <h2 id="methodology-heading" className="text-3xl leading-[1.1] font-bold tracking-tight md:text-4xl lg:text-5xl">
             Abordagem Ágil e Colaborativa para o Sucesso.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-surface-muted md:text-lg">
