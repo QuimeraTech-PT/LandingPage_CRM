@@ -88,11 +88,11 @@ export const AccessibilityMenu = () => {
         <FocusTrap
           focusTrapOptions={{
             onDeactivate: () => setIsOpen(false),
-            clickOutsideDeactivates: false,
+            clickOutsideDeactivates: true,
             escapeDeactivates: true,
-            allowOutsideClick: true,
           }}
         >
+
 
 
           <div 
