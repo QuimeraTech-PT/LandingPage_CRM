@@ -1,8 +1,28 @@
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function Hero() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.21, 0.45, 0.32, 0.9] },
+    },
+  };
   return (
     <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32">
       {/* Abstract geometric background */}
