@@ -7,38 +7,50 @@ import { Globe, Mail, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { submitContactForm } from "@/lib/contact.functions";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const contactSchema = z.object({
+  nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("Endereço de email inválido"),
+  assunto: z.string().min(3, "O assunto deve ter pelo menos 3 caracteres"),
+  mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const submitContact = useServerFn(submitContactForm);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const data = {
-      nome: formData.get("nome") as string,
-      email: formData.get("email") as string,
-      assunto: formData.get("assunto") as string,
-      mensagem: formData.get("mensagem") as string,
-    };
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsSubmitting(true);
 
     try {
       await submitContact({ data });
-
-
       setSent(true);
       toast.success("Mensagem enviada com sucesso!");
-      (event.target as HTMLFormElement).reset();
+      reset();
     } catch (error: any) {
       console.error("Erro ao enviar contacto:", error);
-      toast.error("Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.");
+      toast.error(
+        error.message || "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente."
+      );
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32">
@@ -91,7 +103,7 @@ export function Contact() {
           </div>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9"
           >
             <div className="grid gap-5">
@@ -99,7 +111,16 @@ export function Contact() {
                 <Label htmlFor="nome" className="text-surface-foreground">
                   Nome
                 </Label>
-                <Input id="nome" name="nome" required placeholder="O seu nome" autoComplete="name" />
+                <Input
+                  id="nome"
+                  {...register("nome")}
+                  placeholder="O seu nome"
+                  autoComplete="name"
+                  className={errors.nome ? "border-destructive focus-visible:ring-destructive" : ""}
+                />
+                {errors.nome && (
+                  <p className="text-xs text-destructive">{errors.nome.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-surface-foreground">
@@ -107,18 +128,29 @@ export function Contact() {
                 </Label>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
-                  required
+                  {...register("email")}
                   placeholder="nome@empresa.pt"
                   autoComplete="email"
+                  className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
+                {errors.email && (
+                  <p className="text-xs text-destructive">{errors.email.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="assunto" className="text-surface-foreground">
                   Assunto
                 </Label>
-                <Input id="assunto" name="assunto" required placeholder="Como podemos ajudar?" />
+                <Input
+                  id="assunto"
+                  {...register("assunto")}
+                  placeholder="Como podemos ajudar?"
+                  className={errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""}
+                />
+                {errors.assunto && (
+                  <p className="text-xs text-destructive">{errors.assunto.message}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="mensagem" className="text-surface-foreground">
@@ -126,11 +158,14 @@ export function Contact() {
                 </Label>
                 <Textarea
                   id="mensagem"
-                  name="mensagem"
-                  required
+                  {...register("mensagem")}
                   rows={5}
                   placeholder="Descreva brevemente o seu projeto..."
+                  className={errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
+                {errors.mensagem && (
+                  <p className="text-xs text-destructive">{errors.mensagem.message}</p>
+                )}
               </div>
 
               <Button 
