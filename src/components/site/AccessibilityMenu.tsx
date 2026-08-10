@@ -85,14 +85,7 @@ export const AccessibilityMenu = () => {
       </Button>
 
       {isOpen && (
-        <FocusTrap
-          focusTrapOptions={{
-            onDeactivate: () => setIsOpen(false),
-            clickOutsideDeactivates: true,
-            escapeDeactivates: true,
-            allowOutsideClick: true,
-          }}
-        >
+
 
 
         <div 
