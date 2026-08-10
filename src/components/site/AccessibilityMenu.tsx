@@ -115,7 +115,7 @@ export const AccessibilityMenu = () => {
             aria-labelledby="accessibility-menu-title"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 id="accessibility-menu-title" className="text-sm font-bold uppercase tracking-wider text-foreground">Acessibilidade</h2>
+              <h2 id="accessibility-menu-title" tabIndex={-1} className="text-sm font-bold uppercase tracking-wider text-foreground outline-hidden">Acessibilidade</h2>
               <button 
                 onClick={() => setIsOpen(false)}
                 className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
