@@ -1,7 +1,8 @@
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Github } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 
 
