@@ -23,19 +23,19 @@ export function Footer() {
         <nav className="flex items-center gap-6" aria-label="Ligações legais">
           <Link
             to="/politica-de-privacidade"
-            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-hidden"
           >
             Política de Privacidade
           </Link>
           <Link
             to="/termos-de-servico"
-            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-hidden"
           >
             Termos de Serviço
           </Link>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent("open-cookie-settings"))}
-            className="text-xs font-light text-muted-foreground transition-colors hover:text-accent"
+            className="cursor-pointer text-xs font-light text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-hidden"
           >
             Definições de Cookies
           </button>
