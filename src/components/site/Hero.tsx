@@ -80,14 +80,6 @@ export function Hero() {
           initial="hidden"
           animate="visible"
         >
-          <motion.img
-            variants={itemVariants}
-            src={logoAsset.url}
-            alt="Logótipo QuimeraTech"
-            className="mx-auto mb-10 h-16 w-auto md:h-20"
-            width={1774}
-            height={887}
-          />
 
           <motion.p 
             variants={itemVariants}
