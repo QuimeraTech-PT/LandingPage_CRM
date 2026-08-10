@@ -100,11 +100,6 @@ export function Header() {
                   {l.label}
                 </a>
               ))}
-              <Button asChild size="lg" className="mt-2 font-semibold">
-                <a href="#contactos" onClick={() => setOpen(false)}>
-                  Fale Connosco
-                </a>
-              </Button>
             </nav>
           </div>
         </FocusTrap>
