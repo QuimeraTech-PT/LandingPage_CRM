@@ -160,10 +160,27 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Accessibility: Visible focus for keyboard navigation */
+  /* Accessibility: Global visible focus indicator for keyboard navigation */
   *:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: 4px !important;
+  }
+
+  /* Ensure interactive elements meet minimum touch target sizes */
+  button, a, input, textarea {
+    min-height: 2.75rem; /* ~44px per WCAG */
+    min-width: 2.75rem;
+  }
+
+  /* Links should have clear visual focus and sufficient contrast */
+  a:focus-visible {
+    border-radius: 0.125rem;
+  }
+
+  /* Increase base font size for better readability and contrast */
+  body {
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
   /* Reduced motion support */

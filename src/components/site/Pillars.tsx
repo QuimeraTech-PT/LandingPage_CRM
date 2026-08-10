@@ -45,10 +45,11 @@ export function Pillars() {
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" role="list">
           {pillars.map(({ icon: Icon, title, description }) => (
             <li
               key={title}
+              role="listitem"
               className="rounded-2xl border border-border bg-gradient-to-b from-card to-background p-8 transition-transform duration-300 hover:-translate-y-1"
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
