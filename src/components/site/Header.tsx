@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import FocusTrap from "focus-trap-react";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -14,6 +15,7 @@ const links = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -58,6 +60,7 @@ export function Header() {
         </div>
 
         <button
+          ref={menuButtonRef}
           type="button"
           onClick={() => setOpen((v) => !v)}
           className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 lg:hidden"
@@ -69,25 +72,37 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-secondary hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-12 flex items-center"
-              >
-                {l.label}
-              </a>
-            ))}
-            <Button asChild size="lg" className="mt-2 font-semibold">
-              <a href="#contactos" onClick={() => setOpen(false)}>
-                Fale Connosco
-              </a>
-            </Button>
-          </nav>
-        </div>
+        <FocusTrap
+          focusTrapOptions={{
+            onDeactivate: () => {
+              setOpen(false);
+              // Ensure focus returns to the toggle button when closed
+              menuButtonRef.current?.focus();
+            },
+            clickOutsideDeactivates: true,
+            escapeDeactivates: true,
+          }}
+        >
+          <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
+            <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
+              {links.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md px-3 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-secondary hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-12 flex items-center"
+                >
+                  {l.label}
+                </a>
+              ))}
+              <Button asChild size="lg" className="mt-2 font-semibold">
+                <a href="#contactos" onClick={() => setOpen(false)}>
+                  Fale Connosco
+                </a>
+              </Button>
+            </nav>
+          </div>
+        </FocusTrap>
       )}
     </header>
   );
