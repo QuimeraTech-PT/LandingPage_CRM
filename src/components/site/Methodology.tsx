@@ -1,4 +1,24 @@
 import { CheckCircle2 } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5 },
+  },
+};
 
 const phases = [
   {
@@ -52,10 +72,17 @@ export function Methodology() {
           </p>
         </div>
 
-        <ol className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+        <motion.ol 
+          className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-5"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {phases.map((phase) => (
-            <li
+            <motion.li
               key={phase.step}
+              variants={itemVariants}
               className="relative flex flex-col rounded-2xl border border-surface-border bg-surface-card p-6 transition-shadow duration-300 hover:shadow-[0_20px_45px_-28px_rgba(37,99,235,0.6)]"
             >
               <span className="text-sm font-bold tracking-widest text-primary">{phase.step}</span>
@@ -65,9 +92,9 @@ export function Methodology() {
                 aria-hidden
                 className="absolute inset-x-6 top-0 h-1 rounded-b-full bg-gradient-to-r from-primary to-accent"
               />
-            </li>
+            </motion.li>
           ))}
-        </ol>
+        </motion.ol>
 
         <div className="mt-12 flex flex-wrap gap-3">
           {principles.map((p) => (
