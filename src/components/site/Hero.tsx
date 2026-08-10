@@ -69,8 +69,14 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <img
+        <motion.div 
+          className="mx-auto max-w-3xl text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.img
+            variants={itemVariants}
             src={logoAsset.url}
             alt="Logótipo QuimeraTech"
             className="mx-auto mb-10 h-16 w-auto md:h-20"
@@ -78,20 +84,32 @@ export function Hero() {
             height={887}
           />
 
-          <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
+          <motion.p 
+            variants={itemVariants}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold tracking-[0.18em] text-accent uppercase"
+          >
             Software House de Excelência
-          </p>
+          </motion.p>
 
-          <h1 className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+          <motion.h1 
+            variants={itemVariants}
+            className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl"
+          >
             Soluções Inteligentes.{" "}
             <span className="text-gradient-brand">Impacto Real.</span>
-          </h1>
+          </motion.h1>
 
-          <h2 className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-normal text-muted-foreground md:text-lg">
+          <motion.h2 
+            variants={itemVariants}
+            className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-normal text-muted-foreground md:text-lg"
+          >
             A sua parceira estratégica em desenvolvimento de software e consultoria tecnológica.
-          </h2>
+          </motion.h2>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <motion.div 
+            variants={itemVariants}
+            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          >
             <Button asChild size="lg" className="h-12 w-full px-7 text-base font-semibold sm:w-auto">
               <a href="#especialidades">
                 Descubra as Nossas Soluções
@@ -106,8 +124,8 @@ export function Hero() {
             >
               <a href="#contactos">Fale Connosco</a>
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
