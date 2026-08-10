@@ -3,6 +3,7 @@ import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
+import { AccessibilityMenu } from "./AccessibilityMenu";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -53,7 +54,8 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-4">
+          <AccessibilityMenu />
           <Button asChild size="lg" className="font-semibold">
             <a href="#contactos">Fale Connosco</a>
           </Button>
