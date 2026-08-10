@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import FocusTrap from "focus-trap-react";
+
 
 
 export const AccessibilityMenu = () => {
