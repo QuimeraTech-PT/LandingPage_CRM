@@ -75,7 +75,7 @@ export function Contact() {
             <div className="mt-10 space-y-4">
               <a
                 href="mailto:hello@quimeratech.pt"
-                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-colors hover:border-primary"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:-translate-y-1"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Mail className="h-5 w-5" />
@@ -91,7 +91,7 @@ export function Contact() {
                 href="https://quimeratech.pt"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-colors hover:border-primary"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:-translate-y-1"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Globe className="h-5 w-5" />
@@ -191,7 +191,7 @@ export function Contact() {
               <Button 
                 type="submit" 
                 size="lg" 
-                className="h-12 text-base font-semibold"
+                className="w-full"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
