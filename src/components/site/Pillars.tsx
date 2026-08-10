@@ -36,7 +36,7 @@ export function Pillars() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             Nossos Pilares
           </p>
-          <h2 id="pillars-heading" className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 id="pillars-heading" className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
             Os Valores que Nos Distinguem.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">

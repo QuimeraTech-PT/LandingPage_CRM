@@ -14,7 +14,7 @@ export function About() {
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-[0.15em] text-primary uppercase">
                   Quem Somos
                 </span>
-                <h2 id="about-heading" className="text-3xl leading-[1.15] font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
+                <h2 id="about-heading" className="text-3xl leading-[1.1] font-bold tracking-tight md:text-4xl lg:text-5xl">
                   QuimeraTech: Inovação e Excelência em{" "}
                   <span className="text-primary">Software.</span>
                 </h2>

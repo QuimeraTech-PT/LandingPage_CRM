@@ -65,7 +65,7 @@ export function Specialties() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             O Que Fazemos
           </p>
-          <h2 id="specialties-heading" className="text-3xl leading-[1.2] font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 id="specialties-heading" className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
             Transformamos Ideias em Realidade Digital.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">
