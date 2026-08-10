@@ -44,7 +44,7 @@ export function Header() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-hidden"
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               {l.label}
             </a>

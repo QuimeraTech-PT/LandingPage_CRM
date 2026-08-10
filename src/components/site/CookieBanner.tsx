@@ -61,7 +61,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               Utilizamos cookies para melhorar a sua experiência de navegação, servir anúncios ou conteúdos personalizados e analisar o nosso tráfego. Ao clicar em "Aceitar Todos", concorda com o nosso uso de cookies. Leia a nossa{" "}
               <Link
                 to="/politica-de-privacidade"
-                className="text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="text-primary font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               >
                 Política de Cookies
               </Link>
@@ -92,7 +92,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
         <button
           onClick={() => setIsVisible(false)}
-          className="absolute top-4 right-4 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
+          className="absolute top-4 right-4 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 rounded-sm p-1"
           aria-label="Fechar banner de cookies"
         >
           <X className="h-4 w-4" />
