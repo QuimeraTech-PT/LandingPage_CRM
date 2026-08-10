@@ -12,10 +12,10 @@ export const AccessibilityMenu = () => {
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const toggleMenu = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
 
 
 
