@@ -2,56 +2,48 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft } from "lucide-react";
+import { SITE_URL, seoMeta, seoLinks, breadcrumbList, jsonLd } from "@/lib/seo";
+
+const title = "Política de Privacidade — QuimeraTech";
+const description =
+  "Política de Privacidade e Cookies da QuimeraTech. Saiba como protegemos os seus dados e gerimos a sua privacidade.";
+const path = "/politica-de-privacidade";
 
 export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
-    meta: [
-      { title: "Política de Privacidade — QuimeraTech" },
-      { name: "description", content: "Política de Privacidade e Cookies da QuimeraTech. Saiba como protegemos os seus dados e gerimos a sua privacidade." },
-      { property: "og:title", content: "Política de Privacidade — QuimeraTech" },
-      { property: "og:description", content: "Conheça as nossas práticas de privacidade e proteção de dados." },
-      { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://quimeratech.pt/politica-de-privacidade" },
-      { property: "og:locale", content: "pt_PT" },
-      { property: "og:image", content: "https://quimeratech.pt/og-privacidade.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Política de Privacidade da QuimeraTech" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Política de Privacidade — QuimeraTech" },
-      { name: "twitter:description", content: "Conheça as nossas práticas de privacidade e proteção de dados." },
-      { name: "twitter:image", content: "https://quimeratech.pt/og-privacidade.jpg" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://quimeratech.pt/politica-de-privacidade" },
-      { rel: "alternate", hrefLang: "pt-PT", href: "https://quimeratech.pt/politica-de-privacidade" },
-      { rel: "alternate", hrefLang: "pt", href: "https://quimeratech.pt/politica-de-privacidade" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://quimeratech.pt/politica-de-privacidade" },
-    ],
+    meta: seoMeta({
+      title,
+      description,
+      path,
+      type: "article",
+      image: "/og-privacidade.jpg",
+      imageAlt: "Política de Privacidade da QuimeraTech",
+    }),
+    links: seoLinks(path),
     scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "@id": "https://quimeratech.pt/politica-de-privacidade#webpage",
-          name: "Política de Privacidade e Cookies",
-          url: "https://quimeratech.pt/politica-de-privacidade",
-          description:
-            "Política de Privacidade e Cookies da QuimeraTech. Saiba como protegemos os seus dados e gerimos a sua privacidade.",
-          inLanguage: "pt-PT",
-          dateModified: "2026-08-09",
-          isPartOf: { "@id": "https://quimeratech.pt/#website" },
-          publisher: { "@id": "https://quimeratech.pt/#organization" },
-          breadcrumb: {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Início", item: "https://quimeratech.pt/" },
-              { "@type": "ListItem", position: 2, name: "Política de Privacidade", item: "https://quimeratech.pt/politica-de-privacidade" },
-            ],
-          },
-        }),
-      },
+      jsonLd({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": `${SITE_URL}${path}#webpage`,
+        name: "Política de Privacidade e Cookies",
+        url: `${SITE_URL}${path}`,
+        description,
+        inLanguage: "pt-PT",
+        datePublished: "2026-08-09",
+        dateModified: "2026-08-09",
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/og-privacidade.jpg`,
+          width: 1200,
+          height: 630,
+        },
+        breadcrumb: breadcrumbList([
+          { name: "Início", path: "/" },
+          { name: "Política de Privacidade", path },
+        ]),
+      }),
     ],
   }),
   component: PrivacyPolicy,

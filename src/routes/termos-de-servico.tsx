@@ -2,56 +2,48 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft } from "lucide-react";
+import { SITE_URL, seoMeta, seoLinks, breadcrumbList, jsonLd } from "@/lib/seo";
+
+const title = "Termos de Serviço — QuimeraTech";
+const description =
+  "Termos e Condições de Serviço da QuimeraTech. Regras e diretrizes para a utilização das nossas soluções digitais.";
+const path = "/termos-de-servico";
 
 export const Route = createFileRoute("/termos-de-servico")({
   head: () => ({
-    meta: [
-      { title: "Termos de Serviço — QuimeraTech" },
-      { name: "description", content: "Termos e Condições de Serviço da QuimeraTech. Regras e diretrizes para a utilização das nossas soluções digitais." },
-      { property: "og:title", content: "Termos de Serviço — QuimeraTech" },
-      { property: "og:description", content: "Consulte os termos de utilização do website e serviços da QuimeraTech." },
-      { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://quimeratech.pt/termos-de-servico" },
-      { property: "og:locale", content: "pt_PT" },
-      { property: "og:image", content: "https://quimeratech.pt/og-termos.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Termos de Serviço da QuimeraTech" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Termos de Serviço — QuimeraTech" },
-      { name: "twitter:description", content: "Consulte os termos de utilização do website e serviços da QuimeraTech." },
-      { name: "twitter:image", content: "https://quimeratech.pt/og-termos.jpg" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://quimeratech.pt/termos-de-servico" },
-      { rel: "alternate", hrefLang: "pt-PT", href: "https://quimeratech.pt/termos-de-servico" },
-      { rel: "alternate", hrefLang: "pt", href: "https://quimeratech.pt/termos-de-servico" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://quimeratech.pt/termos-de-servico" },
-    ],
+    meta: seoMeta({
+      title,
+      description,
+      path,
+      type: "article",
+      image: "/og-termos.jpg",
+      imageAlt: "Termos de Serviço da QuimeraTech",
+    }),
+    links: seoLinks(path),
     scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "@id": "https://quimeratech.pt/termos-de-servico#webpage",
-          name: "Termos de Serviço",
-          url: "https://quimeratech.pt/termos-de-servico",
-          description:
-            "Termos e Condições de Serviço da QuimeraTech. Regras e diretrizes para a utilização das nossas soluções digitais.",
-          inLanguage: "pt-PT",
-          dateModified: "2026-08-09",
-          isPartOf: { "@id": "https://quimeratech.pt/#website" },
-          publisher: { "@id": "https://quimeratech.pt/#organization" },
-          breadcrumb: {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Início", item: "https://quimeratech.pt/" },
-              { "@type": "ListItem", position: 2, name: "Termos de Serviço", item: "https://quimeratech.pt/termos-de-servico" },
-            ],
-          },
-        }),
-      },
+      jsonLd({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": `${SITE_URL}${path}#webpage`,
+        name: "Termos de Serviço",
+        url: `${SITE_URL}${path}`,
+        description,
+        inLanguage: "pt-PT",
+        datePublished: "2026-08-09",
+        dateModified: "2026-08-09",
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/og-termos.jpg`,
+          width: 1200,
+          height: 630,
+        },
+        breadcrumb: breadcrumbList([
+          { name: "Início", path: "/" },
+          { name: "Termos de Serviço", path },
+        ]),
+      }),
     ],
   }),
   component: TermsOfService,
