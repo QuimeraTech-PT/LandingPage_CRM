@@ -60,12 +60,18 @@ export const AccessibilityMenu = () => {
     const root = document.documentElement;
     
     // Contrast
-    if (contrast) root.classList.add("high-contrast");
-    else root.classList.remove("high-contrast");
+    if (contrast) {
+      root.classList.add("high-contrast");
+    } else {
+      root.classList.remove("high-contrast");
+    }
     
     // Motion
-    if (motion) root.classList.add("force-reduced-motion");
-    else root.classList.remove("force-reduced-motion");
+    if (motion) {
+      root.classList.add("force-reduced-motion");
+    } else {
+      root.classList.remove("force-reduced-motion");
+    }
     
     // Font size
     root.classList.remove("text-large", "text-extra");
