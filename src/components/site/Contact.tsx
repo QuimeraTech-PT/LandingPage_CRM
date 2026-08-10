@@ -122,9 +122,10 @@ export function Contact() {
                   autoComplete="name"
                   className={errors.nome ? "border-destructive focus-visible:ring-destructive" : ""}
                   aria-invalid={!!errors.nome}
-                  aria-describedby={errors.nome ? "nome-error" : undefined}
+                  aria-describedby={errors.nome ? "nome-error" : "nome-description"}
                   required
                 />
+                <p id="nome-description" className="sr-only">Introduza o seu nome completo.</p>
                 {errors.nome && (
                   <p className="text-xs text-destructive" id="nome-error" role="alert">{errors.nome.message}</p>
                 )}
@@ -141,9 +142,10 @@ export function Contact() {
                   autoComplete="email"
                   className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
                   aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "email-error" : undefined}
+                  aria-describedby={errors.email ? "email-error" : "email-description"}
                   required
                 />
+                <p id="email-description" className="sr-only">Introduza um endereço de email válido.</p>
                 {errors.email && (
                   <p className="text-xs text-destructive" id="email-error" role="alert">{errors.email.message}</p>
                 )}
@@ -158,9 +160,10 @@ export function Contact() {
                   placeholder="Como podemos ajudar?"
                   className={errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""}
                   aria-invalid={!!errors.assunto}
-                  aria-describedby={errors.assunto ? "assunto-error" : undefined}
+                  aria-describedby={errors.assunto ? "assunto-error" : "assunto-description"}
                   required
                 />
+                <p id="assunto-description" className="sr-only">Indique o motivo do seu contacto.</p>
                 {errors.assunto && (
                   <p className="text-xs text-destructive" id="assunto-error" role="alert">{errors.assunto.message}</p>
                 )}
@@ -176,9 +179,10 @@ export function Contact() {
                   placeholder="Descreva brevemente o seu projeto..."
                   className={errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""}
                   aria-invalid={!!errors.mensagem}
-                  aria-describedby={errors.mensagem ? "mensagem-error" : undefined}
+                  aria-describedby={errors.mensagem ? "mensagem-error" : "mensagem-description"}
                   required
                 />
+                <p id="mensagem-description" className="sr-only">Descreva o seu projeto ou dúvida detalhadamente.</p>
                 {errors.mensagem && (
                   <p className="text-xs text-destructive" id="mensagem-error" role="alert">{errors.mensagem.message}</p>
                 )}
