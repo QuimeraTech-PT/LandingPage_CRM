@@ -92,9 +92,6 @@ export const AccessibilityMenu = () => {
             escapeDeactivates: true,
           }}
         >
-
-
-
           <div 
             className="fixed top-24 right-4 sm:absolute sm:top-full sm:right-0 mt-2 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
             role="dialog"
@@ -110,7 +107,6 @@ export const AccessibilityMenu = () => {
                 <X className="h-4 w-4" />
               </button>
             </div>
-
 
             <div className="space-y-6">
               {/* High Contrast */}
@@ -191,6 +187,7 @@ export const AccessibilityMenu = () => {
           </div>
         </FocusTrap>
       )}
+
     </div>
   );
 };
