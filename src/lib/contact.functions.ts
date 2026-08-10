@@ -12,22 +12,40 @@ const contactSchema = z.object({
 export const submitContactForm = createServerFn({ method: "POST" })
   .inputValidator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
-    // 1. Gravar na base de dados (usando admin para garantir sucesso independentemente de RLS se necessário, 
-    // embora o cliente já o fizesse. Aqui centralizamos a lógica).
-    const { error: dbError } = await supabaseAdmin
+    // 1. Gravar a submissão principal
+    const { data: submission, error: dbError } = await supabaseAdmin
       .from("contact_submissions")
-      .insert([data]);
+      .insert([data])
+      .select()
+      .single();
 
     if (dbError) {
       console.error("Erro ao gravar contacto:", dbError);
       throw new Error("Erro ao processar o seu pedido.");
     }
 
+    // 2. Simular/Preparar envio de email
     // Nota: O envio de email real requer um domínio configurado no Lovable Cloud.
-    // Como ainda não está configurado, deixamos a lógica preparada ou simulada.
-    // Se houvesse templates, usaríamos o helper de email.
-    
-    console.log(`[Simulação Email] Enviando feedback para ${data.email}: "Olá ${data.nome}, recebemos a sua mensagem sobre ${data.assunto}."`);
+    let emailStatus = "simulated";
+    let errorMessage = null;
+
+    try {
+      console.log(`[Simulação Email] Enviando feedback para ${data.email}: "Olá ${data.nome}, recebemos a sua mensagem."`);
+      // Aqui entraria a lógica de envio real quando o domínio estivesse pronto
+    } catch (err: any) {
+      emailStatus = "error";
+      errorMessage = err.message || "Unknown email error";
+    }
+
+    // 3. Registar no audit log
+    await supabaseAdmin
+      .from("contact_audit_logs")
+      .insert([{
+        submission_id: submission.id,
+        email_to: data.email,
+        status: emailStatus,
+        error_message: errorMessage
+      }]);
 
     return { success: true };
   });
