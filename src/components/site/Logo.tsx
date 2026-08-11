@@ -33,7 +33,15 @@ export function Logo({ className, size = "md" }: LogoProps) {
 
   if (isHome) {
     return (
-      <a href="#top" className="flex items-center" aria-label="QuimeraTech — voltar ao topo">
+      <a
+        href="#top"
+        className="flex items-center"
+        aria-label="QuimeraTech — voltar ao topo"
+        onClick={(e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
         {content}
       </a>
     );
