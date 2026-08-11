@@ -204,6 +204,7 @@ export function Contact() {
 
               <Button 
                 type="submit" 
+                variant="primary"
                 size="lg" 
                 className="w-full"
                 disabled={isSubmitting}
