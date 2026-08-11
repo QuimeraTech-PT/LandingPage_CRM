@@ -26,6 +26,7 @@ export const Route = createFileRoute("/termos-de-servico")({
       jsonLd({
         "@context": "https://schema.org",
         "@type": "WebPage",
+        "additionalType": "http://schema.org/TermsOfService",
         "@id": `${SITE_URL}${path}#webpage`,
         name: "Termos de Serviço",
         url: `${SITE_URL}${path}`,

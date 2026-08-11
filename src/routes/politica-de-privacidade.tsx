@@ -25,7 +25,7 @@ export const Route = createFileRoute("/politica-de-privacidade")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
-        "@type": "WebPage",
+        "@type": "PrivacyPolicy",
         "@id": `${SITE_URL}${path}#webpage`,
         name: "Política de Privacidade e Cookies",
         url: `${SITE_URL}${path}`,
