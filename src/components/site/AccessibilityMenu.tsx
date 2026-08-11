@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Accessibility, X, Type, Eye, Move } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { transitions } from "@/lib/animations";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -116,11 +118,16 @@ export const AccessibilityMenu = () => {
         <Accessibility className="h-5 w-5" />
       </Button>
 
+      <AnimatePresence>
       {isOpen && (
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true, initialFocus: '#accessibility-menu-title' }}>
-          <div 
+          <motion.div 
             ref={menuRef}
             className="fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999]"
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            transition={transitions.default}
             role="dialog"
             aria-modal="true"
             aria-labelledby="accessibility-menu-title"
@@ -214,9 +221,10 @@ export const AccessibilityMenu = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </FocusTrap>
       )}
+      </AnimatePresence>
     </div>
   );
 };
