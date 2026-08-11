@@ -9,7 +9,7 @@ interface LogoProps {
 
 export function Logo({ className, size = "md" }: LogoProps) {
   const router = useRouterState();
-  const isHome = router.location.pathname === "/";
+  const isHome = router.location.pathname === "/" || router.location.pathname === "";
 
   const sizeClasses = {
     sm: "h-8 md:h-10",
