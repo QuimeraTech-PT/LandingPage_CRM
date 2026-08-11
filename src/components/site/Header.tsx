@@ -15,7 +15,12 @@ const links = [
   { href: "#contactos", label: "Contactos" },
 ];
 
+import { transitions, variants } from "@/lib/animations";
+import { useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+
 export function Header() {
+  const shouldReduceMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -38,14 +43,16 @@ export function Header() {
 
         <nav className="hidden items-center gap-10 lg:flex" aria-label="Navegação principal">
           {links.map((l) => (
-            <a
+            <motion.a
               key={l.href}
               href={l.href}
+              whileHover={shouldReduceMotion ? {} : { y: -2 }}
+              transition={transitions.default}
               className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               {l.label}
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-accent transition-all duration-300 group-hover:w-full" aria-hidden="true" />
-            </a>
+            </motion.a>
           ))}
         </nav>
 

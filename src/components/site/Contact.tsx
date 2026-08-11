@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
 const contactSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
@@ -63,10 +64,10 @@ export function Contact() {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <motion.div
-            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={variants.fadeIn.initial}
+            whileInView={variants.fadeIn.animate}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={transitions.default}
           >
             <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
               Contactos
@@ -114,10 +115,10 @@ export function Contact() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={variants.fadeIn.initial}
+            whileInView={variants.fadeIn.animate}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={transitions.default}
           >
             <form
               onSubmit={handleSubmit(onSubmit)}
