@@ -399,6 +399,14 @@
     animation: none !important;
   }
 
+  html.force-reduced-motion,
+  html.force-reduced-motion body {
+    scroll-behavior: auto !important;
+  }
+
+  html.force-reduced-motion .framer-motion-container * {
+    transition: none !important;
+  }
 
   * {
     border-color: var(--color-border);
