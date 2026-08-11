@@ -383,6 +383,7 @@
     font-size: 130%;
   }
 
+  html.force-reduced-motion,
   html.force-reduced-motion *,
   html.force-reduced-motion *::before,
   html.force-reduced-motion *::after {
