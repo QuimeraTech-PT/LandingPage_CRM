@@ -126,7 +126,9 @@ function RootShell({ children }: { children: ReactNode }) {
                   const contrast = localStorage.getItem('a11y-high-contrast') === 'true';
                   if (contrast) document.documentElement.classList.add('high-contrast');
                   
-                  const motion = localStorage.getItem('a11y-reduced-motion') === 'true';
+                  const savedMotion = localStorage.getItem('a11y-reduced-motion');
+                  const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                  const motion = savedMotion === 'true' || (savedMotion === null && systemMotion);
                   if (motion) document.documentElement.classList.add('force-reduced-motion');
                   
                   const fontSize = localStorage.getItem('a11y-font-size');

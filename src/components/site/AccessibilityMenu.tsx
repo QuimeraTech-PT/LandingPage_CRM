@@ -169,17 +169,18 @@ export const AccessibilityMenu = () => {
                 </button>
               </div>
 
-              {/* Reduced Motion */}
+              {/* Movimento Reduzido */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
                     <Move className="h-4 w-4" aria-hidden="true" />
                   </div>
-                  <span id="label-motion" className="text-sm font-medium">Reduzir Movimento</span>
+                  <span id="label-motion" className="text-sm font-medium">Movimento Reduzido</span>
                 </div>
                 <button
                   role="switch"
                   aria-checked={reducedMotion}
+                  aria-pressed={reducedMotion}
                   aria-labelledby="label-motion"
                   onClick={toggleMotion}
                   className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
