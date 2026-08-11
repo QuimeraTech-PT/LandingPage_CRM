@@ -95,6 +95,9 @@ export const AccessibilityMenu = () => {
     setReducedMotion(newVal);
     localStorage.setItem("a11y-reduced-motion", String(newVal));
     applySettings({ contrast: highContrast, motion: newVal, size: fontSize });
+    
+    // Invalidate router state if needed, though scroll behavior is mostly CSS/global
+    router.invalidate();
   };
 
   const updateFontSize = (size: "normal" | "large" | "extra") => {
