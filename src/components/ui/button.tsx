@@ -46,72 +46,38 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, leftIcon, rightIcon, animateIcon = true, children, ...props }, ref) => {
-    if (asChild) {
-      return (
-        <Slot
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...props}
-        >
-          {leftIcon || rightIcon ? (
-            React.isValidElement(children) ? (
-              React.cloneElement(children as React.ReactElement<any>, {
-                children: (
-                  <>
-                    {leftIcon && (
-                      <span className={cn(
-                        "transition-transform duration-300",
-                        animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-                      )}>
-                        {leftIcon}
-                      </span>
-                    )}
-                    {(children.props as any).children}
-                    {rightIcon && (
-                      <span className={cn(
-                        "transition-transform duration-300",
-                        animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-                      )}>
-                        {rightIcon}
-                      </span>
-                    )}
-                  </>
-                )
-              })
-            ) : (
-              children
-            )
-          ) : (
-            children
-          )}
-        </Slot>
-      );
-    }
-
+    const Comp = asChild ? Slot : "button";
+    
     return (
-      <button
+      <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       >
-        {leftIcon && (
-          <span className={cn(
-            "transition-transform duration-300",
-            animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-          )}>
-            {leftIcon}
-          </span>
+        {asChild ? (
+          children
+        ) : (
+          <>
+            {leftIcon && (
+              <span className={cn(
+                "transition-transform duration-300",
+                animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+              )}>
+                {leftIcon}
+              </span>
+            )}
+            {children}
+            {rightIcon && (
+              <span className={cn(
+                "transition-transform duration-300",
+                animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+              )}>
+                {rightIcon}
+              </span>
+            )}
+          </>
         )}
-        {children}
-        {rightIcon && (
-          <span className={cn(
-            "transition-transform duration-300",
-            animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-          )}>
-            {rightIcon}
-          </span>
-        )}
-      </button>
+      </Comp>
     );
   },
 );
