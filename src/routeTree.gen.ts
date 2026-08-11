@@ -14,8 +14,6 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
-import { Route as ApiPublicSitemapXmlRouteImport } from './routes/api/public/sitemap.xml'
-import { Route as ApiPublicRobotsTxtRouteImport } from './routes/api/public/robots.txt'
 
 const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
   id: '/termos-de-servico',
@@ -42,16 +40,6 @@ const RobotsTxtRoute = RobotsTxtRouteImport.update({
   path: '/robots/txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSitemapXmlRoute = ApiPublicSitemapXmlRouteImport.update({
-  id: '/api/public/sitemap/xml',
-  path: '/api/public/sitemap/xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicRobotsTxtRoute = ApiPublicRobotsTxtRouteImport.update({
-  id: '/api/public/robots/txt',
-  path: '/api/public/robots/txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +47,6 @@ export interface FileRoutesByFullPath {
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +54,6 @@ export interface FileRoutesByTo {
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +62,6 @@ export interface FileRoutesById {
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,8 +71,6 @@ export interface FileRouteTypes {
     | '/termos-de-servico'
     | '/robots/txt'
     | '/sitemap/xml'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,8 +78,6 @@ export interface FileRouteTypes {
     | '/termos-de-servico'
     | '/robots/txt'
     | '/sitemap/xml'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
   id:
     | '__root__'
     | '/'
@@ -107,8 +85,6 @@ export interface FileRouteTypes {
     | '/termos-de-servico'
     | '/robots/txt'
     | '/sitemap/xml'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,8 +93,6 @@ export interface RootRouteChildren {
   TermosDeServicoRoute: typeof TermosDeServicoRoute
   RobotsTxtRoute: typeof RobotsTxtRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
-  ApiPublicRobotsTxtRoute: typeof ApiPublicRobotsTxtRoute
-  ApiPublicSitemapXmlRoute: typeof ApiPublicSitemapXmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,20 +132,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/sitemap/xml': {
-      id: '/api/public/sitemap/xml'
-      path: '/api/public/sitemap/xml'
-      fullPath: '/api/public/sitemap/xml'
-      preLoaderRoute: typeof ApiPublicSitemapXmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/robots/txt': {
-      id: '/api/public/robots/txt'
-      path: '/api/public/robots/txt'
-      fullPath: '/api/public/robots/txt'
-      preLoaderRoute: typeof ApiPublicRobotsTxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -181,8 +141,6 @@ const rootRouteChildren: RootRouteChildren = {
   TermosDeServicoRoute: TermosDeServicoRoute,
   RobotsTxtRoute: RobotsTxtRoute,
   SitemapXmlRoute: SitemapXmlRoute,
-  ApiPublicRobotsTxtRoute: ApiPublicRobotsTxtRoute,
-  ApiPublicSitemapXmlRoute: ApiPublicSitemapXmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
