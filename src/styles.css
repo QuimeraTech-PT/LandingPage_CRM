@@ -225,10 +225,28 @@
   html.high-contrast button:hover,
   html.high-contrast a.inline-flex:hover,
   html.high-contrast a.flex:hover,
-  html.high-contrast [role="button"]:hover {
+  html.high-contrast [role="button"]:hover,
+  html.high-contrast button:focus-visible,
+  html.high-contrast a.inline-flex:focus-visible,
+  html.high-contrast a.flex:focus-visible,
+  html.high-contrast [role="button"]:focus-visible {
     background-color: #ffff00 !important;
     color: #000000 !important;
-    border-color: #ffff00 !important;
+    border-color: #000000 !important;
+    outline: 4px solid #ffffff !important;
+  }
+
+  html.high-contrast button:hover *,
+  html.high-contrast a.inline-flex:hover *,
+  html.high-contrast a.flex:hover *,
+  html.high-contrast [role="button"]:hover *,
+  html.high-contrast button:focus-visible *,
+  html.high-contrast a.inline-flex:focus-visible *,
+  html.high-contrast a.flex:focus-visible *,
+  html.high-contrast [role="button"]:focus-visible * {
+    color: #000000 !important;
+    fill: #000000 !important;
+    stroke: #000000 !important;
   }
 
   html.high-contrast a:not(.inline-flex):not(.flex) {
