@@ -116,7 +116,7 @@ export const AccessibilityMenu = () => {
         variant="ghost"
         size="icon"
         onClick={toggleMenu}
-        className="h-10 w-10 text-muted-foreground hover:text-accent focus-visible:ring-2 focus-visible:ring-primary"
+        className="text-muted-foreground hover:text-accent focus-visible:ring-2 focus-visible:ring-primary"
         aria-label="Menu de acessibilidade"
         aria-expanded={isOpen}
       >
