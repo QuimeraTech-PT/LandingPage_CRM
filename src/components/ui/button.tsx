@@ -46,47 +46,68 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, leftIcon, rightIcon, animateIcon = true, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    
-    // In high-contrast or reduced-motion mode, we remove the shine and transform
-    const isSpecialMode = typeof document !== 'undefined' && 
-      (document.documentElement.classList.contains('high-contrast') || 
-       document.documentElement.classList.contains('force-reduced-motion'));
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }), "relative overflow-hidden")}
+          ref={ref}
+          {...props}
+        >
+          {React.isValidElement(children) ? (
+            React.cloneElement(children as React.ReactElement<any>, {
+              children: (
+                <span className="flex items-center justify-center gap-2.5">
+                  {leftIcon && (
+                    <span className={cn(
+                      "transition-transform duration-300",
+                      animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+                    )}>
+                      {leftIcon}
+                    </span>
+                  )}
+                  {(children.props as any).children}
+                  {rightIcon && (
+                    <span className={cn(
+                      "transition-transform duration-300",
+                      animateIcon && "group-hover:translate-x-1.5 force-reduced-motion:group-hover:translate-x-0"
+                    )}>
+                      {rightIcon}
+                    </span>
+                  )}
+                </span>
+              )
+            })
+          ) : (
+            children
+          )}
+        </Slot>
+      );
+    }
 
     return (
-      <Comp
-        className={cn(
-          buttonVariants({ variant, size, className }),
-          // Explicitly handle icon spacing and children centering
-          "relative overflow-hidden"
-        )}
+      <button
+        className={cn(buttonVariants({ variant, size, className }), "relative overflow-hidden")}
         ref={ref}
         {...props}
       >
-        {asChild ? (
-          children
-        ) : (
-          <>
-            {leftIcon && (
-              <span className={cn(
-                "transition-transform duration-300 mr-2",
-                animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-              )}>
-                {leftIcon}
-              </span>
-            )}
-            {children}
-            {rightIcon && (
-              <span className={cn(
-                "transition-transform duration-300 ml-2.5",
-                animateIcon && "group-hover:translate-x-1.5 force-reduced-motion:group-hover:translate-x-0"
-              )}>
-                {rightIcon}
-              </span>
-            )}
-          </>
+        {leftIcon && (
+          <span className={cn(
+            "transition-transform duration-300",
+            animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+          )}>
+            {leftIcon}
+          </span>
         )}
-      </Comp>
+        {children}
+        {rightIcon && (
+          <span className={cn(
+            "transition-transform duration-300",
+            animateIcon && "group-hover:translate-x-1.5 force-reduced-motion:group-hover:translate-x-0"
+          )}>
+            {rightIcon}
+          </span>
+        )}
+      </button>
     );
   },
 );

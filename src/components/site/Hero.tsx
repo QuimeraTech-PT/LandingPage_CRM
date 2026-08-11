@@ -103,10 +103,9 @@ export function Hero() {
             variants={itemVariants}
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Button asChild variant="primary" size="lg" className="w-full sm:w-auto">
+            <Button asChild variant="primary" size="lg" className="w-full sm:w-auto" rightIcon={<ArrowRight className="h-5 w-5" />}>
               <a href="#especialidades">
                 Descubra as Nossas Soluções
-                <ArrowRight className="ml-2.5 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0" />
               </a>
             </Button>
             <Button
