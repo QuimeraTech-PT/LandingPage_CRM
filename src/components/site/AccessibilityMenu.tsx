@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/animations";
+import { useRouter } from "@tanstack/react-router";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
