@@ -46,10 +46,46 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, leftIcon, rightIcon, animateIcon = true, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          {React.isValidElement(children) ? (
+            React.cloneElement(children as React.ReactElement<any>, {
+              children: (
+                <>
+                  {leftIcon && (
+                    <span className={cn(
+                      "transition-transform duration-300",
+                      animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+                    )}>
+                      {leftIcon}
+                    </span>
+                  )}
+                  {children.props.children}
+                  {rightIcon && (
+                    <span className={cn(
+                      "transition-transform duration-300",
+                      animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+                    )}>
+                      {rightIcon}
+                    </span>
+                  )}
+                </>
+              )
+            })
+          ) : (
+            children
+          )}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
@@ -71,7 +107,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {rightIcon}
           </span>
         )}
-      </Comp>
+      </button>
     );
   },
 );
