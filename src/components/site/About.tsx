@@ -73,9 +73,9 @@ export function About() {
                   </p>
                 </div>
               </div>
-              </div>
             </motion.div>
           </div>
+        </div>
       </div>
     </section>
   );
