@@ -60,7 +60,7 @@ function Index() {
     <PageTransition>
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main id="main-content" className="flex-grow">
+        <main className="flex-grow">
           <Suspense fallback={<HeroSkeleton />}>
             <Hero />
           </Suspense>
