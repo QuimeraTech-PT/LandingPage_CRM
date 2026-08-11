@@ -93,18 +93,19 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
             <div className="flex flex-col gap-2 sm:flex-row md:flex-col lg:flex-row">
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 onClick={acceptEssential}
-                className="text-xs font-medium"
+                className="text-xs"
                 aria-label="Aceitar apenas cookies essenciais"
               >
                 Apenas Essenciais
               </Button>
               <Button
+                variant="primary"
                 size="sm"
                 onClick={acceptAll}
-                className="text-xs font-medium"
+                className="text-xs"
                 aria-label="Aceitar todos os cookies"
               >
                 Aceitar Todos
