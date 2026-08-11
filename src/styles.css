@@ -215,13 +215,27 @@
     border-color: #ffff00 !important;
   }
 
+  html.high-contrast img,
+  html.high-contrast svg {
+    filter: brightness(0) invert(1) !important;
+  }
+
   html.high-contrast .text-primary,
   html.high-contrast .text-accent,
   html.high-contrast svg.text-primary,
-  html.high-contrast svg.text-accent {
+  html.high-contrast svg.text-accent,
+  html.high-contrast .bg-primary,
+  html.high-contrast .bg-accent {
     color: #ffff00 !important;
     fill: #ffff00 !important;
     stroke: #ffff00 !important;
+    background-color: #ffff00 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+
+  html.high-contrast .text-primary-foreground,
+  html.high-contrast .text-accent-foreground {
+    color: #000000 !important;
   }
 
   html.high-contrast .grid-tech {
