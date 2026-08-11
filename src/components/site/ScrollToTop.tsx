@@ -42,8 +42,8 @@ export function ScrollToTop() {
               : {
                   scale: 1.1,
                   y: -4,
-                  backgroundColor: "oklch(0.984 0.003 247.858)",
-                  color: "oklch(0.208 0.042 265.755)",
+                  backgroundColor: "oklch(0.65 0.2 260)",
+                  color: "oklch(0.984 0.003 247.858)",
                 }
           }
           whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
