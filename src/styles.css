@@ -150,7 +150,11 @@
 
 @layer base {
   /* Accessibility Modifiers */
+  /* =========================================
+     MODO DE ALTO CONTRASTE (HIGH CONTRASTE)
+     ========================================= */
   html.high-contrast {
+    /* Token Overrides */
     --background: #000000 !important;
     --foreground: #ffffff !important;
     --primary: #ffff00 !important;
@@ -177,6 +181,7 @@
     --destructive-foreground: #ffffff !important;
   }
 
+  /* Reset global em Alto Contraste */
   html.high-contrast * {
     background-color: transparent !important;
     background-image: none !important;
@@ -188,32 +193,39 @@
     fill: #ffffff !important;
     stroke: #ffffff !important;
     transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 
+  /* Content Containers */
   html.high-contrast html,
   html.high-contrast body,
-  html.high-contrast div[class*="bg-"],
   html.high-contrast section,
   html.high-contrast footer,
   html.high-contrast header,
   html.high-contrast nav,
   html.high-contrast main,
-  html.high-contrast article {
+  html.high-contrast article,
+  html.high-contrast div[class*="bg-"] {
     background-color: #000000 !important;
   }
 
+  /* Interactive Elements */
   html.high-contrast button,
   html.high-contrast a.inline-flex,
   html.high-contrast a.flex,
-  html.high-contrast .button-like {
+  html.high-contrast [role="button"] {
     background-color: #000000 !important;
     color: #ffffff !important;
     border: 2px solid #ffffff !important;
     text-decoration: none !important;
+    min-height: 3rem !important; /* Touch target */
   }
 
   html.high-contrast button:hover,
-  html.high-contrast a:hover {
+  html.high-contrast a.inline-flex:hover,
+  html.high-contrast a.flex:hover,
+  html.high-contrast [role="button"]:hover {
     background-color: #ffff00 !important;
     color: #000000 !important;
     border-color: #ffff00 !important;
@@ -223,8 +235,10 @@
     color: #ffff00 !important;
     text-decoration: underline !important;
     text-underline-offset: 4px !important;
+    font-weight: bold !important;
   }
 
+  /* Forms */
   html.high-contrast input,
   html.high-contrast textarea,
   html.high-contrast select {
@@ -239,27 +253,28 @@
     color: #cccccc !important;
   }
 
+  /* Focus States */
   html.high-contrast *:focus-visible {
     outline: 4px solid #ffff00 !important;
     outline-offset: 4px !important;
     box-shadow: 0 0 0 8px #000000 !important;
+    z-index: 9999 !important;
   }
 
+  /* Utility Overrides */
   html.high-contrast .text-primary,
-  html.high-contrast .text-accent,
+  html.high-contrast .text-accent {
+    color: #ffff00 !important;
+  }
+
   html.high-contrast .bg-primary,
   html.high-contrast .bg-accent {
-    color: #ffff00 !important;
-    background-color: #000000 !important;
-    border: 2px solid #ffff00 !important;
-  }
-
-  html.high-contrast .bg-primary:hover,
-  html.high-contrast .bg-accent:hover {
     background-color: #ffff00 !important;
     color: #000000 !important;
+    border: 2px solid #ffffff !important;
   }
 
+  /* Visual Elements */
   html.high-contrast img,
   html.high-contrast svg {
     filter: brightness(1) contrast(1.2) !important;
@@ -267,21 +282,42 @@
 
   html.high-contrast .logo-img,
   html.high-contrast img[alt*="Logo"],
-  html.high-contrast img[alt*="Logótipo"] {
+  html.high-contrast img[alt*="Logótipo"],
+  html.high-contrast .Logo_logo-img__n7h7b { /* Specific for generated classes if any */
     filter: brightness(0) invert(1) !important;
   }
 
+  /* Semantic Messaging */
   html.high-contrast [role="alert"],
   html.high-contrast .text-destructive {
-    border: 2px solid #ff0000 !important;
+    border: 3px solid #ff0000 !important;
     color: #ff0000 !important;
     background-color: #000000 !important;
+    padding: 0.5rem !important;
   }
 
   html.high-contrast [role="status"],
-  html.high-contrast .text-primary:not(a) {
-    border: 2px solid #00ff00 !important;
+  html.high-contrast .text-success {
+    border: 3px solid #00ff00 !important;
     color: #00ff00 !important;
+    padding: 0.5rem !important;
+  }
+
+  /* UI Components */
+  html.high-contrast [role="dialog"],
+  html.high-contrast [role="region"],
+  html.high-contrast .bg-card,
+  html.high-contrast .bg-surface-card,
+  html.high-contrast .rounded-xl {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+  }
+
+  html.high-contrast .grid-tech {
+    background-image: 
+      linear-gradient(to right, #ffffff 1px, transparent 1px),
+      linear-gradient(to bottom, #ffffff 1px, transparent 1px) !important;
+    opacity: 0.05 !important;
   }
 
   html.high-contrast ::selection {
@@ -289,32 +325,30 @@
     color: #000000 !important;
   }
 
-  html.high-contrast .grid-tech {
-    background-image: 
-      linear-gradient(to right, #ffffff 1px, transparent 1px),
-      linear-gradient(to bottom, #ffffff 1px, transparent 1px) !important;
-    opacity: 0.1 !important;
-  }
-
-  html.high-contrast .backdrop-blur-xl,
-  html.high-contrast .backdrop-blur-md {
-    backdrop-filter: none !important;
-  }
-
-  html.high-contrast [role="dialog"],
-  html.high-contrast [role="region"],
-  html.high-contrast .bg-card,
-  html.high-contrast .bg-surface-card {
-    background-color: #000000 !important;
-    border: 2px solid #ffffff !important;
-  }
-
-  html.high-contrast *:disabled {
-    opacity: 0.6 !important;
+  /* Disabled State */
+  html.high-contrast *:disabled,
+  html.high-contrast [aria-disabled="true"] {
+    opacity: 0.5 !important;
     border-color: #888888 !important;
     color: #888888 !important;
     cursor: not-allowed !important;
+    background-color: #1a1a1a !important;
   }
+
+  /* Page Specific Overrides */
+  html.high-contrast .text-gradient-brand {
+    background-image: none !important;
+    background-clip: unset !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html.high-contrast .backdrop-blur-xl {
+    backdrop-filter: none !important;
+    background-color: #000000 !important;
+  }
+
+  /* ========================================= */
 
   html.text-large {
     font-size: 115%;
@@ -384,6 +418,37 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@utility grid-tech {
+  background-image:
+    linear-gradient(to right, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    100deg,
+    oklch(0.984 0.003 247.858) 10%,
+    oklch(0.715 0.143 215.221) 55%,
+    oklch(0.546 0.245 262.881) 95%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+}
 }
 
 @layer base {
