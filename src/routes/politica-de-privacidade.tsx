@@ -19,6 +19,7 @@ export const Route = createFileRoute("/politica-de-privacidade")({
       type: "article",
       image: "/og-privacidade.jpg",
       imageAlt: "Política de Privacidade da QuimeraTech",
+      keywords: "privacidade, cookies, proteção de dados, quimeratech",
     }),
     links: seoLinks(path),
     scripts: [
