@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft } from "lucide-react";
 import { SITE_URL, seoMeta, seoLinks, breadcrumbList, jsonLd } from "@/lib/seo";
+import { PageTransition } from "@/components/site/PageTransition";
 
 const title = "Política de Privacidade — QuimeraTech";
 const description =
@@ -51,7 +52,8 @@ export const Route = createFileRoute("/politica-de-privacidade")({
 
 function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <PageTransition>
+      <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="mx-auto max-w-4xl px-5 py-24 lg:px-8 lg:py-32">
         <Link
@@ -125,5 +127,6 @@ function PrivacyPolicy() {
       </main>
       <Footer />
     </div>
+    </PageTransition>
   );
 }

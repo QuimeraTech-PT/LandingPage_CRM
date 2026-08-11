@@ -1,4 +1,17 @@
+import { motion, useReducedMotion } from "framer-motion";
+
 export function About() {
+  const shouldReduceMotion = useReducedMotion();
+  
+  const fadeUp = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } as any
+    }
+  };
+
   return (
     <section 
       id="sobre" 
@@ -9,7 +22,13 @@ export function About() {
         <div className="overflow-hidden rounded-3xl border border-surface-border bg-surface-card shadow-[0_24px_60px_-30px_rgba(15,23,42,0.25)]">
           <div className="grid lg:grid-cols-2">
             {/* Texto */}
-            <div className="flex flex-col justify-center space-y-8 p-8 lg:p-16">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="flex flex-col justify-center space-y-8 p-8 lg:p-16"
+            >
               <div className="space-y-5">
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-[0.15em] text-primary uppercase">
                   Quem Somos
@@ -26,10 +45,16 @@ export function About() {
                   foco absoluto na qualidade do produto e na experiência do utilizador.
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Imagem apelativa */}
-            <div className="relative min-h-[320px] overflow-hidden lg:min-h-full">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="relative min-h-[320px] overflow-hidden lg:min-h-full"
+            >
               <img
                 src="/quimeratech-about-visual.jpg"
                 alt="Visualização tecnológica da QuimeraTech"
@@ -48,7 +73,7 @@ export function About() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

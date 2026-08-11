@@ -1,4 +1,15 @@
 import { Cpu, Handshake, Lightbulb, TrendingUp } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 const pillars = [
   {
@@ -24,6 +35,16 @@ const pillars = [
 ];
 
 export function Pillars() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" } as any,
+    },
+  };
   return (
     <section id="valores" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="pillars-heading">
       <div
@@ -45,21 +66,29 @@ export function Pillars() {
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        <motion.ul 
+          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" 
+          role="list"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {pillars.map(({ icon: Icon, title, description }) => (
-            <li
+            <motion.li
               key={title}
               role="listitem"
-              className="rounded-2xl border border-border bg-gradient-to-b from-card to-background p-8 transition-transform duration-300 hover:-translate-y-1"
+              variants={itemVariants}
+              className="rounded-2xl border border-border bg-gradient-to-b from-card to-background p-8 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5"
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
                 <Icon className="h-6 w-6" />
               </div>
               <h3 className="text-lg leading-[1.3] font-semibold text-foreground">{title}</h3>
               <p className="mt-3 text-sm leading-[1.6] text-muted-foreground">{description}</p>
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       </div>
     </section>
   );

@@ -1,5 +1,63 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+export function HeroSkeleton() {
+  return (
+    <div className="bg-background pt-32 pb-24 md:pt-44 md:pb-32">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8 text-center">
+        <Skeleton className="mx-auto h-4 w-32" />
+        <Skeleton className="mx-auto mt-6 h-12 w-full max-w-2xl md:h-16" />
+        <Skeleton className="mx-auto mt-6 h-20 w-full max-w-xl" />
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Skeleton className="h-12 w-40 rounded-md" />
+          <Skeleton className="h-12 w-40 rounded-md" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function AboutSkeleton() {
+  return (
+    <div className="bg-surface py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="overflow-hidden rounded-3xl border border-surface-border bg-surface-card p-8 lg:p-16">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div className="space-y-6">
+              <Skeleton className="h-6 w-24 rounded-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+            <Skeleton className="h-64 w-full rounded-2xl md:h-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function PillarsSkeleton() {
+  return (
+    <div className="bg-background py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="max-w-3xl">
+          <Skeleton className="mb-4 h-4 w-28" />
+          <Skeleton className="h-10 w-full max-w-md md:h-12" />
+          <Skeleton className="mt-5 h-16 w-full" />
+        </div>
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded-2xl border border-border p-8">
+              <Skeleton className="mb-6 h-12 w-12 rounded-xl" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="mt-3 h-12 w-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SpecialtiesSkeleton() {
   return (
     <div className="relative overflow-hidden bg-background py-24 md:py-32">

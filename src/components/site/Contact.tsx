@@ -10,6 +10,7 @@ import { submitContactForm } from "@/lib/contact.functions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { motion, useReducedMotion } from "framer-motion";
 
 const contactSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
@@ -21,6 +22,7 @@ const contactSchema = z.object({
 type ContactFormValues = z.infer<typeof contactSchema>;
 
 export function Contact() {
+  const shouldReduceMotion = useReducedMotion();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const submitContact = useServerFn(submitContactForm);
@@ -60,7 +62,12 @@ export function Contact() {
     <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32" aria-labelledby="contact-heading">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
               Contactos
             </p>
@@ -104,12 +111,18 @@ export function Contact() {
                 </span>
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9"
+          <motion.div
+            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9"
+            >
             <div className="grid gap-5">
               <div className="grid gap-2">
                 <Label htmlFor="nome" className="text-surface-foreground font-semibold">
@@ -221,7 +234,8 @@ export function Contact() {
               </div>
             </div>
           </form>
-        </div>
+        </motion.div>
+      </div>
       </div>
     </section>
   );
