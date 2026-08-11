@@ -472,7 +472,7 @@
 }
 
 @layer base {
-  html {
+  html:not(.force-reduced-motion) {
     scroll-behavior: smooth;
   }
 }
