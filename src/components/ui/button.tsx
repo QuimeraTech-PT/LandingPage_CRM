@@ -54,22 +54,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {leftIcon && (
-          <span className={cn(
-            "transition-transform duration-300",
-            animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-          )}>
-            {leftIcon}
-          </span>
-        )}
-        {children}
-        {rightIcon && (
-          <span className={cn(
-            "transition-transform duration-300",
-            animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
-          )}>
-            {rightIcon}
-          </span>
+        {asChild ? (
+          children
+        ) : (
+          <>
+            {leftIcon && (
+              <span className={cn(
+                "transition-transform duration-300",
+                animateIcon && "group-hover:-translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+              )}>
+                {leftIcon}
+              </span>
+            )}
+            {children}
+            {rightIcon && (
+              <span className={cn(
+                "transition-transform duration-300",
+                animateIcon && "group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0"
+              )}>
+                {rightIcon}
+              </span>
+            )}
+          </>
         )}
       </Comp>
     );
