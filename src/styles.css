@@ -449,34 +449,3 @@
     scroll-margin-top: 5rem;
   }
 }
-}
-
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-@utility grid-tech {
-  background-image:
-    linear-gradient(to right, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-@utility text-gradient-brand {
-  background-image: linear-gradient(
-    100deg,
-    oklch(0.984 0.003 247.858) 10%,
-    oklch(0.715 0.143 215.221) 55%,
-    oklch(0.546 0.245 262.881) 95%
-  );
-  background-clip: text;
-  color: transparent;
-}
-
-@layer base {
-  section[id] {
-    scroll-margin-top: 5rem;
-  }
-}
