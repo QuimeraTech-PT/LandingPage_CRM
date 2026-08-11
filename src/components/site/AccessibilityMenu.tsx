@@ -5,6 +5,7 @@ import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/animations";
 import { useRouter } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -157,21 +158,25 @@ export const AccessibilityMenu = () => {
                   </div>
                   <span id="label-contrast" className="text-sm font-medium">Modo de Alto Contraste</span>
                 </div>
-                <button
+                <Button
                   role="switch"
+                  variant="ghost"
+                  size="sm"
                   aria-checked={highContrast}
                   aria-labelledby="label-contrast"
                   onClick={toggleContrast}
-                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={cn(
+                    "relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors focus-visible:ring-offset-2",
                     highContrast ? "bg-primary" : "bg-muted"
-                  }`}
+                  )}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
+                    className={cn(
+                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out",
                       highContrast ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    )}
                   />
-                </button>
+                </Button>
               </div>
 
               {/* Movimento Reduzido */}
@@ -182,22 +187,26 @@ export const AccessibilityMenu = () => {
                   </div>
                   <span id="label-motion" className="text-sm font-medium">Movimento Reduzido</span>
                 </div>
-                <button
+                <Button
                   role="switch"
+                  variant="ghost"
+                  size="sm"
                   aria-checked={reducedMotion}
                   aria-pressed={reducedMotion}
                   aria-labelledby="label-motion"
                   onClick={toggleMotion}
-                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={cn(
+                    "relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors focus-visible:ring-offset-2",
                     reducedMotion ? "bg-primary" : "bg-muted"
-                  }`}
+                  )}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
+                    className={cn(
+                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out",
                       reducedMotion ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    )}
                   />
-                </button>
+                </Button>
               </div>
 
               {/* Font Size */}
