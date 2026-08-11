@@ -26,7 +26,7 @@ export function Footer() {
             <img
               src={logoAsset.url}
               alt="Logótipo QuimeraTech"
-              className="h-10 w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
+              className="h-14 w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
               width={1774}
               height={887}
             />
