@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
+import { Logo } from "./Logo";
 
 
 
@@ -34,15 +34,7 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
-        <a href="#top" className="flex items-center" aria-label="QuimeraTech — início">
-          <img
-            src={logoAsset.url}
-            alt="Logótipo QuimeraTech"
-            className="h-12 w-auto md:h-16 brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
-            width={1774}
-            height={887}
-          />
-        </a>
+        <Logo size="md" />
 
         <nav className="hidden items-center gap-10 lg:flex" aria-label="Navegação principal">
           {links.map((l) => (
