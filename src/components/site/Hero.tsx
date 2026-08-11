@@ -81,7 +81,7 @@ export function Hero() {
             variants={itemVariants}
             className="mb-6 text-sm font-semibold tracking-wide text-primary/90 md:text-base lg:mb-8"
           >
-            melhora os botoes todos presentes na no projeto e mantem a consistencia nas animaçoes, focus e styling
+            Excelência em Desenvolvimento de Software
           </motion.div>
           <motion.h1 
             id="hero-heading"
