@@ -157,12 +157,12 @@ export const AccessibilityMenu = () => {
                   aria-checked={highContrast}
                   aria-labelledby="label-contrast"
                   onClick={toggleContrast}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
                     highContrast ? "bg-primary" : "bg-muted"
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
                       highContrast ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
@@ -182,12 +182,12 @@ export const AccessibilityMenu = () => {
                   aria-checked={reducedMotion}
                   aria-labelledby="label-motion"
                   onClick={toggleMotion}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
                     reducedMotion ? "bg-primary" : "bg-muted"
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
                       reducedMotion ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
