@@ -10,7 +10,7 @@ export function About() {
       ...variants.fadeIn.animate,
       transition: transitions.slow
     }
-  };
+  } as any;
 
   return (
     <section 
