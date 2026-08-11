@@ -13,6 +13,7 @@ export const AccessibilityMenu = () => {
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
