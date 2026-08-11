@@ -158,25 +158,25 @@ export const AccessibilityMenu = () => {
                   </div>
                   <span id="label-contrast" className="text-sm font-medium">Modo de Alto Contraste</span>
                 </div>
-                <Button
+                <button
+                  type="button"
                   role="switch"
-                  variant="ghost"
-                  size="sm"
                   aria-checked={highContrast}
                   aria-labelledby="label-contrast"
                   onClick={toggleContrast}
                   className={cn(
-                    "relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors focus-visible:ring-offset-2",
+                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                     highContrast ? "bg-primary" : "bg-muted"
                   )}
                 >
                   <span
                     className={cn(
-                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out",
-                      highContrast ? "translate-x-6" : "translate-x-1"
+                      "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
+                      highContrast ? "left-[calc(100%-1.25rem)]" : "left-1"
                     )}
                   />
-                </Button>
+                </button>
+
               </div>
 
               {/* Movimento Reduzido */}
