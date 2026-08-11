@@ -498,6 +498,51 @@
   color: transparent;
 }
 
+@utility btn-shine {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transform: skewX(-25deg);
+    transition: none;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &:hover:not(:disabled):not(.force-reduced-motion)::before {
+    animation: shine 0.75s ease-in-out;
+  }
+}
+
+@keyframes shine {
+  100% {
+    left: 200%;
+  }
+}
+
+@layer utilities {
+  .shadow-premium {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  
+  .shadow-premium-hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+}
+
+
 @layer base {
   section[id] {
     scroll-margin-top: 5rem;

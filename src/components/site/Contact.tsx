@@ -208,18 +208,9 @@ export function Contact() {
                 size="lg" 
                 className="w-full"
                 disabled={isSubmitting}
+                rightIcon={isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
               >
-                {isSubmitting ? (
-                  <>
-                    A enviar...
-                    <Loader2 className="ml-2.5 h-5 w-5 animate-spin" />
-                  </>
-                ) : (
-                  <>
-                    Enviar Mensagem
-                    <Send className="ml-2.5 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 force-reduced-motion:group-hover:translate-x-0" />
-                  </>
-                )}
+                {isSubmitting ? "A enviar..." : "Enviar Mensagem"}
               </Button>
 
               <div aria-live="polite" className="mt-2 min-h-[1.25rem]">
