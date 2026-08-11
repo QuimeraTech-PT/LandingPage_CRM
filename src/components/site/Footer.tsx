@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Linkedin, Github } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { Logo } from "./Logo";
+import { Button } from "@/components/ui/button";
 
 
 
