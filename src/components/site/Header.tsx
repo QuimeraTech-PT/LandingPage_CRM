@@ -90,14 +90,17 @@ export function Header() {
           <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
             <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
               {links.map((l) => (
-                <a
+                <Button
                   key={l.href}
-                  href={l.href}
+                  variant="ghost"
+                  asChild
+                  className="justify-start text-base font-semibold text-foreground/90 w-full"
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-3 py-3 text-base font-semibold text-foreground/90 transition-colors hover:bg-secondary hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary min-h-12 flex items-center"
                 >
-                  {l.label}
-                </a>
+                  <a href={l.href}>
+                    {l.label}
+                  </a>
+                </Button>
               ))}
             </nav>
           </div>

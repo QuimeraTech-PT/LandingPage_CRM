@@ -5,6 +5,7 @@ import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/animations";
 import { useRouter } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -116,7 +117,7 @@ export const AccessibilityMenu = () => {
         variant="ghost"
         size="icon"
         onClick={toggleMenu}
-        className="h-10 w-10 text-muted-foreground hover:text-accent focus-visible:ring-2 focus-visible:ring-primary"
+        className="text-muted-foreground hover:text-accent focus-visible:ring-2 focus-visible:ring-primary"
         aria-label="Menu de acessibilidade"
         aria-expanded={isOpen}
       >
@@ -157,21 +158,25 @@ export const AccessibilityMenu = () => {
                   </div>
                   <span id="label-contrast" className="text-sm font-medium">Modo de Alto Contraste</span>
                 </div>
-                <button
+                <Button
                   role="switch"
+                  variant="ghost"
+                  size="sm"
                   aria-checked={highContrast}
                   aria-labelledby="label-contrast"
                   onClick={toggleContrast}
-                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={cn(
+                    "relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors focus-visible:ring-offset-2",
                     highContrast ? "bg-primary" : "bg-muted"
-                  }`}
+                  )}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
+                    className={cn(
+                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out",
                       highContrast ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    )}
                   />
-                </button>
+                </Button>
               </div>
 
               {/* Movimento Reduzido */}
@@ -182,22 +187,26 @@ export const AccessibilityMenu = () => {
                   </div>
                   <span id="label-motion" className="text-sm font-medium">Movimento Reduzido</span>
                 </div>
-                <button
+                <Button
                   role="switch"
+                  variant="ghost"
+                  size="sm"
                   aria-checked={reducedMotion}
                   aria-pressed={reducedMotion}
                   aria-labelledby="label-motion"
                   onClick={toggleMotion}
-                  className={`group relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer ${
+                  className={cn(
+                    "relative h-6 w-11 shrink-0 rounded-full p-0 transition-colors focus-visible:ring-offset-2",
                     reducedMotion ? "bg-primary" : "bg-muted"
-                  }`}
+                  )}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
+                    className={cn(
+                      "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out",
                       reducedMotion ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    )}
                   />
-                </button>
+                </Button>
               </div>
 
               {/* Font Size */}
@@ -210,19 +219,17 @@ export const AccessibilityMenu = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {(["normal", "large", "extra"] as const).map((size) => (
-                    <button
+                    <Button
                       key={size}
+                      variant={fontSize === size ? "primary" : "secondary"}
+                      size="sm"
                       onClick={() => updateFontSize(size)}
-                      className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
-                        fontSize === size 
-                          ? "border-primary bg-primary/5 text-primary" 
-                          : "border-border hover:border-primary/40"
-                      }`}
+                      className="flex-col h-auto py-3 px-1 gap-1"
                       aria-pressed={fontSize === size}
                     >
                       <span className={`font-bold ${size === 'normal' ? 'text-xs' : size === 'large' ? 'text-sm' : 'text-base'}`}>A</span>
-                      <span className="text-[10px] uppercase font-semibold mt-1">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
-                    </button>
+                      <span className="text-[10px] uppercase font-semibold">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
+                    </Button>
                   ))}
                 </div>
               </div>

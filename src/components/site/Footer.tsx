@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Linkedin, Github } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { Logo } from "./Logo";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -125,18 +126,16 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <button
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 font-medium text-muted-foreground hover:text-accent"
                     onClick={() => {
                       window.dispatchEvent(new CustomEvent("open-cookie-settings"));
                       trackEvent('legal_click', { destination: 'cookie_settings', location: 'footer' });
                     }}
-                    className="group cursor-pointer inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
                   >
-                    <span className="relative">
-                      Definições de Cookies
-                      <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
-                    </span>
-                  </button>
+                    Definições de Cookies
+                  </Button>
                 </li>
               </ul>
             </motion.nav>
