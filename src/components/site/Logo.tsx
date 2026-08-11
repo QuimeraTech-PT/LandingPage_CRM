@@ -31,15 +31,20 @@ export function Logo({ className, size = "md" }: LogoProps) {
     />
   );
 
+  const commonClasses = "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
+
   if (isHome) {
     return (
       <a
         href="#top"
-        className="flex items-center"
-        aria-label="QuimeraTech — voltar ao topo"
+        className={commonClasses}
+        aria-label="QuimeraTech — Voltar ao topo da página"
         onClick={(e) => {
           e.preventDefault();
           window.scrollTo({ top: 0, behavior: "smooth" });
+          // Move focus to the top of the page for keyboard users
+          const topElement = document.getElementById("top") || document.body;
+          topElement.focus();
         }}
       >
         {content}
@@ -48,7 +53,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
   }
 
   return (
-    <Link to="/" className="flex items-center" aria-label="QuimeraTech — página inicial">
+    <Link to="/" className={commonClasses} aria-label="QuimeraTech — Ir para a página inicial">
       {content}
     </Link>
   );
