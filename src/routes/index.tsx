@@ -18,6 +18,7 @@ export const Route = createFileRoute("/")({
     meta: seoMeta({
       title: "QuimeraTech — Software House de Excelência",
       description: "Soluções inteligentes com impacto real. Desenvolvimento de software à medida, consultoria tecnológica e inovação digital.",
+      path: "/",
       image: "/og-home.jpg",
     }),
     links: seoLinks("/"),
