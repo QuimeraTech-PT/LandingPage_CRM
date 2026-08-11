@@ -153,16 +153,43 @@
   html.high-contrast {
     --background: oklch(0% 0 0) !important;
     --foreground: oklch(100% 0 0) !important;
-    --primary: oklch(100% 0 0) !important;
+    --primary: oklch(98% 0.1 260) !important; /* Brighter, higher contrast blue-ish */
     --primary-foreground: oklch(0% 0 0) !important;
-    --secondary: oklch(20% 0 0) !important;
-    --accent: oklch(100% 0 0) !important;
+    --secondary: oklch(10% 0 0) !important;
+    --secondary-foreground: oklch(100% 0 0) !important;
+    --accent: oklch(98% 0.1 260) !important;
     --accent-foreground: oklch(0% 0 0) !important;
-    --border: oklch(100% 0 0 / 80%) !important;
-    --muted: oklch(15% 0 0) !important;
+    --border: oklch(100% 0 0) !important; /* Pure white border */
+    --input: oklch(100% 0 0 / 20%) !important;
+    --muted: oklch(10% 0 0) !important;
     --muted-foreground: oklch(100% 0 0) !important;
     --card: oklch(5% 0 0) !important;
+    --card-foreground: oklch(100% 0 0) !important;
     --popover: oklch(5% 0 0) !important;
+    --popover-foreground: oklch(100% 0 0) !important;
+    --ring: oklch(100% 0 0) !important;
+    --surface: oklch(0% 0 0) !important;
+    --surface-foreground: oklch(100% 0 0) !important;
+    --surface-border: oklch(100% 0 0) !important;
+  }
+
+  html.high-contrast * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+
+  html.high-contrast .grid-tech {
+    background-image: 
+      linear-gradient(to right, oklch(100% 0 0 / 0.2) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(100% 0 0 / 0.2) 1px, transparent 1px) !important;
+  }
+
+  html.high-contrast .text-gradient-brand {
+    background-image: none !important;
+    background-clip: unset !important;
+    color: var(--foreground) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
   }
 
   html.text-large {
