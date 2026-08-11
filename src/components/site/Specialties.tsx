@@ -1,15 +1,8 @@
 import { Cloud, Database, KanbanSquare, PenTool, Smartphone } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+const containerVariants = variants.staggerContainer;
 
 
 const specialties = [
@@ -43,12 +36,11 @@ const specialties = [
 export function Specialties() {
   const shouldReduceMotion = useReducedMotion();
 
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+  const itemVariants = {
+    hidden: variants.fadeIn.initial,
     visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
+      ...variants.fadeIn.animate,
+      transition: transitions.default
     },
   };
 

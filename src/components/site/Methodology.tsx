@@ -1,15 +1,8 @@
 import { CheckCircle2 } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+const containerVariants = variants.staggerContainer;
 
 
 const phases = [
@@ -50,12 +43,11 @@ const principles = [
 export function Methodology() {
   const shouldReduceMotion = useReducedMotion();
 
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, scale: shouldReduceMotion ? 1 : 0.95 },
+  const itemVariants = {
+    hidden: variants.fadeIn.initial,
     visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5 },
+      ...variants.fadeIn.animate,
+      transition: transitions.default
     },
   };
 

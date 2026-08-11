@@ -16,10 +16,11 @@ const Contact = lazy(() => import("@/components/site/Contact").then(m => ({ defa
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: seoMeta({
-      title: "QuimeraTech — Software House de Excelência",
-      description: "Soluções inteligentes com impacto real. Desenvolvimento de software à medida, consultoria tecnológica e inovação digital.",
+      title: "QuimeraTech — Software House de Excelência em Portugal",
+      description: "Soluções inteligentes com impacto real em Portugal. Desenvolvimento de software à medida, consultoria tecnológica, Cloud e inovação digital.",
       path: "/",
       image: "/og-home.jpg",
+      keywords: "software house portugal, desenvolvimento software a medida, consultoria tecnologica, cloud computing portugal, inovacao digital",
     }),
     links: seoLinks("/"),
     scripts: [

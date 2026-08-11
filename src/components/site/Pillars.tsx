@@ -1,15 +1,8 @@
 import { Cpu, Handshake, Lightbulb, TrendingUp } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+const containerVariants = variants.staggerContainer;
 
 const pillars = [
   {
@@ -38,11 +31,10 @@ export function Pillars() {
   const shouldReduceMotion = useReducedMotion();
 
   const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    hidden: variants.fadeIn.initial,
     visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" } as any,
+      ...variants.fadeIn.animate,
+      transition: transitions.default
     },
   };
   return (

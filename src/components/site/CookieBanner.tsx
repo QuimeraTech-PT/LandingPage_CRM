@@ -5,6 +5,8 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
 import FocusTrap from "focus-trap-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { transitions } from "@/lib/animations";
 
 export interface CookieBannerHandle {
   open: () => void;
@@ -41,9 +43,9 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null;
-
   return (
+    <AnimatePresence>
+      {isVisible && (
     <FocusTrap
       active={isVisible}
       focusTrapOptions={{
@@ -56,12 +58,15 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         fallbackFocus: "[role='region']",
       }}
     >
-      <div
+      <motion.div
         role="region"
         aria-label="Gestão de Cookies"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={transitions.default}
         className={cn(
-          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-8 duration-500 md:bottom-8 motion-reduce:animate-none motion-reduce:transform-none",
-          !isVisible && "hidden"
+          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8",
         )}
       >
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/80 p-6 shadow-2xl backdrop-blur-xl md:p-8">
@@ -115,8 +120,10 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
             <X className="h-4 w-4" />
           </button>
         </div>
-      </div>
+      </motion.div>
     </FocusTrap>
+  )}
+  </AnimatePresence>
   );
 });
 
