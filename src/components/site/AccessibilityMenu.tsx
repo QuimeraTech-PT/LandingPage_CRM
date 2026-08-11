@@ -210,19 +210,17 @@ export const AccessibilityMenu = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {(["normal", "large", "extra"] as const).map((size) => (
-                    <button
+                    <Button
                       key={size}
+                      variant={fontSize === size ? "primary" : "secondary"}
+                      size="sm"
                       onClick={() => updateFontSize(size)}
-                      className={`flex flex-col items-center justify-center rounded-lg border-2 py-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
-                        fontSize === size 
-                          ? "border-primary bg-primary/5 text-primary" 
-                          : "border-border hover:border-primary/40"
-                      }`}
+                      className="flex-col h-auto py-3 px-1 gap-1"
                       aria-pressed={fontSize === size}
                     >
                       <span className={`font-bold ${size === 'normal' ? 'text-xs' : size === 'large' ? 'text-sm' : 'text-base'}`}>A</span>
-                      <span className="text-[10px] uppercase font-semibold mt-1">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
-                    </button>
+                      <span className="text-[10px] uppercase font-semibold">{size === 'normal' ? 'Padrão' : size === 'large' ? 'Grande' : 'Extra'}</span>
+                    </Button>
                   ))}
                 </div>
               </div>
