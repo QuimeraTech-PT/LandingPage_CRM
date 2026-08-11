@@ -3,6 +3,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant force-reduced-motion (&:is(.force-reduced-motion *));
+@custom-variant high-contrast (&:is(.high-contrast *));
 
 /*
  * Design system definition.
