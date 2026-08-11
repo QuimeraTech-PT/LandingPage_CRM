@@ -22,9 +22,10 @@ export function ScrollToTop() {
   }, []);
 
   const scrollToTop = () => {
+    const isReducedMotion = document.documentElement.classList.contains("force-reduced-motion");
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: isReducedMotion ? "auto" : "smooth",
     });
   };
 
