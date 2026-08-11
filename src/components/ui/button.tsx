@@ -10,17 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 
-          "bg-primary text-primary-foreground shadow-[0_10px_20px_-10px_rgba(37,99,235,0.4)] hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-[0_15px_25px_-10px_rgba(37,99,235,0.5)]",
+          "bg-primary text-primary-foreground shadow-[0_10px_20px_-10px_rgba(37,99,235,0.4)] hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-[0_15px_25px_-10px_rgba(37,99,235,0.5)] high-contrast:bg-black high-contrast:text-white high-contrast:border-2 high-contrast:border-white high-contrast:hover:bg-yellow-400 high-contrast:hover:text-black",
         primary: 
-          "bg-primary text-primary-foreground shadow-[0_10px_20px_-10px_rgba(37,99,235,0.4)] hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-[0_15px_25px_-10px_rgba(37,99,235,0.5)]",
+          "bg-primary text-primary-foreground shadow-[0_10px_20px_-10px_rgba(37,99,235,0.4)] hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-[0_15px_25px_-10px_rgba(37,99,235,0.5)] high-contrast:bg-black high-contrast:text-white high-contrast:border-2 high-contrast:border-white high-contrast:hover:bg-yellow-400 high-contrast:hover:text-black",
         secondary: 
-          "border-2 border-primary/20 bg-transparent text-primary hover:bg-primary/5 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-lg",
+          "border-2 border-primary/20 bg-transparent text-primary hover:bg-primary/5 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-lg high-contrast:border-white high-contrast:text-white high-contrast:hover:bg-yellow-400 high-contrast:hover:text-black",
         outline:
-          "border-2 border-border bg-transparent hover:bg-accent hover:text-accent-foreground hover:border-accent hover:-translate-y-0.5",
+          "border-2 border-border bg-transparent hover:bg-accent hover:text-accent-foreground hover:border-accent hover:-translate-y-0.5 high-contrast:border-white high-contrast:text-white high-contrast:hover:bg-yellow-400 high-contrast:hover:text-black",
         ghost: 
-          "text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all",
+          "text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all high-contrast:text-white high-contrast:hover:bg-yellow-400 high-contrast:hover:text-black",
         link: 
-          "text-primary underline-offset-4 hover:underline p-0 h-auto min-h-0",
+          "text-primary underline-offset-4 hover:underline p-0 h-auto min-h-0 high-contrast:text-yellow-400",
       },
       size: {
         default: "h-12 px-6 py-3", // ~48px
