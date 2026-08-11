@@ -1,14 +1,14 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
 export function About() {
   const shouldReduceMotion = useReducedMotion();
   
   const fadeUp = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    hidden: variants.fadeIn.initial,
     visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } as any
+      ...variants.fadeIn.animate,
+      transition: transitions.slow
     }
   };
 
