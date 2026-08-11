@@ -2,6 +2,7 @@ import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
+import { transitions, variants } from "@/lib/animations";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
@@ -18,14 +19,10 @@ export function Hero() {
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    hidden: variants.fadeIn.initial,
     visible: {
-      opacity: 1,
-      y: 0,
-      transition: { 
-        duration: 0.8, 
-        ease: [0.21, 0.45, 0.32, 0.9] as any
-      },
+      ...variants.fadeIn.animate,
+      transition: transitions.slow,
     },
   };
   return (
