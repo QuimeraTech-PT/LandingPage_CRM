@@ -11,7 +11,7 @@ export const transitions = {
     type: "spring",
     stiffness: 260,
     damping: 20,
-  },
+  } as const,
 };
 
 export const variants = {
