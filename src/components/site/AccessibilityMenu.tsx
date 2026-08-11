@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/animations";
+import { useRouter } from "@tanstack/react-router";
 
 export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ export const AccessibilityMenu = () => {
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -93,6 +95,9 @@ export const AccessibilityMenu = () => {
     setReducedMotion(newVal);
     localStorage.setItem("a11y-reduced-motion", String(newVal));
     applySettings({ contrast: highContrast, motion: newVal, size: fontSize });
+    
+    // Invalidate router state if needed, though scroll behavior is mostly CSS/global
+    router.invalidate();
   };
 
   const updateFontSize = (size: "normal" | "large" | "extra") => {
