@@ -1,17 +1,19 @@
+import type { Transition } from "framer-motion";
+
 export const transitions = {
   default: {
     duration: 0.4,
     ease: [0.22, 1, 0.36, 1],
-  },
+  } as Transition,
   slow: {
     duration: 0.6,
     ease: [0.22, 1, 0.36, 1],
-  },
+  } as Transition,
   spring: {
     type: "spring",
     stiffness: 260,
     damping: 20,
-  } as const,
+  } as Transition,
 };
 
 export const variants = {
