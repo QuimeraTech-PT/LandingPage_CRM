@@ -150,31 +150,38 @@
 
 @layer base {
   /* Accessibility Modifiers */
+  /* =========================================
+     MODO DE ALTO CONTRASTE (HIGH CONTRASTE)
+     ========================================= */
   html.high-contrast {
+    /* Token Overrides */
     --background: #000000 !important;
     --foreground: #ffffff !important;
-    --primary: #ffff00 !important; /* Pure yellow for maximum contrast on black */
+    --primary: #ffff00 !important;
     --primary-foreground: #000000 !important;
     --secondary: #000000 !important;
     --secondary-foreground: #ffffff !important;
     --accent: #ffff00 !important;
     --accent-foreground: #000000 !important;
     --border: #ffffff !important;
-    --input: #ffffff !important;
-    --muted: #000000 !important;
+    --input: #000000 !important;
+    --ring: #ffff00 !important;
+    --muted: #1a1a1a !important;
     --muted-foreground: #ffffff !important;
     --card: #000000 !important;
     --card-foreground: #ffffff !important;
     --popover: #000000 !important;
     --popover-foreground: #ffffff !important;
-    --ring: #ffff00 !important;
     --surface: #000000 !important;
     --surface-foreground: #ffffff !important;
     --surface-border: #ffffff !important;
     --surface-muted: #ffffff !important;
     --surface-card: #000000 !important;
+    --destructive: #ff0000 !important;
+    --destructive-foreground: #ffffff !important;
   }
 
+  /* Reset global em Alto Contraste */
   html.high-contrast * {
     background-color: transparent !important;
     background-image: none !important;
@@ -185,57 +192,132 @@
     outline-color: #ffffff !important;
     fill: #ffffff !important;
     stroke: #ffffff !important;
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 
+  /* Content Containers */
   html.high-contrast html,
   html.high-contrast body,
-  html.high-contrast div.bg-background,
-  html.high-contrast div.bg-card,
   html.high-contrast section,
   html.high-contrast footer,
   html.high-contrast header,
-  html.high-contrast nav {
+  html.high-contrast nav,
+  html.high-contrast main,
+  html.high-contrast article,
+  html.high-contrast div[class*="bg-"] {
     background-color: #000000 !important;
   }
 
+  /* Interactive Elements */
   html.high-contrast button,
-  html.high-contrast a,
-  html.high-contrast input,
-  html.high-contrast select,
-  html.high-contrast textarea {
+  html.high-contrast a.inline-flex,
+  html.high-contrast a.flex,
+  html.high-contrast [role="button"] {
     background-color: #000000 !important;
     color: #ffffff !important;
     border: 2px solid #ffffff !important;
+    text-decoration: none !important;
+    min-height: 3rem !important; /* Touch target */
   }
 
   html.high-contrast button:hover,
-  html.high-contrast a:hover {
+  html.high-contrast a.inline-flex:hover,
+  html.high-contrast a.flex:hover,
+  html.high-contrast [role="button"]:hover {
     background-color: #ffff00 !important;
     color: #000000 !important;
     border-color: #ffff00 !important;
   }
 
+  html.high-contrast a:not(.inline-flex):not(.flex) {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px !important;
+    font-weight: bold !important;
+  }
+
+  /* Forms */
+  html.high-contrast input,
+  html.high-contrast textarea,
+  html.high-contrast select {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    opacity: 1 !important;
+  }
+
+  html.high-contrast input::placeholder,
+  html.high-contrast textarea::placeholder {
+    color: #cccccc !important;
+  }
+
+  /* Focus States */
+  html.high-contrast *:focus-visible {
+    outline: 4px solid #ffff00 !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 0 8px #000000 !important;
+    z-index: 9999 !important;
+  }
+
+  /* Utility Overrides */
+  html.high-contrast .text-primary,
+  html.high-contrast .text-accent {
+    color: #ffff00 !important;
+  }
+
+  html.high-contrast .bg-primary,
+  html.high-contrast .bg-accent {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+    border: 2px solid #ffffff !important;
+  }
+
+  /* Visual Elements */
   html.high-contrast img,
   html.high-contrast svg {
+    filter: brightness(1) contrast(1.2) !important;
+  }
+
+  html.high-contrast .logo-img,
+  html.high-contrast img[alt*="Logo"],
+  html.high-contrast img[alt*="Logótipo"],
+  html.high-contrast .Logo_logo-img__n7h7b { /* Specific for generated classes if any */
     filter: brightness(0) invert(1) !important;
   }
 
-  html.high-contrast .text-primary,
-  html.high-contrast .text-accent,
-  html.high-contrast svg.text-primary,
-  html.high-contrast svg.text-accent,
-  html.high-contrast .bg-primary,
-  html.high-contrast .bg-accent {
-    color: #ffff00 !important;
-    fill: #ffff00 !important;
-    stroke: #ffff00 !important;
-    background-color: #ffff00 !important;
-    -webkit-text-fill-color: #000000 !important;
+  /* Semantic Messaging */
+  html.high-contrast [role="alert"],
+  html.high-contrast .text-destructive {
+    border: 3px solid #ff0000 !important;
+    color: #ff0000 !important;
+    background-color: #000000 !important;
+    padding: 0.5rem !important;
   }
 
-  html.high-contrast .text-primary-foreground,
-  html.high-contrast .text-accent-foreground {
-    color: #000000 !important;
+  html.high-contrast [role="status"],
+  html.high-contrast .text-success {
+    border: 3px solid #00ff00 !important;
+    color: #00ff00 !important;
+    padding: 0.5rem !important;
+  }
+
+  /* UI Components */
+  html.high-contrast [role="dialog"],
+  html.high-contrast [role="region"],
+  html.high-contrast .bg-card,
+  html.high-contrast .bg-surface-card,
+  html.high-contrast .rounded-xl {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+  }
+
+  html.high-contrast .grid-tech {
+    background-image: 
+      linear-gradient(to right, #ffffff 1px, transparent 1px),
+      linear-gradient(to bottom, #ffffff 1px, transparent 1px) !important;
+    opacity: 0.05 !important;
   }
 
   html.high-contrast ::selection {
@@ -243,23 +325,17 @@
     color: #000000 !important;
   }
 
-  html.high-contrast ::-webkit-scrollbar {
-    width: 12px !important;
-    background-color: #000000 !important;
+  /* Disabled State */
+  html.high-contrast *:disabled,
+  html.high-contrast [aria-disabled="true"] {
+    opacity: 0.5 !important;
+    border-color: #888888 !important;
+    color: #888888 !important;
+    cursor: not-allowed !important;
+    background-color: #1a1a1a !important;
   }
 
-  html.high-contrast ::-webkit-scrollbar-thumb {
-    background-color: #ffffff !important;
-    border: 2px solid #000000 !important;
-  }
-
-  html.high-contrast .grid-tech {
-    background-image: 
-      linear-gradient(to right, #ffffff 1px, transparent 1px),
-      linear-gradient(to bottom, #ffffff 1px, transparent 1px) !important;
-    opacity: 0.1 !important;
-  }
-
+  /* Page Specific Overrides */
   html.high-contrast .text-gradient-brand {
     background-image: none !important;
     background-clip: unset !important;
@@ -267,19 +343,12 @@
     -webkit-text-fill-color: #ffffff !important;
   }
 
-  html.high-contrast .backdrop-blur-xl,
-  html.high-contrast .backdrop-blur-md {
+  html.high-contrast .backdrop-blur-xl {
     backdrop-filter: none !important;
     background-color: #000000 !important;
   }
 
-  html.high-contrast [role="dialog"],
-  html.high-contrast .bg-card\/80,
-  html.high-contrast .bg-background\/85,
-  html.high-contrast .bg-background\/95 {
-    background-color: #000000 !important;
-    border: 2px solid #ffffff !important;
-  }
+  /* ========================================= */
 
   html.text-large {
     font-size: 115%;
@@ -349,6 +418,37 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@utility grid-tech {
+  background-image:
+    linear-gradient(to right, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    100deg,
+    oklch(0.984 0.003 247.858) 10%,
+    oklch(0.715 0.143 215.221) 55%,
+    oklch(0.546 0.245 262.881) 95%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+}
 }
 
 @layer base {
