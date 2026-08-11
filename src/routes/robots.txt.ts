@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/api/public/robots/txt')({
+export const Route = createFileRoute('/robots/txt')({
   server: {
     handlers: {
       GET: async () => {
         const robots = `User-agent: *
 Allow: /
-Sitemap: https://quimeratech.pt/api/public/sitemap.xml`;
+Sitemap: https://quimeratech.pt/sitemap.xml`;
 
         return new Response(robots, {
           headers: {

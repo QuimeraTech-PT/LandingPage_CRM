@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosDeServicoRouteImport } from './routes/termos-de-servico'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiPublicSitemapXmlRouteImport } from './routes/api/public/sitemap.xml'
-import { Route as ApiPublicRobotsTxtRouteImport } from './routes/api/public/robots.txt'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
+import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 
 const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
   id: '/termos-de-servico',
@@ -30,14 +30,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSitemapXmlRoute = ApiPublicSitemapXmlRouteImport.update({
-  id: '/api/public/sitemap/xml',
-  path: '/api/public/sitemap/xml',
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicRobotsTxtRoute = ApiPublicRobotsTxtRouteImport.update({
-  id: '/api/public/robots/txt',
-  path: '/api/public/robots/txt',
+const RobotsTxtRoute = RobotsTxtRouteImport.update({
+  id: '/robots/txt',
+  path: '/robots/txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -45,23 +45,23 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
+  '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
+  '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/api/public/robots/txt': typeof ApiPublicRobotsTxtRoute
-  '/api/public/sitemap/xml': typeof ApiPublicSitemapXmlRoute
+  '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -69,30 +69,30 @@ export interface FileRouteTypes {
     | '/'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
+    | '/robots/txt'
+    | '/sitemap/xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
+    | '/robots/txt'
+    | '/sitemap/xml'
   id:
     | '__root__'
     | '/'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
-    | '/api/public/robots/txt'
-    | '/api/public/sitemap/xml'
+    | '/robots/txt'
+    | '/sitemap/xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   TermosDeServicoRoute: typeof TermosDeServicoRoute
-  ApiPublicRobotsTxtRoute: typeof ApiPublicRobotsTxtRoute
-  ApiPublicSitemapXmlRoute: typeof ApiPublicSitemapXmlRoute
+  RobotsTxtRoute: typeof RobotsTxtRoute
+  SitemapXmlRoute: typeof SitemapXmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,18 +118,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/sitemap/xml': {
-      id: '/api/public/sitemap/xml'
-      path: '/api/public/sitemap/xml'
-      fullPath: '/api/public/sitemap/xml'
-      preLoaderRoute: typeof ApiPublicSitemapXmlRouteImport
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/robots/txt': {
-      id: '/api/public/robots/txt'
-      path: '/api/public/robots/txt'
-      fullPath: '/api/public/robots/txt'
-      preLoaderRoute: typeof ApiPublicRobotsTxtRouteImport
+    '/robots/txt': {
+      id: '/robots/txt'
+      path: '/robots/txt'
+      fullPath: '/robots/txt'
+      preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -139,8 +139,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   TermosDeServicoRoute: TermosDeServicoRoute,
-  ApiPublicRobotsTxtRoute: ApiPublicRobotsTxtRoute,
-  ApiPublicSitemapXmlRoute: ApiPublicSitemapXmlRoute,
+  RobotsTxtRoute: RobotsTxtRoute,
+  SitemapXmlRoute: SitemapXmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

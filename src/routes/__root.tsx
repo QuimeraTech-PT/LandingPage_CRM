@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap",
       },
-      { rel: "sitemap", type: "application/xml", href: "/api/public/sitemap.xml" },
+      { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" },
     ],
   }),
   shellComponent: RootShell,
@@ -118,6 +118,25 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-PT">
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const contrast = localStorage.getItem('a11y-high-contrast') === 'true';
+                  if (contrast) document.documentElement.classList.add('high-contrast');
+                  
+                  const motion = localStorage.getItem('a11y-reduced-motion') === 'true';
+                  if (motion) document.documentElement.classList.add('force-reduced-motion');
+                  
+                  const fontSize = localStorage.getItem('a11y-font-size');
+                  if (fontSize === 'large') document.documentElement.classList.add('text-large');
+                  if (fontSize === 'extra') document.documentElement.classList.add('text-extra');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body>
         {children}
