@@ -17,10 +17,10 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: seoMeta({
       title: "QuimeraTech — Software House de Excelência em Portugal",
-      description: "Soluções inteligentes com impacto real. Desenvolvimento de software à medida, consultoria tecnológica, Cloud e inovação digital em Portugal.",
+      description: "Soluções inteligentes com impacto real em Portugal. Desenvolvimento de software à medida, consultoria tecnológica, Cloud e inovação digital.",
       path: "/",
       image: "/og-home.jpg",
-      keywords: "software house portugal, desenvolvimento software, consultoria tecnológica, desenvolvimento web, desenvolvimento mobile, cloud computing",
+      keywords: "software house portugal, desenvolvimento software a medida, consultoria tecnologica, cloud computing portugal, inovacao digital",
     }),
     links: seoLinks("/"),
     scripts: [
