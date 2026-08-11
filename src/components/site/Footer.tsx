@@ -23,13 +23,15 @@ export function Footer() {
             transition={{ duration: 0.5 }}
             className="flex flex-col gap-4 items-center lg:items-start lg:col-span-1"
           >
-            <img
-              src={logoAsset.url}
-              alt="Logótipo QuimeraTech"
-              className="h-14 w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
-              width={1774}
-              height={887}
-            />
+            <a href="#top" className="flex items-center" aria-label="QuimeraTech — início">
+              <img
+                src={logoAsset.url}
+                alt="Logótipo QuimeraTech"
+                className="h-14 w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
+                width={1774}
+                height={887}
+              />
+            </a>
             <p className="text-sm font-light text-muted-foreground leading-relaxed max-w-xs text-center lg:text-left">
               Transformamos ideias visionárias em soluções tecnológicas robustas e escaláveis. A sua software house de confiança.
             </p>
