@@ -49,7 +49,7 @@ export function ScrollToTop() {
           whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
           transition={transitions.spring}
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 hover:shadow-xl hover:shadow-primary/30"
+          className="fixed bottom-8 right-8 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:shadow-xl hover:shadow-primary/30"
           aria-label="Voltar ao topo"
         >
           <motion.div
