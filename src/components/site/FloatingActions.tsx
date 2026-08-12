@@ -10,27 +10,51 @@ export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const location = useLocation();
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   // WhatsApp Configuration
   const phoneNumber = "351912345678"; 
   const message = encodeURIComponent("Olá QuimeraTech, gostaria de saber mais sobre as vossas soluções.");
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
+  const trackClick = useCallback((action: string) => {
+    if (typeof window !== 'undefined' && (window as any).dataLayer) {
+      const device = window.innerWidth < 768 ? 'mobile' : 'desktop';
+      (window as any).dataLayer.push({
+        event: 'floating_action_click',
+        action: action,
+        device: device,
+        path: location.pathname
+      });
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
-    const toggleVisibility = () => {
+    const updateScroll = () => {
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
         setIsOpen(false);
       }
+      ticking.current = false;
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    const onScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(updateScroll);
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollToTop = () => {
+    trackClick('scroll_to_top');
     const isReducedMotion = document.documentElement.classList.contains("force-reduced-motion");
     window.scrollTo({
       top: 0,
