@@ -26,6 +26,15 @@ export function Header() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    console.log("Mobile menu state:", open);
+  }, [open]);
+
+  const toggleMenu = () => {
+    console.log("Toggle menu clicked, current state:", open);
+    setOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
