@@ -36,9 +36,17 @@ export function ScrollToTop() {
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          transition={
+            shouldReduceMotion
+              ? { duration: 0.2, ease: "linear" }
+              : transitions.spring
+          }
           whileHover={
             shouldReduceMotion
-              ? {}
+              ? {
+                  backgroundColor: "oklch(0.65 0.2 260)",
+                  color: "oklch(0.984 0.003 247.858)",
+                }
               : {
                   scale: 1.1,
                   y: -4,
@@ -47,7 +55,6 @@ export function ScrollToTop() {
                 }
           }
           whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
-          transition={transitions.spring}
           onClick={scrollToTop}
           className="fixed bottom-8 right-8 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:shadow-xl hover:shadow-primary/30"
           aria-label="Voltar ao topo"
