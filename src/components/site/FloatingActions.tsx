@@ -1,34 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowUp, MessageCircle, ChevronUp } from "lucide-react";
 import { transitions } from "@/lib/animations";
 import { cn } from "@/lib/utils";
+import { updateAnalyticsConsent } from "@/lib/analytics"; // We'll use gtag directly if available or dataLayer
+import { useLocation } from "@tanstack/react-router";
 
 export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const location = useLocation();
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   // WhatsApp Configuration
   const phoneNumber = "351912345678"; 
   const message = encodeURIComponent("Olá QuimeraTech, gostaria de saber mais sobre as vossas soluções.");
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
+  const trackClick = useCallback((action: string) => {
+    if (typeof window !== 'undefined' && (window as any).dataLayer) {
+      const device = window.innerWidth < 768 ? 'mobile' : 'desktop';
+      (window as any).dataLayer.push({
+        event: 'floating_action_click',
+        action: action,
+        device: device,
+        path: location.pathname
+      });
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
-    const toggleVisibility = () => {
+    const updateScroll = () => {
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
         setIsOpen(false);
       }
+      ticking.current = false;
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    const onScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(updateScroll);
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollToTop = () => {
+    trackClick('scroll_to_top');
     const isReducedMotion = document.documentElement.classList.contains("force-reduced-motion");
     window.scrollTo({
       top: 0,
@@ -43,6 +69,7 @@ export function FloatingActions() {
         {!isVisible && (
           <motion.a
             href={whatsappUrl}
+            onClick={() => trackClick('whatsapp_direct')}
             target="_blank"
             rel="noopener noreferrer"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -73,6 +100,7 @@ export function FloatingActions() {
                 >
                   <motion.a
                     href={whatsappUrl}
+                    onClick={() => trackClick('whatsapp_menu')}
                     target="_blank"
                     rel="noopener noreferrer"
                     role="menuitem"
