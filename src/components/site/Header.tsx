@@ -25,6 +25,10 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
+  const toggleMenu = () => {
+    setOpen((prev) => !prev);
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -65,7 +69,7 @@ export function Header() {
           <button
             ref={menuButtonRef}
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={toggleMenu}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
@@ -75,37 +79,50 @@ export function Header() {
         </div>
       </div>
 
-      {open && (
+      <div
+        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all duration-300 ${
+          open ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="flex h-20 items-center justify-between px-5">
+          <Logo size="md" />
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+            aria-label="Fechar menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
         <FocusTrap
+          active={open}
           focusTrapOptions={{
-            onDeactivate: () => {
-              setOpen(false);
-              // Ensure focus returns to the toggle button when closed
-              menuButtonRef.current?.focus();
-            },
+            onDeactivate: () => setOpen(false),
             clickOutsideDeactivates: true,
             escapeDeactivates: true,
           }}
         >
-          <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
-            <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
-              {links.map((l) => (
-                <Button
-                  key={l.href}
-                  variant="ghost"
-                  asChild
-                  className="justify-start text-base font-semibold text-foreground/90 w-full"
-                  onClick={() => setOpen(false)}
-                >
-                  <a href={l.href}>
-                    {l.label}
-                  </a>
-                </Button>
-              ))}
-            </nav>
-          </div>
+          <nav className="flex flex-col gap-2 px-5 py-8">
+            {links.map((l) => (
+              <Button
+                key={l.href}
+                variant="ghost"
+                asChild
+                className="justify-start text-lg font-semibold h-14"
+                onClick={() => setOpen(false)}
+              >
+                <a href={l.href}>{l.label}</a>
+              </Button>
+            ))}
+            <div className="mt-8 pt-8 border-t border-border flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">Acessibilidade</span>
+              <AccessibilityMenu />
+            </div>
+          </nav>
         </FocusTrap>
-      )}
+      </div>
     </header>
   );
 }
