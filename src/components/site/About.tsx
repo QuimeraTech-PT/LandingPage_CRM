@@ -26,9 +26,9 @@ export function About() {
   };
 
   const stats = [
-    { icon: Rocket, label: "Inovação", value: "Sempre na vanguarda" },
-    { icon: Cpu, label: "Tecnologia", value: "Stack moderna e robusta" },
-    { icon: Users, label: "Foco", value: "Sucesso do cliente" }
+    { icon: Rocket, label: "Missão", value: "Impulsionar a transformação digital com propósito." },
+    { icon: Cpu, label: "Visão", value: "Ser referência global em engenharia de software." },
+    { icon: Users, label: "Valores", value: "Transparência, qualidade técnica e foco no cliente." }
   ];
 
   return (
