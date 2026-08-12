@@ -196,6 +196,7 @@ function RootComponent() {
       </AnimatePresence>
       <CookieBanner ref={cookieBannerRef} />
       <ScrollToTop />
+      <WhatsAppButton />
       <Toaster />
     </QueryClientProvider>
   );
