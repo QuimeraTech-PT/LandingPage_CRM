@@ -69,6 +69,7 @@ export function FloatingActions() {
         {!isVisible && (
           <motion.a
             href={whatsappUrl}
+            onClick={() => trackClick('whatsapp_direct')}
             target="_blank"
             rel="noopener noreferrer"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
