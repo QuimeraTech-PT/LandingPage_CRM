@@ -100,7 +100,7 @@ export function About() {
               className="relative mx-auto max-w-[450px] lg:max-w-none"
             >
               {/* Moldura Glassmorphism com efeito de código */}
-              <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:aspect-square">
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:h-[400px] lg:aspect-auto">
                 {/* Header de janela de código */}
                 <div className="flex items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-2">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
