@@ -116,10 +116,6 @@ export function Header() {
                 <a href={l.href}>{l.label}</a>
               </Button>
             ))}
-            <div className="mt-8 pt-8 border-t border-border flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Acessibilidade</span>
-              <AccessibilityMenu />
-            </div>
           </nav>
         </FocusTrap>
       </div>
