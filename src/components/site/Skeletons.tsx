@@ -1,15 +1,26 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+
+function SkeletonCard({ className }: { className?: string }) {
+  return (
+    <div className={cn("rounded-2xl border border-border p-8 space-y-4", className)}>
+      <Skeleton className="h-12 w-12 rounded-xl" />
+      <Skeleton className="h-6 w-3/4" />
+      <Skeleton className="h-12 w-full" />
+    </div>
+  );
+}
 
 export function HeroSkeleton() {
   return (
     <div className="bg-background pt-32 pb-24 md:pt-44 md:pb-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8 text-center">
-        <Skeleton className="mx-auto h-4 w-32" />
+        <Skeleton className="mx-auto h-6 w-32 rounded-full" />
         <Skeleton className="mx-auto mt-6 h-12 w-full max-w-2xl md:h-16" />
         <Skeleton className="mx-auto mt-6 h-20 w-full max-w-xl" />
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Skeleton className="h-12 w-40 rounded-md" />
-          <Skeleton className="h-12 w-40 rounded-md" />
+          <Skeleton className="h-14 w-full sm:w-48 rounded-xl" />
+          <Skeleton className="h-14 w-full sm:w-48 rounded-xl" />
         </div>
       </div>
     </div>
@@ -46,11 +57,7 @@ export function PillarsSkeleton() {
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-2xl border border-border p-8">
-              <Skeleton className="mb-6 h-12 w-12 rounded-xl" />
-              <Skeleton className="h-6 w-1/2" />
-              <Skeleton className="mt-3 h-12 w-full" />
-            </div>
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>
@@ -69,11 +76,7 @@ export function SpecialtiesSkeleton() {
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="rounded-2xl border border-border bg-card p-8">
-              <Skeleton className="mb-6 h-12 w-12 rounded-xl" />
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="mt-3 h-12 w-full" />
-            </div>
+            <SkeletonCard key={i} className="bg-card" />
           ))}
         </div>
       </div>
