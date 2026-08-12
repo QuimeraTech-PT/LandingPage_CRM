@@ -26,9 +26,9 @@ export function About() {
   };
 
   const stats = [
-    { icon: Rocket, label: "Inovação", value: "Sempre na vanguarda" },
-    { icon: Cpu, label: "Tecnologia", value: "Stack moderna e robusta" },
-    { icon: Users, label: "Foco", value: "Sucesso do cliente" }
+    { icon: Rocket, label: "Missão", value: "Impulsionar a transformação digital com propósito." },
+    { icon: Cpu, label: "Visão", value: "Ser referência global em engenharia de software." },
+    { icon: Users, label: "Valores", value: "Transparência, qualidade técnica e foco no cliente." }
   ];
 
   return (
@@ -80,11 +80,13 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="group rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60"
+                    className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60"
                   >
-                    <stat.icon className="mb-3 h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-                    <h3 className="text-sm font-bold text-surface-foreground">{stat.label}</h3>
-                    <p className="text-xs text-surface-muted">{stat.value}</p>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                      <stat.icon className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-base font-bold text-surface-foreground">{stat.label}</h3>
+                    <p className="text-sm leading-relaxed text-surface-muted">{stat.value}</p>
                   </motion.div>
                 ))}
               </div>
@@ -127,9 +129,9 @@ export function About() {
               <motion.div 
                 animate={shouldReduceMotion ? {} : { y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-4 top-1/4 max-w-[200px] rounded-2xl border border-white/10 bg-surface-card/80 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
+                className="absolute -right-4 top-1/4 max-w-[200px] rounded-2xl border border-white/10 bg-surface-card/90 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
               >
-                <p className="text-sm font-medium italic leading-relaxed text-surface-foreground">
+                <p className="text-sm font-semibold italic leading-relaxed text-surface-foreground">
                   “Soluções inteligentes que transformam o amanhã.”
                 </p>
               </motion.div>
