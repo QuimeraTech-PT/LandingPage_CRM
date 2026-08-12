@@ -18,17 +18,21 @@ export function Logo({ className, size = "md" }: LogoProps) {
   };
 
   const content = (
-    <img
-      src={logoAsset.url}
-      alt="Logótipo QuimeraTech"
-      className={cn(
-        "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]",
-        sizeClasses[size],
-        className
-      )}
-      width={1774}
-      height={887}
-    />
+    <picture>
+      <source srcSet={logoAsset.url.replace(/\.png(\.asset\.json)?$/, '.webp')} type="image/webp" />
+      <img
+        src={logoAsset.url}
+        alt="Logótipo QuimeraTech"
+        className={cn(
+          "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]",
+          sizeClasses[size],
+          className
+        )}
+        width={1774}
+        height={887}
+        decoding="async"
+      />
+    </picture>
   );
 
   const commonClasses = "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
