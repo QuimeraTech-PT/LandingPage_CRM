@@ -74,7 +74,7 @@ export function Header() {
           <button
             ref={menuButtonRef}
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={toggleMenu}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
