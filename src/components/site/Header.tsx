@@ -26,7 +26,11 @@ export function Header() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = () => {
-    setOpen((prev) => !prev);
+    const newState = !open;
+    setOpen(newState);
+    
+    // Sync with FloatingActions via custom event
+    window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: newState } }));
   };
 
   useEffect(() => {
@@ -96,7 +100,10 @@ export function Header() {
               }
             }}
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+            }}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
             aria-label="Fechar menu"
           >
@@ -109,6 +116,7 @@ export function Header() {
           focusTrapOptions={{
             onDeactivate: () => {
               setOpen(false);
+              window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
               menuButtonRef.current?.focus();
             },
             clickOutsideDeactivates: true,
@@ -123,7 +131,10 @@ export function Header() {
                 variant="ghost"
                 asChild
                 className="justify-start text-lg font-semibold h-14"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+                }}
               >
                 <a href={l.href}>{l.label}</a>
               </Button>

@@ -9,6 +9,7 @@ import { useLocation } from "@tanstack/react-router";
 export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const location = useLocation();
   const lastScrollY = useRef(0);
@@ -53,6 +54,14 @@ export function FloatingActions() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const handleMenuToggle = (e: any) => {
+      setIsMenuOpen(e.detail.open);
+    };
+    window.addEventListener("mobileMenuToggle", handleMenuToggle);
+    return () => window.removeEventListener("mobileMenuToggle", handleMenuToggle);
+  }, []);
+
   const scrollToTop = () => {
     trackClick('scroll_to_top');
     const isReducedMotion = document.documentElement.classList.contains("force-reduced-motion");
@@ -64,9 +73,12 @@ export function FloatingActions() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 lg:bottom-8 lg:right-8 print:hidden">
+    <div className={cn(
+      "fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 lg:bottom-8 lg:right-8 print:hidden transition-opacity duration-300",
+      isMenuOpen && "opacity-0 pointer-events-none"
+    )}>
       <AnimatePresence>
-        {!isVisible && (
+        {!isVisible && !isMenuOpen && (
           <motion.a
             href={whatsappUrl}
             onClick={() => trackClick('whatsapp_direct')}
@@ -86,7 +98,7 @@ export function FloatingActions() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {isVisible && (
+        {isVisible && !isMenuOpen && (
           <>
             <AnimatePresence>
               {isOpen && (
