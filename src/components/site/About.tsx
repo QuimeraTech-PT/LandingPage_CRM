@@ -80,11 +80,13 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="group rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60"
+                    className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60"
                   >
-                    <stat.icon className="mb-3 h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-                    <h3 className="text-sm font-bold text-surface-foreground">{stat.label}</h3>
-                    <p className="text-xs text-surface-muted">{stat.value}</p>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                      <stat.icon className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-base font-bold text-surface-foreground">{stat.label}</h3>
+                    <p className="text-sm leading-relaxed text-surface-muted">{stat.value}</p>
                   </motion.div>
                 ))}
               </div>
