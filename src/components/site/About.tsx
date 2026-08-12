@@ -55,18 +55,15 @@ export function About() {
               variants={fadeUp}
               className="relative min-h-[320px] overflow-hidden lg:min-h-full"
             >
-              <picture>
-                <source srcSet="/quimeratech-about-visual.webp" type="image/webp" />
-                <img
-                  src="/quimeratech-about-visual.jpg"
-                  alt="Visualização tecnológica da QuimeraTech"
-                  className="absolute inset-0 h-full w-full object-cover"
-                  width={1344}
-                  height={768}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
+              <img
+                src="/quimeratech-about-visual.jpg"
+                alt="Visualização tecnológica da QuimeraTech"
+                className="absolute inset-0 h-full w-full object-cover"
+                width={1344}
+                height={768}
+                loading="lazy"
+                decoding="async"
+              />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/20 to-transparent" />
 
               {/* Citação como cartão flutuante */}
