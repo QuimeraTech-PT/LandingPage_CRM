@@ -80,13 +80,21 @@ export function Header() {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all duration-300 ${
+        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all ${
+          shouldReduceMotion ? "duration-0" : "duration-300"
+        } ${
           open ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex h-20 items-center justify-between px-5">
           <Logo size="md" />
           <button
+            ref={(el) => {
+              if (open && el) {
+                // We'll let FocusTrap handle the initial focus, 
+                // but we keep this ref logic simple
+              }
+            }}
             type="button"
             onClick={() => setOpen(false)}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
@@ -99,9 +107,13 @@ export function Header() {
         <FocusTrap
           active={open}
           focusTrapOptions={{
-            onDeactivate: () => setOpen(false),
+            onDeactivate: () => {
+              setOpen(false);
+              menuButtonRef.current?.focus();
+            },
             clickOutsideDeactivates: true,
             escapeDeactivates: true,
+            initialFocus: false, // Prevents jumping before transition
           }}
         >
           <nav className="flex flex-col gap-2 px-5 py-8">
