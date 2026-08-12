@@ -39,7 +39,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
     >
       {/* Route Announcement for Screen Readers */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        Página carregada: {document.title}
+        Página carregada
       </div>
       {children}
     </motion.div>
