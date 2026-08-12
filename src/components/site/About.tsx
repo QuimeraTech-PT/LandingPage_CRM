@@ -102,27 +102,28 @@ export function About() {
               {/* Moldura Glassmorphism */}
               <div className="absolute inset-0 rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/5 to-transparent shadow-2xl backdrop-blur-2xl" />
               
-              <div className="absolute inset-4 overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary/20 via-surface-card to-secondary/20">
-                <div className="flex h-full w-full items-center justify-center p-12">
-                  <div className="relative h-full w-full opacity-40 mix-blend-overlay">
-                    {/* Visual Abstrato 3D via CSS/SVG para evitar imagens "Off" */}
-                    <div className="absolute inset-0 animate-pulse bg-[radial-gradient(circle_at_center,_var(--color-primary)_0%,_transparent_70%)] opacity-20" />
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
-                      <path fill="var(--color-primary)" d="M44.7,-76.4C58.1,-69.2,69.2,-56.1,76.4,-41.4C83.6,-26.7,86.9,-10.4,85.1,5.2C83.3,20.8,76.5,35.7,66.8,48.6C57.1,61.5,44.6,72.4,30.3,77.5C16.1,82.6,0.1,81.9,-15.8,78C-31.7,74.1,-47.5,67,-59.8,55.5C-72.1,43.9,-81,27.8,-83.8,11.2C-86.6,-5.4,-83.4,-22.6,-74.6,-36.8C-65.8,-51.1,-51.5,-62.4,-36.8,-69C-22.1,-75.6,-7.1,-77.4,8.5,-88.9C24.1,-100.4,44.7,-76.4,44.7,-76.4Z" transform="translate(100 100)" />
-                    </svg>
-                  </div>
-                  <motion.div 
-                    animate={shouldReduceMotion ? {} : { 
-                      rotate: [0, 5, 0],
-                      scale: [1, 1.05, 1]
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    className="relative z-10 flex h-48 w-48 items-center justify-center rounded-[2rem] border border-white/20 bg-white/5 shadow-2xl backdrop-blur-3xl"
-                  >
-                    <Cpu className="h-24 w-24 text-primary opacity-80" strokeWidth={1} />
-                  </motion.div>
+              <div className="absolute inset-4 overflow-hidden rounded-[2rem] bg-surface-card">
+                <div className="relative h-full w-full">
+                  <img
+                    src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=2070"
+                    alt="Ambiente de desenvolvimento de software de alta performance"
+                    className="h-full w-full object-cover opacity-60 transition-transform duration-700 hover:scale-105"
+                    width={800}
+                    height={1000}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent" />
+                  
+                  {/* Overlay técnico (Código/Grid) */}
+                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-60" />
+                
+                {/* Badge de Tecnologia */}
+                <div className="absolute top-6 left-6 flex items-center space-x-2 rounded-full border border-white/10 bg-black/40 px-3 py-1 backdrop-blur-md">
+                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                  <span className="text-[10px] font-bold tracking-widest text-white uppercase">Advanced Stack</span>
+                </div>
               </div>
 
               {/* Elementos Flutuantes */}
