@@ -93,57 +93,58 @@ export function About() {
             </motion.div>
           </div>
 
-          {/* Visual Técnico - Imagem Real */}
+          {/* Visual Técnico - Código Animado */}
           <div className="lg:col-span-5">
             <motion.div 
               variants={itemVariants}
               className="relative mx-auto max-w-[450px] lg:max-w-none"
             >
-              {/* Moldura Glassmorphism com imagem */}
-              <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-white/10 bg-surface-card/40 shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02]">
-                <img 
-                  src="/quimeratech-about-visual.jpg" 
-                  alt="Ambiente de desenvolvimento de software moderno"
-                  className="h-full w-full object-cover opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-surface/80 via-transparent to-transparent" />
-                
-                {/* Overlay Técnico */}
-                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 0.5px, transparent 0.5px)', backgroundSize: '15px 15px' }} />
-                
-                {/* Badge de Tecnologia */}
-                <div className="absolute top-6 left-6 flex items-center space-x-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 backdrop-blur-md">
-                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                  <span className="text-[10px] font-bold tracking-widest text-white uppercase">Software Excellence</span>
+              {/* Moldura Glassmorphism com efeito de código */}
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:aspect-square">
+                {/* Header de janela de código */}
+                <div className="flex items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
+                  <span className="ml-4 text-[10px] font-mono text-white/40">quimeratech.ts</span>
                 </div>
+
+                <div className="p-6 font-mono text-xs leading-relaxed md:text-sm">
+                  <div className="flex space-x-4">
+                    <div className="select-none text-white/20">
+                      {Array.from({ length: 12 }).map((_, i) => (
+                        <div key={i}>{i + 1}</div>
+                      ))}
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-purple-400">class <span className="text-blue-400">SoftwareHouse</span> {"{"}</div>
+                      <div className="pl-4 text-blue-400">private <span className="text-white">stack</span> = [<span className="text-green-400">"React"</span>, <span className="text-green-400">"Node"</span>];</div>
+                      <div className="pl-4 text-blue-400">private <span className="text-white">mision</span> = <span className="text-green-400">"Innovation"</span>;</div>
+                      <div className="h-4" />
+                      <div className="pl-4 text-purple-400">async <span className="text-yellow-400">buildFuture</span>() {"{"}</div>
+                      <div className="pl-8 text-purple-400">await <span className="text-white">this</span>.<span className="text-yellow-400">transform</span>({"{"}</div>
+                      <div className="pl-12 text-white">quality: <span className="text-orange-400">true</span>,</div>
+                      <div className="pl-12 text-white">speed: <span className="text-orange-400">Infinity</span></div>
+                      <div className="pl-8 text-purple-400">{"})"};</div>
+                      <div className="pl-4 text-purple-400">{"}"}</div>
+                      <div className="text-purple-400">{"}"}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Efeito de brilho/scanner */}
+                <motion.div 
+                  animate={shouldReduceMotion ? {} : { top: ["-10%", "110%"] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className="absolute left-0 right-0 h-20 bg-gradient-to-b from-transparent via-primary/10 to-transparent"
+                />
               </div>
 
-              {/* Elementos Flutuantes */}
-              <motion.div 
-                animate={shouldReduceMotion ? {} : { y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-4 top-1/4 max-w-[180px] rounded-2xl border border-white/10 bg-surface-card/90 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
-              >
-                <p className="text-xs font-semibold italic leading-relaxed text-surface-foreground">
-                  “Soluções inteligentes que transformam o amanhã.”
-                </p>
-              </motion.div>
-
-              <motion.div 
-                animate={shouldReduceMotion ? {} : { y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -left-4 bottom-1/4 rounded-2xl border border-primary/20 bg-primary/10 p-4 shadow-2xl backdrop-blur-xl md:-left-8"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-                    <Rocket className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-primary">Engenharia</p>
-                    <p className="text-xs font-semibold text-surface-foreground">Alta Precisão</p>
-                  </div>
-                </div>
-              </motion.div>
+              {/* Badge de Tecnologia */}
+              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md">
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                <span className="text-[10px] font-bold tracking-widest text-primary uppercase">Clean Code</span>
+              </div>
             </motion.div>
           </div>
         </motion.div>
