@@ -81,7 +81,7 @@ export function Header() {
 
       <div
         className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all duration-300 ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          open ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex h-20 items-center justify-between px-5">
