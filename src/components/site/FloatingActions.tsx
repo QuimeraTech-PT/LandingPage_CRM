@@ -100,6 +100,7 @@ export function FloatingActions() {
                 >
                   <motion.a
                     href={whatsappUrl}
+                    onClick={() => trackClick('whatsapp_menu')}
                     target="_blank"
                     rel="noopener noreferrer"
                     role="menuitem"
