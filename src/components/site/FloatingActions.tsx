@@ -40,9 +40,27 @@ export function FloatingActions() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 lg:bottom-8 lg:right-8">
       <AnimatePresence>
+        {!isVisible && (
+          <motion.a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.1, y: -4 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-[#25D366]/50"
+            aria-label="Contactar via WhatsApp"
+          >
+            <MessageCircle className="h-7 w-7 fill-current" />
+          </motion.a>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {isVisible && (
           <>
-            {/* Actions Menu */}
             <AnimatePresence>
               {isOpen && (
                 <motion.div
@@ -51,7 +69,6 @@ export function FloatingActions() {
                   exit={{ opacity: 0, y: 10, scale: 0.9 }}
                   className="flex flex-col items-end gap-3 mb-2"
                 >
-                  {/* WhatsApp Action */}
                   <motion.a
                     href={whatsappUrl}
                     target="_blank"
@@ -66,7 +83,6 @@ export function FloatingActions() {
                     </div>
                   </motion.a>
 
-                  {/* Scroll to Top Action */}
                   <motion.button
                     onClick={scrollToTop}
                     whileHover={shouldReduceMotion ? {} : { scale: 1.05, x: -4 }}
