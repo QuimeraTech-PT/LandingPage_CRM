@@ -93,82 +93,28 @@ export function About() {
             </motion.div>
           </div>
 
-          {/* Visual Tech-Forward */}
+          {/* Visual Técnico - Imagem Real */}
           <div className="lg:col-span-5">
             <motion.div 
               variants={itemVariants}
-              className="relative aspect-square lg:aspect-auto lg:h-[600px]"
+              className="relative mx-auto max-w-[450px] lg:max-w-none"
             >
-              {/* Moldura Glassmorphism */}
-              <div className="absolute inset-0 rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/5 to-transparent shadow-2xl backdrop-blur-2xl" />
-              
-              <div className="absolute inset-4 overflow-hidden rounded-[2rem] bg-surface-card/40 backdrop-blur-sm">
-                <div className="relative flex h-full w-full items-center justify-center p-8">
-                  {/* Diagrama de Arquitetura Animado */}
-                  <div className="relative w-full max-w-[280px] space-y-4">
-                    {/* Camada UI */}
-                    <motion.div 
-                      variants={itemVariants}
-                      className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 p-4 shadow-lg backdrop-blur-md"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                        <span className="text-xs font-bold tracking-wider text-surface-foreground uppercase">Frontend / UI</span>
-                      </div>
-                      <Cpu className="h-4 w-4 text-primary opacity-60" />
-                    </motion.div>
-
-                    {/* Conexão 1 */}
-                    <div className="flex justify-center h-6">
-                      <motion.div 
-                        animate={shouldReduceMotion ? {} : { height: ["0%", "100%"] }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                        className="w-px bg-gradient-to-b from-primary/50 to-transparent" 
-                      />
-                    </div>
-
-                    {/* Camada API/Logic */}
-                    <motion.div 
-                      variants={itemVariants}
-                      className="flex items-center justify-between rounded-xl border border-white/10 bg-surface-card/80 p-4 shadow-lg backdrop-blur-md"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="h-2 w-2 rounded-full bg-blue-400 opacity-80" />
-                        <span className="text-xs font-bold tracking-wider text-surface-foreground uppercase">API / Business Logic</span>
-                      </div>
-                      <Rocket className="h-4 w-4 text-blue-400 opacity-60" />
-                    </motion.div>
-
-                    {/* Conexão 2 */}
-                    <div className="flex justify-center h-6">
-                      <motion.div 
-                        animate={shouldReduceMotion ? {} : { height: ["0%", "100%"] }}
-                        transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
-                        className="w-px bg-gradient-to-b from-blue-400/50 to-transparent" 
-                      />
-                    </div>
-
-                    {/* Camada Data */}
-                    <motion.div 
-                      variants={itemVariants}
-                      className="flex items-center justify-between rounded-xl border border-secondary/30 bg-secondary/5 p-4 shadow-lg backdrop-blur-md"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="h-2 w-2 rounded-full bg-secondary" />
-                        <span className="text-xs font-bold tracking-wider text-surface-foreground uppercase">Cloud / Database</span>
-                      </div>
-                      <Users className="h-4 w-4 text-secondary opacity-60" />
-                    </motion.div>
-                  </div>
-
-                  {/* Fundo Decorativo */}
-                  <div className="absolute inset-0 -z-10 opacity-10" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 0.5px, transparent 0.5px)', backgroundSize: '20px 20px' }} />
-                </div>
+              {/* Moldura Glassmorphism com imagem */}
+              <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-white/10 bg-surface-card/40 shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02]">
+                <img 
+                  src="/quimeratech-about-visual.jpg" 
+                  alt="Ambiente de desenvolvimento de software moderno"
+                  className="h-full w-full object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-surface/80 via-transparent to-transparent" />
+                
+                {/* Overlay Técnico */}
+                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 0.5px, transparent 0.5px)', backgroundSize: '15px 15px' }} />
                 
                 {/* Badge de Tecnologia */}
-                <div className="absolute top-6 left-6 flex items-center space-x-2 rounded-full border border-white/10 bg-black/40 px-3 py-1 backdrop-blur-md">
+                <div className="absolute top-6 left-6 flex items-center space-x-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 backdrop-blur-md">
                   <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                  <span className="text-[10px] font-bold tracking-widest text-white uppercase">System Architecture</span>
+                  <span className="text-[10px] font-bold tracking-widest text-white uppercase">Software Excellence</span>
                 </div>
               </div>
 
@@ -176,9 +122,9 @@ export function About() {
               <motion.div 
                 animate={shouldReduceMotion ? {} : { y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-4 top-1/4 max-w-[200px] rounded-2xl border border-white/10 bg-surface-card/90 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
+                className="absolute -right-4 top-1/4 max-w-[180px] rounded-2xl border border-white/10 bg-surface-card/90 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
               >
-                <p className="text-sm font-semibold italic leading-relaxed text-surface-foreground">
+                <p className="text-xs font-semibold italic leading-relaxed text-surface-foreground">
                   “Soluções inteligentes que transformam o amanhã.”
                 </p>
               </motion.div>
@@ -193,8 +139,8 @@ export function About() {
                     <Rocket className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-primary">Status</p>
-                    <p className="text-sm font-semibold text-surface-foreground">Deploy Ativo</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-primary">Engenharia</p>
+                    <p className="text-xs font-semibold text-surface-foreground">Alta Precisão</p>
                   </div>
                 </div>
               </motion.div>
