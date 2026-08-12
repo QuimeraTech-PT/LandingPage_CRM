@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowUp, MessageCircle, ChevronUp } from "lucide-react";
 import { transitions } from "@/lib/animations";
 import { cn } from "@/lib/utils";
+import { updateAnalyticsConsent } from "@/lib/analytics"; // We'll use gtag directly if available or dataLayer
+import { useLocation } from "@tanstack/react-router";
 
 export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
