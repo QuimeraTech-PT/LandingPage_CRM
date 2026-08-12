@@ -25,12 +25,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    console.log("Mobile menu state:", open);
-  }, [open]);
-
   const toggleMenu = () => {
-    console.log("Toggle menu clicked, current state:", open);
     setOpen((prev) => !prev);
   };
 
