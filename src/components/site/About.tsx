@@ -129,9 +129,9 @@ export function About() {
               <motion.div 
                 animate={shouldReduceMotion ? {} : { y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -right-4 top-1/4 max-w-[200px] rounded-2xl border border-white/10 bg-surface-card/80 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
+                className="absolute -right-4 top-1/4 max-w-[200px] rounded-2xl border border-white/10 bg-surface-card/90 p-4 shadow-2xl backdrop-blur-xl md:-right-8"
               >
-                <p className="text-sm font-medium italic leading-relaxed text-surface-foreground">
+                <p className="text-sm font-semibold italic leading-relaxed text-surface-foreground">
                   “Soluções inteligentes que transformam o amanhã.”
                 </p>
               </motion.div>
