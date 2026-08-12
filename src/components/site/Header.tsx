@@ -107,9 +107,13 @@ export function Header() {
         <FocusTrap
           active={open}
           focusTrapOptions={{
-            onDeactivate: () => setOpen(false),
+            onDeactivate: () => {
+              setOpen(false);
+              menuButtonRef.current?.focus();
+            },
             clickOutsideDeactivates: true,
             escapeDeactivates: true,
+            initialFocus: false, // Prevents jumping before transition
           }}
         >
           <nav className="flex flex-col gap-2 px-5 py-8">
