@@ -13,7 +13,6 @@ import { AnimatePresence } from "framer-motion";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
-import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingActions } from "@/components/site/FloatingActions";
 import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
