@@ -89,6 +89,12 @@ export function Header() {
         <div className="flex h-20 items-center justify-between px-5">
           <Logo size="md" />
           <button
+            ref={(el) => {
+              if (open && el) {
+                // We'll let FocusTrap handle the initial focus, 
+                // but we keep this ref logic simple
+              }
+            }}
             type="button"
             onClick={() => setOpen(false)}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
