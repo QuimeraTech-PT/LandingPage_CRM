@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { Toaster } from "@/components/ui/sonner";
+import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
 
