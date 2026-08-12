@@ -80,7 +80,9 @@ export function Header() {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all duration-300 ${
+        className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all ${
+          shouldReduceMotion ? "duration-0" : "duration-300"
+        } ${
           open ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
