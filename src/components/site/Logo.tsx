@@ -29,6 +29,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
       width={1774}
       height={887}
       decoding="async"
+      loading="eager"
+      fetchPriority="high"
     />
   );
 
