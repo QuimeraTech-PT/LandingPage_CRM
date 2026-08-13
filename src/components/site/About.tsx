@@ -97,10 +97,15 @@ export function About() {
           <div className="lg:col-span-5 self-stretch">
             <motion.div 
               variants={{
-                hidden: { opacity: 0, x: 30 },
+                hidden: { 
+                  opacity: 0, 
+                  x: shouldReduceMotion ? 0 : 30,
+                  scale: shouldReduceMotion ? 0.98 : 1
+                },
                 visible: { 
                   opacity: 1, 
                   x: 0,
+                  scale: 1,
                   transition: { 
                     ...transitions.slow,
                     delay: 0.3
@@ -111,9 +116,10 @@ export function About() {
             >
               {/* Moldura Glassmorphism com efeito de código */}
               <div 
-                className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.01]"
+                tabIndex={0}
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface outline-hidden"
                 role="img"
-                aria-label="Editor de código mostrando a classe SoftwareHouse da QuimeraTech com foco em qualidade e inovação"
+                aria-label="Editor de código mostrando a classe SoftwareHouse da QuimeraTech com foco em qualidade e inovação. Use o teclado para navegar."
               >
                 {/* Header de janela de código */}
                 <div className="flex shrink-0 items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-3" aria-hidden="true">
