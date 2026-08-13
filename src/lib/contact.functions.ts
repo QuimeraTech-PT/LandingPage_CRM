@@ -42,8 +42,8 @@ export const submitContactForm = createServerFn({ method: "POST" })
         console.warn("LARK_CHAT_ID não configurado. Notificação ignorada.");
       }
 
-      // Enviar feedback por email ao cliente via Lark (Placeholder)
-      await sendLarkEmailFeedback(data.email, data.nome);
+      // Enviar feedback por email ao cliente via Lark Public Mailbox
+      await sendLarkEmailFeedback(data.email, data.nome, data.assunto);
       
     } catch (err: any) {
       console.error("Erro na integração Lark:", err.message);
