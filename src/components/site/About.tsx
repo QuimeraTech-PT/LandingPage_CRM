@@ -81,6 +81,7 @@ export function About() {
                     key={idx}
                     variants={itemVariants}
                     className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60 hover-scale"
+                    onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("about_card_click", { label: stat.label }))}
                   >
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
                       <stat.icon className="h-6 w-6" aria-hidden="true" />
