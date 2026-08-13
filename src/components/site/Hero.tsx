@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
