@@ -168,90 +168,99 @@ export const AccessibilityMenu = () => {
 
             <div className="space-y-6">
               {/* High Contrast */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <Eye className="h-4 w-4" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary" aria-hidden="true">
+                      <Eye className="h-4 w-4" />
+                    </div>
+                    <span id="label-contrast" className="text-sm font-medium">Modo de Alto Contraste</span>
                   </div>
-                  <span id="label-contrast" className="text-sm font-medium">Modo de Alto Contraste</span>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={highContrast}
-                  aria-labelledby="label-contrast"
-                  onClick={toggleContrast}
-                  className={cn(
-                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
-                    highContrast ? "bg-primary" : "bg-muted"
-                  )}
-                >
-                  <span
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={highContrast}
+                    aria-labelledby="label-contrast"
+                    aria-describedby="desc-contrast"
+                    onClick={toggleContrast}
                     className={cn(
-                      "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
-                      highContrast ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      highContrast ? "bg-primary" : "bg-muted"
                     )}
-                  />
-                </button>
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
+                        highContrast ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      )}
+                    />
+                  </button>
+                </div>
+                <p id="desc-contrast" className="text-[10px] text-muted-foreground ml-11">Aumenta o contraste entre o texto e o fundo para melhor legibilidade.</p>
               </div>
 
               {/* Movimento Reduzido */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <Move className="h-4 w-4" aria-hidden="true" />
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary" aria-hidden="true">
+                      <Move className="h-4 w-4" />
+                    </div>
+                    <span id="label-motion" className="text-sm font-medium">Movimento Reduzido</span>
                   </div>
-                  <span id="label-motion" className="text-sm font-medium">Movimento Reduzido</span>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={reducedMotion}
-                  aria-labelledby="label-motion"
-                  onClick={toggleMotion}
-                  className={cn(
-                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
-                    reducedMotion ? "bg-primary" : "bg-muted"
-                  )}
-                >
-                  <span
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={reducedMotion}
+                    aria-labelledby="label-motion"
+                    aria-describedby="desc-motion"
+                    onClick={toggleMotion}
                     className={cn(
-                      "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
-                      reducedMotion ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      reducedMotion ? "bg-primary" : "bg-muted"
                     )}
-                  />
-                </button>
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
+                        reducedMotion ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      )}
+                    />
+                  </button>
+                </div>
+                <p id="desc-motion" className="text-[10px] text-muted-foreground ml-11">Desativa animações e transições para reduzir o cansaço visual ou enjoo.</p>
               </div>
 
               {/* Micro-interações */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <Zap className="h-4 w-4" aria-hidden="true" />
-                  </div>
-                  <div className="flex flex-col">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary" aria-hidden="true">
+                      <Zap className="h-4 w-4" />
+                    </div>
                     <span id="label-interactions" className="text-sm font-medium">Micro-interações</span>
-                    <span className="text-[10px] text-muted-foreground">Cursor e efeitos visuais</span>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={interactions}
-                  aria-labelledby="label-interactions"
-                  onClick={toggleInteractions}
-                  className={cn(
-                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
-                    interactions ? "bg-primary" : "bg-muted"
-                  )}
-                >
-                  <span
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={interactions}
+                    aria-labelledby="label-interactions"
+                    aria-describedby="desc-interactions"
+                    onClick={toggleInteractions}
                     className={cn(
-                      "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
-                      interactions ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      interactions ? "bg-primary" : "bg-muted"
                     )}
-                  />
-                </button>
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
+                        interactions ? "left-[calc(100%-1.25rem)]" : "left-1"
+                      )}
+                    />
+                  </button>
+                </div>
+                <p id="desc-interactions" className="text-[10px] text-muted-foreground ml-11">Controla efeitos visuais como o seguidor do cursor e micro-animações técnicas.</p>
               </div>
 
               {/* Font Size */}
