@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant force-reduced-motion (&:is(.force-reduced-motion *));
 @custom-variant high-contrast (&:is(.high-contrast *));
+@custom-variant disable-interactions (&:is(.disable-interactions *));
 
 /*
  * Design system definition.
@@ -409,6 +410,24 @@
 
   html.force-reduced-motion .framer-motion-container * {
     transition: none !important;
+  }
+
+  /* Disable Micro-interactions utilities */
+  html.disable-interactions .cursor-follower-container,
+  html.disable-interactions .interaction-pulse,
+  html.disable-interactions .hover-scale,
+  html.disable-interactions .scroll-reveal-active {
+    display: none !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Auto-disable interactions if reduced motion is on */
+  html.force-reduced-motion .cursor-follower-container,
+  html.force-reduced-motion .interaction-pulse,
+  html.force-reduced-motion .hover-scale {
+    display: none !important;
   }
 
   * {
