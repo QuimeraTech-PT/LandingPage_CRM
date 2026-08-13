@@ -12,7 +12,7 @@ const contactSchema = z.object({
 export const submitContactForm = createServerFn({ method: "POST" })
   .inputValidator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
-    // 1. Gravar a submissão principal
+    // 1. Gravar a submissão principal no Supabase
     const { data: submission, error: dbError } = await supabaseAdmin
       .from("contact_submissions")
       .insert([data])
@@ -24,17 +24,31 @@ export const submitContactForm = createServerFn({ method: "POST" })
       throw new Error("Erro ao processar o seu pedido.");
     }
 
-    // 2. Simular/Preparar envio de email
-    // Nota: O envio de email real requer um domínio configurado no Lovable Cloud.
-    let emailStatus = "simulated";
+    // 2. Integração com Lark Suite (Notifications & Email)
+    let larkStatus = "pending";
     let errorMessage = null;
 
     try {
-      console.log(`[Simulação Email] Enviando feedback para ${data.email}: "Olá ${data.nome}, recebemos a sua mensagem."`);
-      // Aqui entraria a lógica de envio real quando o domínio estivesse pronto
+      const { sendLarkContactNotification, sendLarkEmailFeedback } = await import("./lark.server");
+      
+      const LARK_CHAT_ID = process.env['LARK_CHAT_ID'];
+      
+      if (LARK_CHAT_ID) {
+        // Enviar notificação para o chat da equipa
+        await sendLarkContactNotification(LARK_CHAT_ID, data);
+        larkStatus = "notified";
+      } else {
+        larkStatus = "lark_chat_id_missing";
+        console.warn("LARK_CHAT_ID não configurado. Notificação ignorada.");
+      }
+
+      // Enviar feedback por email ao cliente via Lark (Placeholder)
+      await sendLarkEmailFeedback(data.email, data.nome);
+      
     } catch (err: any) {
-      emailStatus = "error";
-      errorMessage = err.message || "Unknown email error";
+      console.error("Erro na integração Lark:", err.message);
+      larkStatus = "error";
+      errorMessage = err.message || "Unknown Lark error";
     }
 
     // 3. Registar no audit log
@@ -43,7 +57,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       .insert([{
         submission_id: submission.id,
         email_to: data.email,
-        status: emailStatus,
+        status: larkStatus,
         error_message: errorMessage
       }]);
 
