@@ -144,10 +144,45 @@ export async function sendLarkContactNotification(chatId: string, contactData: {
 }
 
 /**
- * Placeholder for Lark Email API integration.
+ * Sends a feedback email using Lark's Public Mailbox API.
+ * Requires LARK_PUBLIC_MAILBOX_EMAIL environment variable.
  */
-export async function sendLarkEmailFeedback(email: string, nome: string) {
-  // Logic to be implemented when Lark Mail permissions are active
-  console.log(`[Lark Mail Placeholder] Sending email to ${email} for ${nome}`);
-  return { success: true, simulated: true };
+export async function sendLarkEmailFeedback(customerEmail: string, customerName: string, subject: string) {
+  const publicMailbox = process.env['LARK_PUBLIC_MAILBOX_EMAIL'];
+  
+  if (!publicMailbox) {
+    console.warn("LARK_PUBLIC_MAILBOX_EMAIL is not configured. Email feedback skipped.");
+    return { success: false, reason: "missing_config" };
+  }
+
+  try {
+    const token = await getTenantAccessToken();
+
+    // Using Lark's mail.v1.public_mailbox.message.send endpoint
+    // Note: This is a simplified representation of the Public Mailbox Send API
+    const response = await fetch(`https://open.larksuite.com/open-apis/mail/v1/public_mailboxes/${publicMailbox}/messages/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        subject: `Re: ${subject} - QuimeraTech`,
+        content: `Olá ${customerName},\n\nObrigado pelo seu contacto. Recebemos a sua mensagem com sucesso e a nossa equipa irá analisá-la brevemente.\n\nCom os melhores cumprimentos,\nEquipa QuimeraTech`,
+        to_address: customerEmail,
+      }),
+    });
+
+    const result = await response.json() as any;
+
+    if (result.code !== 0) {
+      console.error(`Lark Mail Error: ${result.msg} (code: ${result.code})`);
+      return { success: false, error: result.msg };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to send Lark email:", error.message);
+    return { success: false, error: error.message };
+  }
 }
