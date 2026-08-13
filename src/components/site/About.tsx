@@ -100,34 +100,38 @@ export function About() {
               className="relative mx-auto max-w-[450px] lg:max-w-none"
             >
               {/* Moldura Glassmorphism com efeito de código */}
-              <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:h-full lg:min-h-[500px] lg:aspect-auto">
+              <div 
+                className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:h-full lg:min-h-[500px] lg:aspect-auto"
+                role="img"
+                aria-label="Editor de código mostrando a classe SoftwareHouse da QuimeraTech com foco em qualidade e inovação"
+              >
                 {/* Header de janela de código */}
-                <div className="flex items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-2">
+                <div className="flex items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-2" aria-hidden="true">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-                  <span className="ml-4 text-[10px] font-mono text-white/40">quimeratech.ts</span>
+                  <span className="ml-4 text-[10px] font-mono text-white/60">quimeratech.ts</span>
                 </div>
 
-                <div className="p-6 font-mono text-xs leading-relaxed md:text-sm">
+                <div className="p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
                   <div className="flex space-x-4">
-                    <div className="select-none text-white/20">
+                    <div className="select-none text-white/30">
                       {Array.from({ length: 12 }).map((_, i) => (
                         <div key={i}>{i + 1}</div>
                       ))}
                     </div>
                     <div className="space-y-1">
-                      <div className="text-purple-400">class <span className="text-blue-400">SoftwareHouse</span> {"{"}</div>
-                      <div className="pl-4 text-blue-400">private <span className="text-white">stack</span> = [<span className="text-green-400">"React"</span>, <span className="text-green-400">"Node"</span>];</div>
-                      <div className="pl-4 text-blue-400">private <span className="text-white">mision</span> = <span className="text-green-400">"Innovation"</span>;</div>
+                      <div className="text-[#c678dd]">class <span className="text-[#61afef]">SoftwareHouse</span> {"{"}</div>
+                      <div className="pl-4 text-[#61afef]">private <span className="text-[#abb2bf]">stack</span> = [<span className="text-[#98c379]">"React"</span>, <span className="text-[#98c379]">"Node"</span>];</div>
+                      <div className="pl-4 text-[#61afef]">private <span className="text-[#abb2bf]">mission</span> = <span className="text-[#98c379]">"Innovation"</span>;</div>
                       <div className="h-4" />
-                      <div className="pl-4 text-purple-400">async <span className="text-yellow-400">buildFuture</span>() {"{"}</div>
-                      <div className="pl-8 text-purple-400">await <span className="text-white">this</span>.<span className="text-yellow-400">transform</span>({"{"}</div>
-                      <div className="pl-12 text-white">quality: <span className="text-orange-400">true</span>,</div>
-                      <div className="pl-12 text-white">speed: <span className="text-orange-400">Infinity</span></div>
-                      <div className="pl-8 text-purple-400">{"})"};</div>
-                      <div className="pl-4 text-purple-400">{"}"}</div>
-                      <div className="text-purple-400">{"}"}</div>
+                      <div className="pl-4 text-[#c678dd]">async <span className="text-[#e06c75]">buildFuture</span>() {"{"}</div>
+                      <div className="pl-8 text-[#c678dd]">await <span className="text-[#abb2bf]">this</span>.<span className="text-[#d19a66]">transform</span>({"{"}</div>
+                      <div className="pl-12 text-[#abb2bf]">quality: <span className="text-[#d19a66]">true</span>,</div>
+                      <div className="pl-12 text-[#abb2bf]">speed: <span className="text-[#d19a66]">Infinity</span></div>
+                      <div className="pl-8 text-[#c678dd]">{"})"};</div>
+                      <div className="pl-4 text-[#c678dd]">{"}"}</div>
+                      <div className="text-[#c678dd]">{"}"}</div>
                     </div>
                   </div>
                 </div>
