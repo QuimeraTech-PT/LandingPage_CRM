@@ -135,6 +135,9 @@ function RootShell({ children }: { children: ReactNode }) {
                   const fontSize = localStorage.getItem('a11y-font-size');
                   if (fontSize === 'large') document.documentElement.classList.add('text-large');
                   if (fontSize === 'extra') document.documentElement.classList.add('text-extra');
+
+                  const interactions = localStorage.getItem('a11y-interactions') === 'false';
+                  if (interactions) document.documentElement.classList.add('disable-interactions');
                 } catch (e) {}
               })();
             `,
