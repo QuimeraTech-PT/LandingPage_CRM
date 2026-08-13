@@ -40,7 +40,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
       {/* Abstract geometric background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70 will-change-[opacity]" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70 will-change-[opacity] interaction-pulse" />
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/25 blur-[140px]"
@@ -76,7 +76,7 @@ export function Hero() {
         ].map(([x, y]) => (
           <span
             key={`${x}-${y}`}
-            className="absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_18px_4px_rgba(6,182,212,0.55)]"
+            className="absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_18px_4px_rgba(6,182,212,0.55)] interaction-pulse"
             style={{ left: `${x}%`, top: `${y}%` }}
           />
         ))}
