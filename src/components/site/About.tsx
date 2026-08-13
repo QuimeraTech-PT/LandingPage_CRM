@@ -118,9 +118,13 @@ export function About() {
               <div 
                 tabIndex={0}
                 className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface outline-hidden"
-                role="img"
-                aria-label="Editor de código mostrando a classe SoftwareHouse da QuimeraTech com foco em qualidade e inovação. Use o teclado para navegar."
+                role="article"
+                aria-label="Editor de código: QuimeraTech Software House Logic"
               >
+                <div className="sr-only">
+                  Este elemento contém uma representação visual de código descrevendo a excelência técnica da QuimeraTech.
+                  A classe SoftwareHouse possui uma stack com React e Node, e um método assíncrono para construir o futuro com qualidade e velocidade infinitas.
+                </div>
                 {/* Header de janela de código */}
                 <div className="flex shrink-0 items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-3" aria-hidden="true">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
