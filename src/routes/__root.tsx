@@ -136,8 +136,15 @@ function RootShell({ children }: { children: ReactNode }) {
                   if (fontSize === 'large') document.documentElement.classList.add('text-large');
                   if (fontSize === 'extra') document.documentElement.classList.add('text-extra');
 
-                  const interactions = localStorage.getItem('a11y-interactions') === 'false';
-                  if (interactions) document.documentElement.classList.add('disable-interactions');
+                  const interactions = localStorage.getItem('a11y-interactions');
+                  if (interactions === 'false') {
+                    document.documentElement.classList.add('disable-interactions');
+                  } else if (interactions === 'true') {
+                    document.documentElement.classList.remove('disable-interactions');
+                  } else {
+                    // Default behavior (if null)
+                    document.documentElement.classList.remove('disable-interactions');
+                  }
                 } catch (e) {}
               })();
             `,
