@@ -17,6 +17,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { FloatingActions } from "@/components/site/FloatingActions";
 import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
+import { CursorFollower } from "@/components/site/CursorFollower";
 
 
 function NotFoundComponent() {
@@ -190,6 +191,7 @@ function RootComponent() {
       >
         Saltar para o conteúdo principal
       </a>
+      <CursorFollower />
       <AnimatePresence mode="wait">
         <Outlet />
       </AnimatePresence>
