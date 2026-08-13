@@ -79,6 +79,8 @@ export function Specialties() {
               variants={itemVariants}
               role="listitem"
               className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover-scale"
+              loading="lazy"
+              decoding="async"
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-accent transition-colors group-hover:bg-accent/20">
                 <Icon className="h-6 w-6" />

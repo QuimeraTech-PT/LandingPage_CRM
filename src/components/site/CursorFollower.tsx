@@ -36,11 +36,8 @@ export function CursorFollower() {
       cursorY.set(e.clientY);
       
       const target = e.target as HTMLElement;
-      const isClickable = 
-        target.closest('button') || 
-        target.closest('a') || 
-        target.closest('[role="button"]') ||
-        window.getComputedStyle(target).cursor === 'pointer';
+      const clickableElement = target.closest('button, a, [role="button"]');
+      const isClickable = clickableElement || window.getComputedStyle(target).cursor === 'pointer';
       
       setIsPointer(!!isClickable);
       if (!isVisible) setIsVisible(true);
@@ -61,10 +58,20 @@ export function CursorFollower() {
     };
   }, [cursorX, cursorY, isVisible, shouldReduceMotion, isEnabled]);
 
+  const handlePointerDown = () => {
+    import("@/lib/analytics").then(({ trackEvent }) => {
+      trackEvent("cursor_interaction", { 
+        type: "click",
+        is_pointer: isPointer
+      });
+    });
+  };
+
   if (shouldReduceMotion || !isEnabled) return null;
 
   return (
     <motion.div
+      onPointerDown={handlePointerDown}
       className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block cursor-follower-container"
       style={{
         x: springX,

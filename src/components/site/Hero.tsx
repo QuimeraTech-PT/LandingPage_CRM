@@ -116,7 +116,14 @@ export function Hero() {
             variants={itemVariants}
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Button asChild variant="primary" size="lg" className="w-full sm:w-auto" rightIcon={<ArrowRight className="h-5 w-5" />}>
+            <Button 
+              asChild 
+              variant="primary" 
+              size="lg" 
+              className="w-full sm:w-auto" 
+              rightIcon={<ArrowRight className="h-5 w-5" />}
+              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "especialidades" }))}
+            >
               <a href="#especialidades">
                 Descubra as Nossas Soluções
               </a>
@@ -126,6 +133,7 @@ export function Hero() {
               size="lg"
               variant="secondary"
               className="w-full sm:w-auto"
+              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "contactos" }))}
             >
               <a href="#contactos">Fale Connosco</a>
             </Button>

@@ -80,6 +80,8 @@ export function Methodology() {
               variants={itemVariants}
               role="listitem"
               className="relative flex flex-col rounded-2xl border border-surface-border bg-surface-card p-6 transition-shadow duration-300 hover:shadow-[0_20px_45px_-28px_rgba(37,99,235,0.6)] hover-scale"
+              loading="lazy"
+              decoding="async"
             >
               <span className="text-sm font-bold tracking-widest text-primary">{phase.step}</span>
               <h3 className="mt-3 text-lg leading-[1.3] font-semibold">{phase.title}</h3>
