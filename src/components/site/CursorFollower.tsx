@@ -5,6 +5,7 @@ export function CursorFollower() {
   const shouldReduceMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -14,7 +15,21 @@ export function CursorFollower() {
   const springY = useSpring(cursorY, springConfig);
 
   useEffect(() => {
-    if (shouldReduceMotion) return;
+    const checkEnabled = () => {
+      const interactions = localStorage.getItem("a11y-interactions") !== "false";
+      setIsEnabled(interactions);
+    };
+    
+    checkEnabled();
+    
+    // Listen for changes (e.g. from AccessibilityMenu)
+    const observer = new MutationObserver(() => {
+      setIsEnabled(!document.documentElement.classList.contains("disable-interactions"));
+    });
+    
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    
+    if (shouldReduceMotion || !isEnabled) return;
 
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
@@ -42,14 +57,15 @@ export function CursorFollower() {
       window.removeEventListener("mousemove", moveCursor);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
+      observer.disconnect();
     };
-  }, [cursorX, cursorY, isVisible, shouldReduceMotion]);
+  }, [cursorX, cursorY, isVisible, shouldReduceMotion, isEnabled]);
 
-  if (shouldReduceMotion) return null;
+  if (shouldReduceMotion || !isEnabled) return null;
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block"
+      className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block cursor-follower-container"
       style={{
         x: springX,
         y: springY,

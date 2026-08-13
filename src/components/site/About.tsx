@@ -80,7 +80,7 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60"
+                    className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all hover:bg-surface-card/60 hover-scale"
                   >
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
                       <stat.icon className="h-6 w-6" aria-hidden="true" />
@@ -163,7 +163,7 @@ export function About() {
                 <motion.div 
                   animate={shouldReduceMotion ? {} : { top: ["-10%", "110%"] }}
                   transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                  className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none"
+                  className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none interaction-pulse"
                 />
               </div>
 

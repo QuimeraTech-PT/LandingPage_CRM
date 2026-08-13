@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { Accessibility, X, Type, Eye, Move } from "lucide-react";
+import { Accessibility, X, Type, Eye, Move, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ export const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [interactions, setInteractions] = useState(true);
   const [fontSize, setFontSize] = useState<"normal" | "large" | "extra">("normal");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -24,13 +25,15 @@ export const AccessibilityMenu = () => {
     // Load preferences
     const savedContrast = localStorage.getItem("a11y-high-contrast") === "true";
     const savedMotion = localStorage.getItem("a11y-reduced-motion") === "true";
+    const savedInteractions = localStorage.getItem("a11y-interactions") !== "false";
     const savedFontSize = (localStorage.getItem("a11y-font-size") as any) || "normal";
 
     setHighContrast(savedContrast);
     setReducedMotion(savedMotion);
+    setInteractions(savedInteractions);
     setFontSize(savedFontSize);
     
-    applySettings({ contrast: savedContrast, motion: savedMotion, size: savedFontSize });
+    applySettings({ contrast: savedContrast, motion: savedMotion, interactions: savedInteractions, size: savedFontSize });
   }, []);
 
   useEffect(() => {
@@ -61,7 +64,7 @@ export const AccessibilityMenu = () => {
     };
   }, [isOpen]);
 
-  const applySettings = ({ contrast, motion, size }: { contrast: boolean, motion: boolean, size: string }) => {
+  const applySettings = ({ contrast, motion, interactions: interactionsVal, size }: { contrast: boolean, motion: boolean, interactions: boolean, size: string }) => {
     const root = document.documentElement;
     
     // Contrast
@@ -77,6 +80,13 @@ export const AccessibilityMenu = () => {
     } else {
       root.classList.remove("force-reduced-motion");
     }
+
+    // Interactions
+    if (!interactionsVal) {
+      root.classList.add("disable-interactions");
+    } else {
+      root.classList.remove("disable-interactions");
+    }
     
     // Font size
     root.classList.remove("text-large", "text-extra");
@@ -88,23 +98,30 @@ export const AccessibilityMenu = () => {
     const newVal = !highContrast;
     setHighContrast(newVal);
     localStorage.setItem("a11y-high-contrast", String(newVal));
-    applySettings({ contrast: newVal, motion: reducedMotion, size: fontSize });
+    applySettings({ contrast: newVal, motion: reducedMotion, interactions, size: fontSize });
   };
 
   const toggleMotion = () => {
     const newVal = !reducedMotion;
     setReducedMotion(newVal);
     localStorage.setItem("a11y-reduced-motion", String(newVal));
-    applySettings({ contrast: highContrast, motion: newVal, size: fontSize });
+    applySettings({ contrast: highContrast, motion: newVal, interactions, size: fontSize });
     
     // Invalidate router state if needed, though scroll behavior is mostly CSS/global
     router.invalidate();
   };
 
+  const toggleInteractions = () => {
+    const newVal = !interactions;
+    setInteractions(newVal);
+    localStorage.setItem("a11y-interactions", String(newVal));
+    applySettings({ contrast: highContrast, motion: reducedMotion, interactions: newVal, size: fontSize });
+  };
+
   const updateFontSize = (size: "normal" | "large" | "extra") => {
     setFontSize(size);
     localStorage.setItem("a11y-font-size", size);
-    applySettings({ contrast: highContrast, motion: reducedMotion, size });
+    applySettings({ contrast: highContrast, motion: reducedMotion, interactions, size });
   };
 
   return (
@@ -176,7 +193,6 @@ export const AccessibilityMenu = () => {
                     )}
                   />
                 </button>
-
               </div>
 
               {/* Movimento Reduzido */}
@@ -205,7 +221,37 @@ export const AccessibilityMenu = () => {
                     )}
                   />
                 </button>
+              </div>
 
+              {/* Micro-interações */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <Zap className="h-4 w-4" aria-hidden="true" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span id="label-interactions" className="text-sm font-medium">Micro-interações</span>
+                    <span className="text-[10px] text-muted-foreground">Cursor e efeitos visuais</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={interactions}
+                  aria-labelledby="label-interactions"
+                  onClick={toggleInteractions}
+                  className={cn(
+                    "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                    interactions ? "bg-primary" : "bg-muted"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-[left] duration-200 ease-in-out",
+                      interactions ? "left-[calc(100%-1.25rem)]" : "left-1"
+                    )}
+                  />
+                </button>
               </div>
 
               {/* Font Size */}
