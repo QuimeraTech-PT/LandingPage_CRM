@@ -94,30 +94,40 @@ export function About() {
           </div>
 
           {/* Visual Técnico - Código Animado */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 self-stretch">
             <motion.div 
-              variants={itemVariants}
-              className="relative mx-auto max-w-[450px] lg:max-w-none"
+              variants={{
+                hidden: { opacity: 0, x: 30 },
+                visible: { 
+                  opacity: 1, 
+                  x: 0,
+                  transition: { 
+                    ...transitions.slow,
+                    delay: 0.3
+                  } 
+                }
+              }}
+              className="relative h-full min-h-[400px] lg:min-h-0"
             >
               {/* Moldura Glassmorphism com efeito de código */}
               <div 
-                className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] lg:h-full lg:min-h-[500px] lg:aspect-auto"
+                className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-transform duration-500 hover:scale-[1.01]"
                 role="img"
                 aria-label="Editor de código mostrando a classe SoftwareHouse da QuimeraTech com foco em qualidade e inovação"
               >
                 {/* Header de janela de código */}
-                <div className="flex items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-2" aria-hidden="true">
+                <div className="flex shrink-0 items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-3" aria-hidden="true">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
                   <span className="ml-4 text-[10px] font-mono text-white/60">quimeratech.ts</span>
                 </div>
 
-                <div className="p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
+                <div className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
                   <div className="flex space-x-4">
                     <div className="select-none text-white/30">
-                      {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i}>{i + 1}</div>
+                      {Array.from({ length: 14 }).map((_, i) => (
+                        <div key={i}>{String(i + 1).padStart(2, '0')}</div>
                       ))}
                     </div>
                     <div className="space-y-1">
@@ -128,9 +138,12 @@ export function About() {
                       <div className="pl-4 text-[#c678dd]">async <span className="text-[#e06c75]">buildFuture</span>() {"{"}</div>
                       <div className="pl-8 text-[#c678dd]">await <span className="text-[#abb2bf]">this</span>.<span className="text-[#d19a66]">transform</span>({"{"}</div>
                       <div className="pl-12 text-[#abb2bf]">quality: <span className="text-[#d19a66]">true</span>,</div>
-                      <div className="pl-12 text-[#abb2bf]">speed: <span className="text-[#d19a66]">Infinity</span></div>
+                      <div className="pl-12 text-[#abb2bf]">speed: <span className="text-[#d19a66]">Infinity</span>,</div>
+                      <div className="pl-12 text-[#abb2bf]">purpose: <span className="text-[#98c379]">"Impact"</span></div>
                       <div className="pl-8 text-[#c678dd]">{"})"};</div>
                       <div className="pl-4 text-[#c678dd]">{"}"}</div>
+                      <div className="h-4" />
+                      <div className="pl-4 text-white/20">// Continuous improvement...</div>
                       <div className="text-[#c678dd]">{"}"}</div>
                     </div>
                   </div>
@@ -139,13 +152,13 @@ export function About() {
                 {/* Efeito de brilho/scanner */}
                 <motion.div 
                   animate={shouldReduceMotion ? {} : { top: ["-10%", "110%"] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                  className="absolute left-0 right-0 h-20 bg-gradient-to-b from-transparent via-primary/10 to-transparent"
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                  className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none"
                 />
               </div>
 
               {/* Badge de Tecnologia */}
-              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md">
+              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 <span className="text-[10px] font-bold tracking-widest text-primary uppercase">Clean Code</span>
               </div>
