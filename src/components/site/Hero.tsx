@@ -6,6 +6,17 @@ import { transitions, variants } from "@/lib/animations";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
+  
+  // High priority for hero visuals
+  useEffect(() => {
+    const heroVisuals = document.querySelectorAll('#top img, #top svg');
+    heroVisuals.forEach(el => {
+      if (el instanceof HTMLImageElement) {
+        el.loading = 'eager';
+        el.fetchPriority = 'high';
+      }
+    });
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -28,7 +39,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
       {/* Abstract geometric background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70 will-change-[opacity]" />
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/25 blur-[140px]"
@@ -76,6 +87,7 @@ export function Hero() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
+          viewport={{ once: true }}
         >
           <motion.div
             variants={itemVariants}

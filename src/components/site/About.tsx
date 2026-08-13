@@ -34,7 +34,7 @@ export function About() {
   return (
     <section 
       id="sobre" 
-      className="relative overflow-hidden bg-surface py-24 text-surface-foreground md:py-32"
+      className="relative overflow-hidden bg-surface py-24 text-surface-foreground md:py-32 contain-paint"
       aria-labelledby="about-heading"
     >
       {/* Background Orbs para profundidade (Glassmorphism context) */}

@@ -46,7 +46,7 @@ export function Specialties() {
 
   return (
     <section id="especialidades" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="specialties-heading">
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40 will-change-[opacity]" />
       <div
         aria-hidden
         className="pointer-events-none absolute top-1/3 -left-32 h-96 w-96 rounded-full bg-primary/15 blur-[130px]"
