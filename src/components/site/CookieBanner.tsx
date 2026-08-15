@@ -119,6 +119,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           >
             <X className="h-4 w-4" />
           </button>
+        </div>
       </div>
     </FocusTrap>
   );
