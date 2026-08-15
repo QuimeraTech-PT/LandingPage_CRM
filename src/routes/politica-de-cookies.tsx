@@ -6,7 +6,7 @@ import { SITE_URL, seoMeta, seoLinks, breadcrumbList, jsonLd } from "@/lib/seo";
 import { PageTransition } from "@/components/site/PageTransition";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { updateAnalyticsConsent } from "@/lib/analytics";
+import { updateAnalyticsConsent, initAnalytics } from "@/lib/analytics";
 
 const title = "Política de Cookies — QuimeraTech";
 const description =
@@ -57,7 +57,13 @@ function CookiesPolicy() {
     localStorage.removeItem("cookie-consent");
     updateAnalyticsConsent("essential");
     toast.success("Preferências de cookies repostas com sucesso.");
-    // Small delay before reloading to allow the user to see the success message
+    
+    // Re-initialize analytics with default (denied) consent
+    const gtmId = import.meta.env.VITE_GTM_ID;
+    if (gtmId) {
+      initAnalytics(gtmId);
+    }
+
     setTimeout(() => {
       window.location.reload();
     }, 1000);

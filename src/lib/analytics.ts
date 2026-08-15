@@ -19,21 +19,24 @@ export const initAnalytics = (gtmId: string) => {
 
   window.dataLayer = window.dataLayer || [];
   
-  // Set default consent to 'denied' for privacy-centric behavior
-  // This is the "Consent Mode v2" approach.
+  // Get current consent from localStorage
+  const currentConsent = localStorage.getItem("cookie-consent") as "all" | "essential" | "none" | null;
+  
+  const consentConfig = {
+    ad_storage: currentConsent === "all" ? "granted" : "denied",
+    analytics_storage: currentConsent === "all" ? "granted" : "denied",
+    ad_user_data: currentConsent === "all" ? "granted" : "denied",
+    ad_personalization: currentConsent === "all" ? "granted" : "denied",
+    wait_for_update: 500,
+  };
+
   const gtag = function () {
     window.dataLayer.push(arguments);
   };
   window.gtag = gtag;
 
   // @ts-ignore
-  gtag("consent", "default", {
-    ad_storage: "denied",
-    analytics_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-    wait_for_update: 500,
-  });
+  gtag("consent", "default", consentConfig);
 
   // Load GTM snippet
   const script = document.createElement("script");
