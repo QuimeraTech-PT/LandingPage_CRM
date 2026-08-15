@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
 import FocusTrap from "focus-trap-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 export interface CookieBannerHandle {
   open: () => void;
@@ -15,6 +15,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
   const lastActiveElement = useRef<HTMLElement | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
@@ -67,10 +68,10 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       <motion.div
         role="region"
         aria-label="Gestão de Cookies"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 50 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 50 }}
+        animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 50 }}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
           "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8",
         )}
