@@ -142,9 +142,6 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       console.warn("Google Drive folder creation failed or not configured:", e);
     }
 
-
-    if (projectError) throw projectError;
-
     // 3. Update Lead status
     await supabaseAdmin
       .from("crm_leads")
