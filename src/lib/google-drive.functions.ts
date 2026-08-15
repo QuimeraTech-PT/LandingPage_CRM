@@ -1,11 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { google } from 'googleapis';
+import { google, drive_v3 } from 'googleapis';
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-
-// Nota: O utilizador precisa de configurar estes segredos via add_secret
-// GOOGLE_SERVICE_ACCOUNT_EMAIL
-// GOOGLE_PRIVATE_KEY
-// GOOGLE_DRIVE_ROOT_FOLDER_ID (Pasta QuimeraTech/Clientes)
+import { z } from "zod";
 
 const getDriveClient = () => {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -17,7 +13,7 @@ const getDriveClient = () => {
 
   const auth = new google.auth.JWT(
     email,
-    null,
+    undefined,
     key,
     ['https://www.googleapis.com/auth/drive.file']
   );
@@ -26,28 +22,29 @@ const getDriveClient = () => {
 };
 
 export const createProjectFolder = createServerFn({ method: "POST" })
-  .handler(async ({ data }: { data: { projectId: string; clientName: string; projectName: string } }) => {
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    clientName: z.string(),
+    projectName: z.string()
+  }).parse(data))
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       const rootFolderId = process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID;
 
-      // 1. Criar pasta do Cliente se não existir
-      // (Para simplicidade neste MVP, criamos uma pasta para cada projeto dentro da raiz configurada)
-      const folderMetadata = {
+      const folderMetadata: drive_v3.Schema$File = {
         name: `${data.clientName} - ${data.projectName}`,
         mimeType: 'application/vnd.google-apps.folder',
         parents: rootFolderId ? [rootFolderId] : []
       };
 
       const folder = await drive.files.create({
-        // @ts-ignore
-        resource: folderMetadata,
+        requestBody: folderMetadata,
         fields: 'id',
       });
 
       const folderId = folder.data.id;
 
-      // 2. Atualizar o projeto na base de dados
       if (folderId) {
         await supabaseAdmin
           .from("crm_projects")
@@ -63,7 +60,10 @@ export const createProjectFolder = createServerFn({ method: "POST" })
   });
 
 export const listProjectFiles = createServerFn({ method: "GET" })
-  .handler(async ({ data }: { data: { folderId: string } }) => {
+  .inputValidator((data: any) => z.object({
+    folderId: z.string()
+  }).parse(data))
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       const response = await drive.files.list({

@@ -64,7 +64,7 @@ function LeadsPage() {
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-semibold">{lead.name}</h3>
                     {getStatusBadge(lead.status)}
-                    {lead.estimated_value > 0 && (
+                    {lead.estimated_value && Number(lead.estimated_value) > 0 && (
                       <span className="text-sm font-medium text-primary">
                         {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(Number(lead.estimated_value))}
                       </span>
