@@ -164,7 +164,9 @@ function RootComponent() {
   const cookieBannerRef = useRef<CookieBannerHandle>(null);
 
   useEffect(() => {
+    console.log("Root: Accessibility listeners setting up");
     const handleOpenConsent = () => {
+      console.log("Root: open-cookie-settings event received");
       cookieBannerRef.current?.open();
     };
     window.addEventListener("open-cookie-settings", handleOpenConsent);
