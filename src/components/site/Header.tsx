@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 import { Logo } from "./Logo";
+import { Link } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
 
 
@@ -23,7 +25,22 @@ export function Header() {
   const shouldReduceMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase.rpc('has_role', {
+          _user_id: session.user.id,
+          _role: 'admin'
+        });
+        setIsAdmin(!!data);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   const toggleMenu = () => {
     const newState = !open;
@@ -65,6 +82,16 @@ export function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-6 pl-6 border-l border-border/50">
+          {isAdmin && (
+            <Link 
+              to="/admin" 
+              className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors mr-4"
+              title="Aceder ao CRM"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
+          )}
           <AccessibilityMenu />
         </div>
 

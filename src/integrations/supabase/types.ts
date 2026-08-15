@@ -76,6 +76,142 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_finances: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string
+          date: string
+          description: string
+          id: string
+          project_id: string | null
+          status: string | null
+          type: Database["public"]["Enums"]["crm_transaction_type"]
+        }
+        Insert: {
+          amount: number
+          category?: string | null
+          created_at?: string
+          date?: string
+          description: string
+          id?: string
+          project_id?: string | null
+          status?: string | null
+          type: Database["public"]["Enums"]["crm_transaction_type"]
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          project_id?: string | null
+          status?: string | null
+          type?: Database["public"]["Enums"]["crm_transaction_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_finances_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "crm_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          estimated_value: number | null
+          google_drive_folder_id: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["crm_lead_status"]
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          estimated_value?: number | null
+          google_drive_folder_id?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["crm_lead_status"]
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          estimated_value?: number | null
+          google_drive_folder_id?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["crm_lead_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_projects: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          google_drive_folder_id: string | null
+          id: string
+          lead_id: string | null
+          name: string
+          start_date: string | null
+          status: Database["public"]["Enums"]["crm_project_status"]
+          total_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          google_drive_folder_id?: string | null
+          id?: string
+          lead_id?: string | null
+          name: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["crm_project_status"]
+          total_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          google_drive_folder_id?: string | null
+          id?: string
+          lead_id?: string | null
+          name?: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["crm_project_status"]
+          total_value?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_projects_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -109,6 +245,20 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      crm_lead_status:
+        | "new"
+        | "contacted"
+        | "proposal"
+        | "negotiation"
+        | "closed_won"
+        | "closed_lost"
+      crm_project_status:
+        | "planning"
+        | "active"
+        | "on_hold"
+        | "completed"
+        | "cancelled"
+      crm_transaction_type: "income" | "expense"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -237,6 +387,22 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      crm_lead_status: [
+        "new",
+        "contacted",
+        "proposal",
+        "negotiation",
+        "closed_won",
+        "closed_lost",
+      ],
+      crm_project_status: [
+        "planning",
+        "active",
+        "on_hold",
+        "completed",
+        "cancelled",
+      ],
+      crm_transaction_type: ["income", "expense"],
     },
   },
 } as const
