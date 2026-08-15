@@ -24,11 +24,26 @@ export const submitContactForm = createServerFn({ method: "POST" })
       throw new Error("Erro ao processar o seu pedido.");
     }
 
-    // 2. Local Audit Status (Lark Integration disabled)
-    let submissionStatus = "stored_locally";
+    // 2. Criar Lead no CRM automaticamente
+    const { error: crmError } = await supabaseAdmin
+      .from("crm_leads")
+      .insert([{
+        name: data.nome,
+        email: data.email,
+        notes: `Assunto: ${data.assunto}\n\nMensagem: ${data.mensagem}`,
+        source: 'website'
+      }]);
+
+    if (crmError) {
+      console.error("Erro ao criar lead no CRM:", crmError);
+      // Não bloqueamos o formulário se o CRM falhar, apenas logamos
+    }
+
+    // 3. Local Audit Status
+    let submissionStatus = "stored_locally_and_crm";
     let errorMessage = null;
 
-    // 3. Registar no audit log
+    // 4. Registar no audit log
     await supabaseAdmin
       .from("contact_audit_logs")
       .insert([{
