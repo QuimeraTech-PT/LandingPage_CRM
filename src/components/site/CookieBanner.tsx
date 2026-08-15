@@ -16,27 +16,20 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useEffect(() => {
     setMounted(true);
-    console.log("CookieBanner: Mounted");
+    // Auto-show logic
+    const consent = localStorage.getItem("cookie-consent");
+    if (!consent) {
+      const timer = setTimeout(() => setIsVisible(true), 1500);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   useImperativeHandle(ref, () => ({
     open: () => {
-      console.log("CookieBanner: open() called");
       lastActiveElement.current = document.activeElement as HTMLElement;
       setIsVisible(true);
     },
   }));
-
-  useEffect(() => {
-    const consent = localStorage.getItem("cookie-consent");
-    if (!consent) {
-      const timer = setTimeout(() => {
-        console.log("CookieBanner: Auto-showing");
-        setIsVisible(true);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   const acceptAll = () => {
     localStorage.setItem("cookie-consent", "all");
@@ -106,7 +99,10 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         </div>
 
         <button
-          onClick={() => setIsVisible(false)}
+          onClick={() => {
+            setIsVisible(false);
+            lastActiveElement.current?.focus();
+          }}
           className="absolute top-4 right-4 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 rounded-sm p-1"
           aria-label="Fechar banner de cookies"
         >
