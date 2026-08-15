@@ -5,21 +5,12 @@ import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon } f
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
-// Placeholder for project fetching - in a real app this would be a server function
-const getProjects = async () => {
-  const { data, error } = await supabase
-    .from('crm_projects')
-    .select('*, crm_leads(name, company)')
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return data;
-};
+import { getProjects } from '@/lib/crm.functions';
 
 export const Route = createFileRoute('/admin/projects')({
   component: ProjectsPage,
 });
+
 
 function ProjectsPage() {
   const { data: projects } = useSuspenseQuery({
