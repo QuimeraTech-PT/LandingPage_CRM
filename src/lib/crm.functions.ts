@@ -128,6 +128,23 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
     if (projectError) throw projectError;
 
+    // 2.1 Trigger Drive Folder Creation (async, don't wait if not configured)
+    try {
+      const { createProjectFolder } = await import('./google-drive.functions');
+      await createProjectFolder({
+        data: {
+          projectId: project.id,
+          clientName: data.clientName,
+          projectName: data.projectName
+        }
+      });
+    } catch (e) {
+      console.warn("Google Drive folder creation failed or not configured:", e);
+    }
+
+
+    if (projectError) throw projectError;
+
     // 3. Update Lead status
     await supabaseAdmin
       .from("crm_leads")
