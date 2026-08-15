@@ -4,7 +4,6 @@ import { Cookie, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
-import FocusTrap from "focus-trap-react";
 
 export interface CookieBannerHandle {
   open: () => void;
@@ -49,25 +48,13 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   if (!mounted || !isVisible) return null;
 
   return (
-    <FocusTrap
-      active={isVisible}
-      focusTrapOptions={{
-        onDeactivate: () => {
-          setIsVisible(false);
-          lastActiveElement.current?.focus();
-        },
-        clickOutsideDeactivates: true,
-        escapeDeactivates: true,
-        fallbackFocus: "[role='region']",
-      }}
+    <div
+      role="region"
+      aria-label="Gestão de Cookies"
+      className={cn(
+        "fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-6xl md:bottom-8 animate-in fade-in slide-in-from-bottom-5 duration-300",
+      )}
     >
-      <div
-        role="region"
-        aria-label="Gestão de Cookies"
-        className={cn(
-          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8 animate-in fade-in slide-in-from-bottom-5 duration-300",
-        )}
-      >
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/80 p-6 shadow-2xl backdrop-blur-xl md:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
@@ -120,8 +107,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
             <X className="h-4 w-4" />
           </button>
         </div>
-      </div>
-    </FocusTrap>
+    </div>
   );
 });
 
