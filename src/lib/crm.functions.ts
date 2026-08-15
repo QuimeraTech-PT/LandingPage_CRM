@@ -66,12 +66,12 @@ export const getLeads = createServerFn({ method: "GET" })
 export const createLead = createServerFn({ method: "POST" })
   .inputValidator((data: any) => z.object({
     name: z.string(),
-    email: z.string().optional(),
-    phone: z.string().optional(),
-    company: z.string().optional(),
-    estimated_value: z.number().optional(),
-    notes: z.string().optional(),
-    status: z.string().optional()
+    email: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
+    company: z.string().nullable().optional(),
+    estimated_value: z.number().nullable().optional(),
+    notes: z.string().nullable().optional(),
+    status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']).optional()
   }).parse(data))
   .handler(async ({ data }) => {
     const { error } = await supabaseAdmin
