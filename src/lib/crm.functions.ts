@@ -1,11 +1,11 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, Middleware } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
 /**
  * Middleware para garantir que apenas administradores podem aceder a funções do CRM.
  */
-export const requireAdmin = async ({ context, next }: { context: any, next: any }) => {
+export const requireAdmin = new Middleware().handler(async ({ context, next }) => {
   if (!context.userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
@@ -18,10 +18,7 @@ export const requireAdmin = async ({ context, next }: { context: any, next: any 
   }
 
   return next();
-};
-
-
-
+});
 
 export const getCRMStats = createServerFn({ method: "GET" })
   .middleware([requireAdmin])
@@ -132,7 +129,6 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       .select()
       .single();
 
-
     if (projectError) throw projectError;
 
     // 3. Update Lead status
@@ -143,4 +139,3 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
     return { success: true, project };
   });
-
