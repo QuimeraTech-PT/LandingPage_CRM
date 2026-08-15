@@ -17,8 +17,9 @@ export const requireAdmin = async (ctx: { supabase: any; userId?: string }) => {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  return ctx;
+  return { ...ctx, isAdmin: true };
 };
+
 
 
 export const getCRMStats = createServerFn({ method: "GET" })
@@ -123,12 +124,13 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       .from("crm_projects")
       .insert([{
         name: data.projectName,
-        client_name: data.clientName,
+        lead_id: data.leadId,
         status: 'planning',
         start_date: new Date().toISOString().split('T')[0]
       }])
       .select()
       .single();
+
 
     if (projectError) throw projectError;
 
