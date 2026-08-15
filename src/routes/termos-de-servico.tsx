@@ -19,7 +19,7 @@ export const Route = createFileRoute("/termos-de-servico")({
       type: "article",
       image: "/og-termos.jpg",
       imageAlt: "Termos de Serviço da QuimeraTech",
-      keywords: "termos de serviço, condições de uso, legal, quimeratech",
+      keywords: "termos de serviço, condições de uso, legal, quimeratech, termos e condições, contrato de serviço, regras de utilização",
     }),
     links: seoLinks(path),
     scripts: [
