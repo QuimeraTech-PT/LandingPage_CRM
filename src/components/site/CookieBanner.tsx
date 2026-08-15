@@ -18,6 +18,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     open: () => {
+      console.log("CookieBanner: open() called");
       lastActiveElement.current = document.activeElement as HTMLElement;
       setIsVisible(true);
     },
