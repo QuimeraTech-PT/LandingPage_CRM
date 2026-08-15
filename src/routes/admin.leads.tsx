@@ -56,7 +56,7 @@ function LeadsPage() {
       </div>
 
       <div className="grid gap-4">
-        {leads?.map((lead) => (
+        {leads?.map((lead: any) => (
           <Card key={lead.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
