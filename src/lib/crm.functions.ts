@@ -1,28 +1,16 @@
-import { createServerFn, createMiddleware } from "@tanstack/react-start";
+import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
 /**
  * Middleware para garantir que apenas administradores podem aceder a funções do CRM.
  */
-export const requireAdmin = createMiddleware().handler(async ({ context, next }) => {
-  if (!context.userId) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
-
-  const { data, error } = await context.supabase
-    .rpc("has_role", { _user_id: context.userId, _role: "admin" });
-
-  if (error || !data) {
-    throw new Response("Forbidden", { status: 403 });
-  }
-
-  return next();
-});
-
 export const getCRMStats = createServerFn({ method: "GET" })
-  .middleware([requireAdmin])
-  .handler(async () => {
+  .handler(async ({ context }) => {
+    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     const [leads, projects, finances] = await Promise.all([
       supabaseAdmin.from("crm_leads").select("*", { count: "exact" }),
       supabaseAdmin.from("crm_projects").select("*", { count: "exact" }),
@@ -49,8 +37,11 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
-  .middleware([requireAdmin])
-  .handler(async () => {
+  .handler(async ({ context }) => {
+    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     const { data, error } = await supabaseAdmin
       .from("crm_leads")
       .select("*")
@@ -61,7 +52,6 @@ export const getLeads = createServerFn({ method: "GET" })
   });
 
 export const createLead = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
   .inputValidator((data: any) => z.object({
     name: z.string(),
     email: z.string().nullable().optional(),
@@ -71,7 +61,11 @@ export const createLead = createServerFn({ method: "POST" })
     notes: z.string().nullable().optional(),
     status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']).optional()
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     const { error } = await supabaseAdmin
       .from("crm_leads")
       .insert([data]);
@@ -81,13 +75,16 @@ export const createLead = createServerFn({ method: "POST" })
   });
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
   .inputValidator((data: any) => z.object({
     id: z.string().uuid(),
     status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']),
     estimated_value: z.number().nullable().optional(),
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     const { error } = await supabaseAdmin
       .from("crm_leads")
       .update({ 
@@ -101,13 +98,16 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   });
 
 export const convertLeadToProject = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
   .inputValidator((data: any) => z.object({
     leadId: z.string().uuid(),
     projectName: z.string(),
     clientName: z.string(),
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     // 1. Get lead info
     const { data: lead, error: leadError } = await supabaseAdmin
       .from("crm_leads")
