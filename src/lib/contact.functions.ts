@@ -24,32 +24,9 @@ export const submitContactForm = createServerFn({ method: "POST" })
       throw new Error("Erro ao processar o seu pedido.");
     }
 
-    // 2. Integração com Lark Suite (Notifications & Email)
-    let larkStatus = "pending";
+    // 2. Local Audit Status (Lark Integration disabled)
+    let submissionStatus = "stored_locally";
     let errorMessage = null;
-
-    try {
-      const { sendLarkContactNotification, sendLarkEmailFeedback } = await import("./lark.server");
-      
-      const LARK_CHAT_ID = process.env['LARK_CHAT_ID'];
-      
-      if (LARK_CHAT_ID) {
-        // Enviar notificação para o chat da equipa
-        await sendLarkContactNotification(LARK_CHAT_ID, data);
-        larkStatus = "notified";
-      } else {
-        larkStatus = "lark_chat_id_missing";
-        console.warn("LARK_CHAT_ID não configurado. Notificação ignorada.");
-      }
-
-      // Enviar feedback por email ao cliente via Lark Public Mailbox
-      await sendLarkEmailFeedback(data.email, data.nome, data.assunto);
-      
-    } catch (err: any) {
-      console.error("Erro na integração Lark:", err.message);
-      larkStatus = "error";
-      errorMessage = err.message || "Unknown Lark error";
-    }
 
     // 3. Registar no audit log
     await supabaseAdmin
@@ -57,7 +34,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       .insert([{
         submission_id: submission.id,
         email_to: data.email,
-        status: larkStatus,
+        status: submissionStatus,
         error_message: errorMessage
       }]);
 
