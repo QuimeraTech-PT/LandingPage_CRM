@@ -151,5 +151,19 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       .update({ status: 'closed_won' })
       .eq("id", data.leadId);
 
-    return { success: true, project };
+
+export const getProjects = createServerFn({ method: "GET" })
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { data, error } = await supabaseAdmin
+      .from("crm_projects")
+      .select("*, crm_leads(name, company)")
+      .order("created_at", { ascending: false });
+    
+    if (error) throw error;
+    return data;
   });
+

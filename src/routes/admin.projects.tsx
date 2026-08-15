@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,11 +10,10 @@ export const Route = createFileRoute('/admin/projects')({
   component: ProjectsPage,
 });
 
-
 function ProjectsPage() {
   const { data: projects } = useSuspenseQuery({
     queryKey: ['crm-projects'],
-    queryFn: getProjects,
+    queryFn: () => getProjects(),
   });
 
   const getStatusBadge = (status: string) => {
@@ -42,6 +40,8 @@ function ProjectsPage() {
     );
   };
 
+  const projectList = Array.isArray(projects) ? projects : [];
+
   return (
     <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
       <div className="flex items-center justify-between">
@@ -56,7 +56,7 @@ function ProjectsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projects?.map((project) => (
+        {projectList.map((project: any) => (
           <Card key={project.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors flex flex-col">
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start mb-2">
@@ -95,7 +95,7 @@ function ProjectsPage() {
           </Card>
         ))}
 
-        {projects?.length === 0 && (
+        {projectList.length === 0 && (
           <div className="col-span-full text-center py-20 border border-dashed border-white/10 rounded-xl">
             <Briefcase className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
             <p className="text-muted-foreground">Nenhum projeto encontrado.</p>
