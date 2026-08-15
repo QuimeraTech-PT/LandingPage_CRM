@@ -1,0 +1,76 @@
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Chrome, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+
+export const Route = createFileRoute('/auth')({
+  component: AuthPage,
+});
+
+function AuthPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const search = useSearch({ from: '/auth' }) as { redirect?: string };
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate({ to: search.redirect || '/admin' });
+      }
+    };
+    checkSession();
+  }, [navigate, search.redirect]);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error('Erro ao iniciar sessão com o Google: ' + error.message);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md bg-card/50 backdrop-blur-sm border-white/10">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold tracking-tight">CRM QuimeraTech</CardTitle>
+          <CardDescription>
+            Inicie sessão para aceder ao painel de administração.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Button 
+            variant="outline" 
+            className="w-full h-12 gap-2 text-base" 
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Chrome className="h-5 w-5" />
+            )}
+            Entrar com Google
+          </Button>
+          
+          <p className="text-xs text-center text-muted-foreground mt-4">
+            Apenas utilizadores autorizados têm acesso a esta área.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
