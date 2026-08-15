@@ -52,6 +52,9 @@ export const initAnalytics = (gtmId: string) => {
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
   if (typeof window === "undefined") return;
 
+  console.log("Updating consent to:", consent);
+
+
   // Persist the choice
   if (consent !== "none") {
     localStorage.setItem("cookie-consent", consent);
