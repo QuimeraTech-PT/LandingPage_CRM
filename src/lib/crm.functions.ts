@@ -2,12 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
-/**
- * Middleware para garantir que apenas administradores podem aceder a funções do CRM.
- */
 export const getCRMStats = createServerFn({ method: "GET" })
-  .handler(async ({ context }) => {
-    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
@@ -37,8 +34,8 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
-  .handler(async ({ context }) => {
-    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
@@ -61,8 +58,8 @@ export const createLead = createServerFn({ method: "POST" })
     notes: z.string().nullable().optional(),
     status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']).optional()
   }).parse(data))
-  .handler(async ({ data, context }) => {
-    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
@@ -80,8 +77,8 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
     status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']),
     estimated_value: z.number().nullable().optional(),
   }).parse(data))
-  .handler(async ({ data, context }) => {
-    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
@@ -103,8 +100,8 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     projectName: z.string(),
     clientName: z.string(),
   }).parse(data))
-  .handler(async ({ data, context }) => {
-    if (!context.userId) throw new Response("Unauthorized", { status: 401 });
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
