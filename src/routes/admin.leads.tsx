@@ -1,20 +1,88 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getLeads } from '@/lib/crm.functions';
-import { Users, Plus, MoreHorizontal, Mail, Phone, Building2 } from 'lucide-react';
+import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getLeads, createLead, updateLeadStatus, convertLeadToProject } from '@/lib/crm.functions';
+import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/admin/leads')({
   component: LeadsPage,
 });
 
 function LeadsPage() {
+  const queryClient = useQueryClient();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const { data: leads } = useSuspenseQuery({
     queryKey: ['crm-leads'],
     queryFn: () => getLeads(),
   });
+
+  const createLeadMutation = useMutation({
+    mutationFn: createLead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
+      setIsCreateOpen(false);
+      toast.success('Lead criada com sucesso!');
+    },
+    onError: () => toast.error('Erro ao criar lead.')
+  });
+
+  const convertMutation = useMutation({
+    mutationFn: convertLeadToProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
+      queryClient.invalidateQueries({ queryKey: ['crm-projects'] });
+      toast.success('Lead convertida em projeto!');
+    },
+    onError: () => toast.error('Erro ao converter lead.')
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: updateLeadStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
+      toast.success('Estado atualizado!');
+    },
+  });
+
+  const handleCreateLead = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    createLeadMutation.mutate({
+      data: {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        company: formData.get('company') as string,
+        estimated_value: Number(formData.get('estimated_value')),
+        notes: formData.get('notes') as string,
+        status: 'new'
+      }
+    });
+
+  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
@@ -49,14 +117,62 @@ function LeadsPage() {
           <Users className="h-8 w-8 text-primary" />
           Gestão de Leads
         </h1>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nova Lead
-        </Button>
+        
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Nova Lead
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
+            <form onSubmit={handleCreateLead}>
+              <DialogHeader>
+                <DialogTitle>Adicionar Nova Lead</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados da lead para registar no CRM.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Nome Completo</Label>
+                  <Input id="name" name="name" placeholder="Ex: João Silva" required className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="joao@empresa.com" className="bg-muted/50 border-white/10" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="phone">Telefone</Label>
+                    <Input id="phone" name="phone" placeholder="+351 9xx..." className="bg-muted/50 border-white/10" />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company">Empresa</Label>
+                  <Input id="company" name="company" placeholder="Nome da empresa" className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="estimated_value">Valor Estimado (€)</Label>
+                  <Input id="estimated_value" name="estimated_value" type="number" placeholder="5000" className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="notes">Notas</Label>
+                  <Textarea id="notes" name="notes" placeholder="Detalhes sobre o pedido..." className="bg-muted/50 border-white/10 min-h-[100px]" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={createLeadMutation.isPending}>
+                  {createLeadMutation.isPending ? "A guardar..." : "Criar Lead"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4">
-        {leads?.map((lead) => (
+        {leads?.map((lead: any) => (
           <Card key={lead.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
@@ -99,9 +215,48 @@ function LeadsPage() {
                   )}
                 </div>
 
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Select 
+                    defaultValue={lead.status} 
+                    onValueChange={(val) => updateStatusMutation.mutate({ data: { id: lead.id, status: val as any } })}
+                  >
+                    <SelectTrigger className="w-[150px] bg-muted/50 border-white/10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-white/10 text-foreground">
+                      <SelectItem value="new">Novo</SelectItem>
+                      <SelectItem value="contacted">Contactado</SelectItem>
+                      <SelectItem value="proposal">Proposta</SelectItem>
+                      <SelectItem value="negotiation">Negociação</SelectItem>
+                      <SelectItem value="closed_won">Ganho</SelectItem>
+                      <SelectItem value="closed_lost">Perdido</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {lead.status !== 'closed_won' && lead.status !== 'closed_lost' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-2 border-primary/20 hover:bg-primary/10"
+                      onClick={() => convertMutation.mutate({ 
+                        data: {
+                          leadId: lead.id, 
+                          projectName: `Projeto: ${lead.name}`,
+                          clientName: lead.name
+                        }
+                      })}
+
+                      disabled={convertMutation.isPending}
+                    >
+                      <Briefcase className="h-4 w-4 text-primary" />
+                      Converter
+                    </Button>
+                  )}
+                  
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
