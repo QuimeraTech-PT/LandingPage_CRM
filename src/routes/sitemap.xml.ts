@@ -6,10 +6,10 @@ export const Route = createFileRoute('/sitemap/xml')({
       GET: async () => {
         const baseUrl = 'https://quimeratech.pt';
         const pages = [
-          { url: '/', lastmod: '2026-08-11', changefreq: 'weekly', priority: 1.0 },
-          { url: '/politica-de-privacidade', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.3 },
-          { url: '/politica-de-cookies', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.3 },
-          { url: '/termos-de-servico', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.3 },
+          { url: '/', lastmod: '2026-08-15', changefreq: 'weekly', priority: 1.0 },
+          { url: '/politica-de-privacidade', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.5 },
+          { url: '/politica-de-cookies', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.5 },
+          { url: '/termos-de-servico', lastmod: '2026-08-15', changefreq: 'monthly', priority: 0.5 },
         ];
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

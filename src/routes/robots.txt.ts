@@ -6,6 +6,8 @@ export const Route = createFileRoute('/robots/txt')({
       GET: async () => {
         const robots = `User-agent: *
 Allow: /
+Disallow: /api/
+
 Sitemap: https://quimeratech.pt/sitemap.xml`;
 
         return new Response(robots, {
