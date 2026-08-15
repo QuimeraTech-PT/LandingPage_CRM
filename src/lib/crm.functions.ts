@@ -1,11 +1,11 @@
-import { createServerFn, Middleware } from "@tanstack/react-start";
+import { createServerFn, createMiddleware } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
 /**
  * Middleware para garantir que apenas administradores podem aceder a funções do CRM.
  */
-export const requireAdmin = new Middleware().handler(async ({ context, next }) => {
+export const requireAdmin = createMiddleware().handler(async ({ context, next }) => {
   if (!context.userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
