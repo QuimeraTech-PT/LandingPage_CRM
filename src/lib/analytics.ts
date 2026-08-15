@@ -52,9 +52,6 @@ export const initAnalytics = (gtmId: string) => {
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
   if (typeof window === "undefined") return;
 
-  console.log("Updating consent to:", consent);
-
-
   // Persist the choice
   if (consent !== "none") {
     localStorage.setItem("cookie-consent", consent);
@@ -62,7 +59,15 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
     localStorage.removeItem("cookie-consent");
   }
 
-  if (!window.gtag) return;
+  // Ensure gtag is available if it was not initialized yet
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() {
+      // @ts-ignore
+      window.dataLayer.push(arguments);
+    };
+  }
+
 
   const consentConfig = consent === "all" ? {
     ad_storage: "granted",
