@@ -151,6 +151,9 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       .update({ status: 'closed_won' })
       .eq("id", data.leadId);
 
+    return { success: true, project };
+  });
+
 
 export const getProjects = createServerFn({ method: "GET" })
   .handler(async ({ context }: { context: any }) => {
