@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
+import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 
 const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
@@ -59,6 +60,11 @@ const RobotsTxtRoute = RobotsTxtRouteImport.update({
   path: '/robots/txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProjectsRoute = AdminProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/leads': typeof AdminLeadsRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/leads': typeof AdminLeadsRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin': typeof AdminIndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/leads': typeof AdminLeadsRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/leads'
+    | '/admin/projects'
     | '/robots/txt'
     | '/sitemap/xml'
     | '/admin/'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/leads'
+    | '/admin/projects'
     | '/robots/txt'
     | '/sitemap/xml'
     | '/admin'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/leads'
+    | '/admin/projects'
     | '/robots/txt'
     | '/sitemap/xml'
     | '/admin/'
@@ -201,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/projects': {
+      id: '/admin/projects'
+      path: '/projects'
+      fullPath: '/admin/projects'
+      preLoaderRoute: typeof AdminProjectsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/leads': {
       id: '/admin/leads'
       path: '/leads'
@@ -213,11 +232,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminProjectsRoute: typeof AdminProjectsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
+  AdminProjectsRoute: AdminProjectsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

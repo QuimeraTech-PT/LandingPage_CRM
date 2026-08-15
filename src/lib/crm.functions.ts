@@ -5,20 +5,21 @@ import { z } from "zod";
 /**
  * Middleware para garantir que apenas administradores podem aceder a funções do CRM.
  */
-export const requireAdmin = async (ctx: { supabase: any; userId?: string }) => {
-  if (!ctx.userId) {
+export const requireAdmin = async ({ context, next }: { context: any, next: any }) => {
+  if (!context.userId) {
     throw new Response("Unauthorized", { status: 401 });
   }
 
-  const { data, error } = await ctx.supabase
-    .rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
+  const { data, error } = await context.supabase
+    .rpc("has_role", { _user_id: context.userId, _role: "admin" });
 
   if (error || !data) {
     throw new Response("Forbidden", { status: 403 });
   }
 
-  return { ...ctx, isAdmin: true };
+  return next();
 };
+
 
 
 
