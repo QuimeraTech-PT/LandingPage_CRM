@@ -41,13 +41,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   }));
 
   const acceptAll = () => {
-    localStorage.setItem("cookie-consent", "all");
     updateAnalyticsConsent("all");
     setIsVisible(false);
   };
 
   const acceptEssential = () => {
-    localStorage.setItem("cookie-consent", "essential");
     updateAnalyticsConsent("essential");
     setIsVisible(false);
   };

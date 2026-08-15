@@ -54,8 +54,7 @@ function CookiesPolicy() {
   };
 
   const handleClearCookies = () => {
-    localStorage.removeItem("cookie-consent");
-    updateAnalyticsConsent("essential");
+    updateAnalyticsConsent("none");
     toast.success("Preferências de cookies repostas com sucesso.");
     
     // Re-initialize analytics with default (denied) consent

@@ -50,7 +50,16 @@ export const initAnalytics = (gtmId: string) => {
  * Called when user interacts with the CookieBanner.
  */
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
-  if (typeof window === "undefined" || !window.gtag) return;
+  if (typeof window === "undefined") return;
+
+  // Persist the choice
+  if (consent !== "none") {
+    localStorage.setItem("cookie-consent", consent);
+  } else {
+    localStorage.removeItem("cookie-consent");
+  }
+
+  if (!window.gtag) return;
 
   const consentConfig = consent === "all" ? {
     ad_storage: "granted",
