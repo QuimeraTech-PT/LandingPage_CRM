@@ -19,21 +19,24 @@ export const initAnalytics = (gtmId: string) => {
 
   window.dataLayer = window.dataLayer || [];
   
-  // Set default consent to 'denied' for privacy-centric behavior
-  // This is the "Consent Mode v2" approach.
+  // Get current consent from localStorage
+  const currentConsent = localStorage.getItem("cookie-consent") as "all" | "essential" | "none" | null;
+  
+  const consentConfig = {
+    ad_storage: currentConsent === "all" ? "granted" : "denied",
+    analytics_storage: currentConsent === "all" ? "granted" : "denied",
+    ad_user_data: currentConsent === "all" ? "granted" : "denied",
+    ad_personalization: currentConsent === "all" ? "granted" : "denied",
+    wait_for_update: 500,
+  };
+
   const gtag = function () {
     window.dataLayer.push(arguments);
   };
   window.gtag = gtag;
 
   // @ts-ignore
-  gtag("consent", "default", {
-    ad_storage: "denied",
-    analytics_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-    wait_for_update: 500,
-  });
+  gtag("consent", "default", consentConfig);
 
   // Load GTM snippet
   const script = document.createElement("script");
@@ -47,7 +50,24 @@ export const initAnalytics = (gtmId: string) => {
  * Called when user interacts with the CookieBanner.
  */
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
-  if (typeof window === "undefined" || !window.gtag) return;
+  if (typeof window === "undefined") return;
+
+  // Persist the choice
+  if (consent !== "none") {
+    localStorage.setItem("cookie-consent", consent);
+  } else {
+    localStorage.removeItem("cookie-consent");
+  }
+
+  // Ensure gtag is available if it was not initialized yet
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() {
+      // @ts-ignore
+      window.dataLayer.push(arguments);
+    };
+  }
+
 
   const consentConfig = consent === "all" ? {
     ad_storage: "granted",

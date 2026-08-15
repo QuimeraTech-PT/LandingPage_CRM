@@ -1,7 +1,7 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Cookie, X } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Cookie, X, Settings } from "lucide-react";
+import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
 
@@ -13,16 +13,25 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
   const lastActiveElement = useRef<HTMLElement | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     setMounted(true);
     // Auto-show logic
     const consent = localStorage.getItem("cookie-consent");
-    if (!consent) {
+    
+    // Sync state with analytics on load if consent already exists
+    if (consent) {
+      updateAnalyticsConsent(consent as "all" | "essential" | "none");
+    }
+    
+    // Don't auto-show if on the policy page (it has its own controls)
+    if (!consent && location.pathname !== "/politica-de-cookies") {
       const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [location.pathname]);
 
   useImperativeHandle(ref, () => ({
     open: () => {
@@ -32,13 +41,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   }));
 
   const acceptAll = () => {
-    localStorage.setItem("cookie-consent", "all");
     updateAnalyticsConsent("all");
     setIsVisible(false);
   };
 
   const acceptEssential = () => {
-    localStorage.setItem("cookie-consent", "essential");
     updateAnalyticsConsent("essential");
     setIsVisible(false);
   };
@@ -76,12 +83,25 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row md:flex-col lg:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row md:flex-col lg:flex-row items-center">
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => {
+                setIsVisible(false);
+                navigate({ to: "/politica-de-cookies" });
+              }}
+              className="text-xs text-muted-foreground hover:text-primary h-auto p-0"
+              aria-label="Abrir definições detalhadas de cookies"
+            >
+              <Settings className="mr-2 h-3 w-3" />
+              Definições
+            </Button>
             <Button
               variant="secondary"
               size="sm"
               onClick={acceptEssential}
-              className="text-xs"
+              className="text-xs w-full sm:w-auto md:w-full lg:w-auto"
               aria-label="Aceitar apenas cookies essenciais"
             >
               Apenas Essenciais
@@ -90,7 +110,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               variant="primary"
               size="sm"
               onClick={acceptAll}
-              className="text-xs"
+              className="text-xs w-full sm:w-auto md:w-full lg:w-auto"
               aria-label="Aceitar todos os cookies"
             >
               Aceitar Todos
