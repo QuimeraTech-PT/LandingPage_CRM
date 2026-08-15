@@ -20,13 +20,10 @@ export const requireAdmin = async (ctx: { supabase: any; userId?: string }) => {
   return ctx;
 };
 
+
 export const getCRMStats = createServerFn({ method: "GET" })
-  .handler(async ({ context }) => {
-    // A validação de admin será feita pelo middleware quando adicionado, 
-    // mas por segurança extra usamos supabaseAdmin para queries privilegiadas 
-    // ou validamos o contexto.
-    
-    // NOTA: Para este protótipo, vamos buscar dados reais do CRM
+  .middleware([requireAdmin])
+  .handler(async () => {
     const [leads, projects, finances] = await Promise.all([
       supabaseAdmin.from("crm_leads").select("*", { count: "exact" }),
       supabaseAdmin.from("crm_projects").select("*", { count: "exact" }),
@@ -53,6 +50,7 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
   .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("crm_leads")
@@ -64,6 +62,7 @@ export const getLeads = createServerFn({ method: "GET" })
   });
 
 export const createLead = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((data: any) => z.object({
     name: z.string(),
     email: z.string().nullable().optional(),
@@ -81,3 +80,64 @@ export const createLead = createServerFn({ method: "POST" })
     if (error) throw error;
     return { success: true };
   });
+
+export const updateLeadStatus = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((data: any) => z.object({
+    id: z.string().uuid(),
+    status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']),
+    estimated_value: z.number().nullable().optional(),
+  }).parse(data))
+  .handler(async ({ data }) => {
+    const { error } = await supabaseAdmin
+      .from("crm_leads")
+      .update({ 
+        status: data.status,
+        estimated_value: data.estimated_value
+      })
+      .eq("id", data.id);
+    
+    if (error) throw error;
+    return { success: true };
+  });
+
+export const convertLeadToProject = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((data: any) => z.object({
+    leadId: z.string().uuid(),
+    projectName: z.string(),
+    clientName: z.string(),
+  }).parse(data))
+  .handler(async ({ data }) => {
+    // 1. Get lead info
+    const { data: lead, error: leadError } = await supabaseAdmin
+      .from("crm_leads")
+      .select("*")
+      .eq("id", data.leadId)
+      .single();
+
+    if (leadError || !lead) throw new Error("Lead não encontrada");
+
+    // 2. Create Project
+    const { data: project, error: projectError } = await supabaseAdmin
+      .from("crm_projects")
+      .insert([{
+        name: data.projectName,
+        client_name: data.clientName,
+        status: 'planning',
+        start_date: new Date().toISOString().split('T')[0]
+      }])
+      .select()
+      .single();
+
+    if (projectError) throw projectError;
+
+    // 3. Update Lead status
+    await supabaseAdmin
+      .from("crm_leads")
+      .update({ status: 'closed_won' })
+      .eq("id", data.leadId);
+
+    return { success: true, project };
+  });
+
