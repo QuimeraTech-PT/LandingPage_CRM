@@ -17,26 +17,14 @@ declare global {
 export const initAnalytics = (gtmId: string) => {
   if (typeof window === "undefined" || !gtmId) return;
 
-  window.dataLayer = window.dataLayer || [];
-  
-  // Get current consent from localStorage
-  const currentConsent = localStorage.getItem("cookie-consent") as "all" | "essential" | "none" | null;
-  
-  const consentConfig = {
-    ad_storage: currentConsent === "all" ? "granted" : "denied",
-    analytics_storage: currentConsent === "all" ? "granted" : "denied",
-    ad_user_data: currentConsent === "all" ? "granted" : "denied",
-    ad_personalization: currentConsent === "all" ? "granted" : "denied",
-    wait_for_update: 500,
-  };
-
-  const gtag = function () {
-    window.dataLayer.push(arguments);
-  };
-  window.gtag = gtag;
-
-  // @ts-ignore
-  gtag("consent", "default", consentConfig);
+  // window.gtag and default consent are already set in the root inline script
+  // but we ensure window.gtag is available just in case.
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () {
+      window.dataLayer.push(arguments);
+    };
+  }
 
   // Load GTM snippet
   const script = document.createElement("script");
