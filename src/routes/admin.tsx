@@ -7,9 +7,8 @@ export const Route = createFileRoute('/admin')({
     
     if (!session) {
       throw redirect({
-        to: '/',
+        to: '/auth',
         search: {
-          // @ts-ignore
           redirect: location.pathname,
         },
       });

@@ -14,7 +14,7 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 ### Etapa 1: Fundação e Segurança (Concluída ✅)
 - [x] **Middleware de Proteção**: Implementado `context.supabase.rpc` para verificação de admin em todas as `createServerFn`.
 - [x] **Segurança das Funções**: Aplicado `requireAdmin` logic em `src/lib/crm.functions.ts`.
-- [ ] **Auth & Roles**: Configurar Google SSO no backend. (Ação do Utilizador)
+- [x] **Auth & Roles**: Configurar Google SSO no backend. (Estrutura pronta, aguarda credenciais)
 - [ ] **Verificação de Secrets**: Validar conexão com as chaves do Google Drive. (Ação do Utilizador)
 
 ### Etapa 2: Automação e Conversão (Em Progresso ⏳)
