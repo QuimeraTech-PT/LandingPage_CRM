@@ -13,7 +13,12 @@ export interface CookieBannerHandle {
 
 export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const lastActiveElement = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     open: () => {
@@ -41,6 +46,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     updateAnalyticsConsent("essential");
     setIsVisible(false);
   };
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>
