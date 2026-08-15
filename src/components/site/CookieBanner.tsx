@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics";
 import FocusTrap from "focus-trap-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { transitions } from "@/lib/animations";
 
 export interface CookieBannerHandle {
   open: () => void;
@@ -18,7 +17,6 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     open: () => {
-      console.log("CookieBanner: open() called");
       lastActiveElement.current = document.activeElement as HTMLElement;
       setIsVisible(true);
     },
@@ -65,7 +63,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 50 }}
-        transition={transitions.default}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
           "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8",
         )}
