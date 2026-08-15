@@ -67,7 +67,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
             <p className="text-sm leading-relaxed text-muted-foreground">
               Utilizamos cookies para melhorar a sua experiência de navegação, servir anúncios ou conteúdos personalizados e analisar o nosso tráfego. Ao clicar em "Aceitar Todos", concorda com o nosso uso de cookies. Leia a nossa{" "}
               <Link
-                to="/politica-de-privacidade"
+                to="/politica-de-cookies"
                 className="text-primary font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               >
                 Política de Cookies
