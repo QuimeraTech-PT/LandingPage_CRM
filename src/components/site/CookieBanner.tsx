@@ -85,19 +85,6 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
           <div className="flex flex-col gap-2 sm:flex-row md:flex-col lg:flex-row items-center">
             <Button
-              variant="link"
-              size="sm"
-              onClick={() => {
-                setIsVisible(false);
-                navigate({ to: "/politica-de-cookies" });
-              }}
-              className="text-xs text-muted-foreground hover:text-primary h-auto p-0"
-              aria-label="Abrir definições detalhadas de cookies"
-            >
-              <Settings className="mr-2 h-3 w-3" />
-              Definições
-            </Button>
-            <Button
               variant="secondary"
               size="sm"
               onClick={acceptEssential}

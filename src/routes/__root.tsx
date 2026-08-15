@@ -124,6 +124,7 @@ function RootShell({ children }: { children: ReactNode }) {
             __html: `
               (function() {
                 try {
+                  // A11y Settings
                   const contrast = localStorage.getItem('a11y-high-contrast') === 'true';
                   if (contrast) document.documentElement.classList.add('high-contrast');
                   
@@ -139,12 +140,23 @@ function RootShell({ children }: { children: ReactNode }) {
                   const interactions = localStorage.getItem('a11y-interactions');
                   if (interactions === 'false') {
                     document.documentElement.classList.add('disable-interactions');
-                  } else if (interactions === 'true') {
-                    document.documentElement.classList.remove('disable-interactions');
-                  } else {
-                    // Default behavior (if null)
-                    document.documentElement.classList.remove('disable-interactions');
                   }
+
+                  // Analytics Consent Mode v2 Initial State
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+
+                  const consent = localStorage.getItem('cookie-consent');
+                  const isGranted = consent === 'all';
+                  
+                  gtag('consent', 'default', {
+                    'ad_storage': isGranted ? 'granted' : 'denied',
+                    'analytics_storage': isGranted ? 'granted' : 'denied',
+                    'ad_user_data': isGranted ? 'granted' : 'denied',
+                    'ad_personalization': isGranted ? 'granted' : 'denied',
+                    'wait_for_update': 500
+                  });
                 } catch (e) {}
               })();
             `,
@@ -179,11 +191,9 @@ function RootComponent() {
         if (config.gtmId) {
           initAnalytics(config.gtmId);
           
-          // Check if consent was already given
-          const consent = localStorage.getItem("cookie-consent") as "all" | "essential" | null;
-          if (consent) {
-            updateAnalyticsConsent(consent);
-          }
+          // Initial state is already handled by the inline script
+          // updateAnalyticsConsent is now safer and doesn't need to be called here
+          // as gtag('consent', 'default', ...) already reflects the stored choice.
         }
       } catch (error) {
         console.error("Failed to load analytics config:", error);
