@@ -71,14 +71,17 @@ function LeadsPage() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     createLeadMutation.mutate({
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('phone') as string,
-      company: formData.get('company') as string,
-      estimated_value: Number(formData.get('estimated_value')),
-      notes: formData.get('notes') as string,
-      status: 'new'
+      data: {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        company: formData.get('company') as string,
+        estimated_value: Number(formData.get('estimated_value')),
+        notes: formData.get('notes') as string,
+        status: 'new'
+      }
     });
+
   };
 
   const getStatusBadge = (status: string) => {
@@ -215,7 +218,7 @@ function LeadsPage() {
                 <div className="flex items-center gap-2">
                   <Select 
                     defaultValue={lead.status} 
-                    onValueChange={(val) => updateStatusMutation.mutate({ id: lead.id, status: val as any })}
+                    onValueChange={(val) => updateStatusMutation.mutate({ data: { id: lead.id, status: val as any } })}
                   >
                     <SelectTrigger className="w-[150px] bg-muted/50 border-white/10">
                       <SelectValue />
@@ -236,10 +239,13 @@ function LeadsPage() {
                       size="sm" 
                       className="gap-2 border-primary/20 hover:bg-primary/10"
                       onClick={() => convertMutation.mutate({ 
-                        leadId: lead.id, 
-                        projectName: `Projeto: ${lead.name}`,
-                        clientName: lead.name
+                        data: {
+                          leadId: lead.id, 
+                          projectName: `Projeto: ${lead.name}`,
+                          clientName: lead.name
+                        }
                       })}
+
                       disabled={convertMutation.isPending}
                     >
                       <Briefcase className="h-4 w-4 text-primary" />
