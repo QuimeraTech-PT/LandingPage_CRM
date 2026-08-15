@@ -26,7 +26,11 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     clientName: z.string(),
     projectName: z.string()
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     try {
       const drive = getDriveClient();
       const rootFolderId = process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID;
@@ -62,7 +66,11 @@ export const listProjectFiles = createServerFn({ method: "GET" })
   .inputValidator((data: any) => z.object({
     folderId: z.string()
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
     try {
       const drive = getDriveClient();
       const response = await drive.files.list({
