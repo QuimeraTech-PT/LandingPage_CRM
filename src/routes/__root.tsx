@@ -165,9 +165,15 @@ function RootComponent() {
 
   useEffect(() => {
     const handleOpenConsent = () => {
-      cookieBannerRef.current?.open();
+      if (cookieBannerRef.current) {
+        cookieBannerRef.current.open();
+      } else {
+        console.warn("Root: cookieBannerRef is null when event received");
+      }
     };
     window.addEventListener("open-cookie-settings", handleOpenConsent);
+    // @ts-ignore - for debugging
+    window.__cookieBannerRef = cookieBannerRef;
     return () => window.removeEventListener("open-cookie-settings", handleOpenConsent);
   }, []);
 
