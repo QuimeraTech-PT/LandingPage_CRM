@@ -65,7 +65,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         role="region"
         aria-label="Gestão de Cookies"
         className={cn(
-          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8 bg-card rounded-2xl border border-white/10 shadow-2xl p-6 md:p-8 animate-in fade-in slide-in-from-bottom-5 duration-300",
+          "fixed bottom-4 left-4 right-4 z-[100] mx-auto max-w-6xl md:bottom-8 animate-in fade-in slide-in-from-bottom-5 duration-300",
         )}
       >
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/80 p-6 shadow-2xl backdrop-blur-xl md:p-8">
@@ -120,8 +120,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
             <X className="h-4 w-4" />
           </button>
         </div>
+      </div>
     </FocusTrap>
-  );
   );
 });
 
