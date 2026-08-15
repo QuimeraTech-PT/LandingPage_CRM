@@ -67,7 +67,7 @@ function PrivacyPolicy() {
 
         <article className="prose prose-invert prose-blue max-w-none">
           <h1 className="text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
-            Política de Privacidade e Cookies
+            Política de Privacidade
           </h1>
           <p className="mt-4 text-sm text-muted-foreground">
             Última atualização: 9 de agosto de 2026
@@ -77,43 +77,35 @@ function PrivacyPolicy() {
             <div>
               <h2 className="text-2xl font-semibold text-foreground">1. Introdução</h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Na QuimeraTech, a sua privacidade é uma prioridade. Esta política explica como recolhemos, utilizamos e protegemos os seus dados pessoais e como gerimos os cookies no nosso website.
+                Na QuimeraTech, a sua privacidade é uma prioridade. Esta política explica como recolhemos, utilizamos e protegemos os seus dados pessoais. Para informações sobre a utilização de cookies, consulte a nossa <Link to="/politica-de-cookies" className="text-primary hover:underline">Política de Cookies</Link>.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-semibold text-foreground">2. Recolha de Dados</h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Recolhemos informações que nos fornece diretamente através do formulário de contacto, tais como o seu nome e endereço de e-mail. Estes dados são utilizados exclusivamente para responder às suas solicitações.
+                Recolhemos informações que nos fornece diretamente através do formulário de contacto, tais como o seu nome e endereço de e-mail. Estes dados são utilizados exclusivamente para responder às suas solicitações e nunca são partilhados com terceiros sem o seu consentimento.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">3. O que são Cookies?</h2>
+              <h2 className="text-2xl font-semibold text-foreground">3. Finalidade do Tratamento</h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Cookies são pequenos ficheiros de texto armazenados no seu dispositivo para melhorar a experiência do utilizador. Alguns são essenciais para o funcionamento do site, enquanto outros ajudam-nos a analisar o desempenho.
+                Os dados recolhidos destinam-se ao processamento de pedidos de informação e suporte, bem como à melhoria contínua dos nossos serviços e comunicação com os utilizadores.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">4. Tipos de Cookies que utilizamos</h2>
-              <ul className="mt-4 list-disc pl-6 space-y-2 text-muted-foreground">
-                <li>
-                  <strong className="text-foreground">Cookies Essenciais:</strong> Necessários para a navegação básica e segurança.
-                </li>
-                <li>
-                  <strong className="text-foreground">Cookies Analíticos:</strong> Ajudam-nos a entender como os visitantes interagem com o site (ex: Google Analytics).
-                </li>
-                <li>
-                  <strong className="text-foreground">Cookies de Funcionalidade:</strong> Lembram-se das suas preferências, como a escolha de consentimento de cookies.
-                </li>
-              </ul>
+              <h2 className="text-2xl font-semibold text-foreground">4. Segurança dos Dados</h2>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                Implementamos medidas de segurança técnicas e organizativas adequadas para proteger os seus dados pessoais contra perda, uso indevido, acesso não autorizado ou divulgação.
+              </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">5. Gestão de Consentimento</h2>
+              <h2 className="text-2xl font-semibold text-foreground">5. Os seus Direitos</h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Pode alterar as suas preferências de cookies a qualquer momento através das definições do seu navegador ou limpando a cache do mesmo para que o banner de consentimento reapareça.
+                Tem o direito de aceder, retificar, apagar ou limitar o tratamento dos seus dados pessoais. Pode exercer estes direitos contactando-nos através dos meios indicados abaixo.
               </p>
             </div>
 

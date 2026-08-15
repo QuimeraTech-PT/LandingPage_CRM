@@ -126,16 +126,16 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 font-medium text-muted-foreground hover:text-accent"
-                    onClick={() => {
-                      window.dispatchEvent(new CustomEvent("open-cookie-settings"));
-                      trackEvent('legal_click', { destination: 'cookie_settings', location: 'footer' });
-                    }}
+                  <Link 
+                    to="/politica-de-cookies" 
+                    className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    onClick={() => trackEvent('legal_click', { destination: 'cookies', location: 'footer' })}
                   >
-                    Definições de Cookies
-                  </Button>
+                    <span className="relative">
+                      Política de Cookies
+                      <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all group-hover:w-full" />
+                    </span>
+                  </Link>
                 </li>
               </ul>
             </motion.nav>
