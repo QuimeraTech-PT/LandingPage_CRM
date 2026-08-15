@@ -19,7 +19,16 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   useEffect(() => {
     setMounted(true);
     // Auto-show logic
-    const consent = localStorage.getItem("cookie-consent");
+    const getConsent = () => {
+      const local = localStorage.getItem('cookie-consent');
+      if (local) return local;
+      if (typeof document !== 'undefined') {
+        const match = document.cookie.match(new RegExp('(^| )cookie-consent=([^;]+)'));
+        if (match) return match[2];
+      }
+      return null;
+    };
+    const consent = getConsent();
     
     // Sync state with analytics on load if consent already exists
     if (consent) {

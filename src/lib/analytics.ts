@@ -40,11 +40,20 @@ export const initAnalytics = (gtmId: string) => {
 export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
   if (typeof window === "undefined") return;
 
-  // Persist the choice
+  // Persist the choice with cross-subdomain support
+  // We use a cookie for cross-subdomain persistence if possible
+  const cookieName = "cookie-consent";
+  const domain = window.location.hostname.split('.').slice(-2).join('.'); // e.g., quimeratech.pt
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 1);
+
   if (consent !== "none") {
-    localStorage.setItem("cookie-consent", consent);
+    localStorage.setItem(cookieName, consent);
+    // Also set a cookie for cross-subdomain persistence
+    document.cookie = `${cookieName}=${consent}; domain=.${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
   } else {
-    localStorage.removeItem("cookie-consent");
+    localStorage.removeItem(cookieName);
+    document.cookie = `${cookieName}=; domain=.${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
   }
 
   // Ensure gtag is available if it was not initialized yet
@@ -55,7 +64,6 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
       window.dataLayer.push(arguments);
     };
   }
-
 
   const consentConfig = consent === "all" ? {
     ad_storage: "granted",
