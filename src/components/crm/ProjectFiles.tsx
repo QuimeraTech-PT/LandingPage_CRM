@@ -6,7 +6,8 @@ import {
   uploadFileToProject,
   moveDriveFile,
   batchRenameDriveFiles,
-  batchDeleteDriveFiles
+  batchDeleteDriveFiles,
+  batchMoveDriveFiles
 } from '@/lib/google-drive.functions';
 import { 
   File, 
