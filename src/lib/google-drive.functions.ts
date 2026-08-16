@@ -59,6 +59,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     try {
       const drive = getDriveClient();
       if (!drive) {
+        await logDriveActivity('create_folder_failure', { error: 'Missing secrets' }, 'failure');
         return { error: "Drive não configurado", status: "pending_config" };
       }
 
