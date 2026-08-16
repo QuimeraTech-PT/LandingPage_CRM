@@ -126,6 +126,41 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+export const updateLead = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    id: z.string().uuid(),
+    name: z.string().optional(),
+    email: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
+    company: z.string().nullable().optional(),
+    estimated_value: z.number().nullable().optional(),
+    notes: z.string().nullable().optional(),
+    status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']).optional()
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { id, ...updateData } = data;
+    const { error } = await supabaseAdmin
+      .from("crm_leads")
+      .update(updateData)
+      .eq("id", id);
+    
+    if (error) throw error;
+
+    await logActivity({
+      userId: context.userId,
+      action: 'update',
+      entityType: 'lead',
+      entityId: id,
+      details: updateData
+    });
+
+    return { success: true };
+  });
+
 export const convertLeadToProject = createServerFn({ method: "POST" })
   .inputValidator((data: any) => z.object({
     leadId: z.string().uuid(),
@@ -160,6 +195,14 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
     if (projectError) throw projectError;
 
+    await logActivity({
+      userId: context.userId,
+      action: 'convert_lead',
+      entityType: 'project',
+      entityId: project.id,
+      details: { leadId: data.leadId }
+    });
+
     // 2.1 Trigger Drive Folder Creation (async, don't wait if not configured)
     try {
       const { createProjectFolder } = await import('./google-drive.functions');
@@ -168,7 +211,8 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
           projectId: project.id,
           clientName: data.clientName,
           projectName: data.projectName
-        }
+        },
+        context
       });
     } catch (e) {
       console.warn("Google Drive folder creation failed or not configured:", e);
