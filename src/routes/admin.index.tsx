@@ -150,25 +150,70 @@ function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Button variant="outline" className="h-24 gap-4 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
-          <Link to="/admin/leads">
-            <Users className="h-6 w-6 text-primary" />
-            Gerir Leads
-          </Link>
-        </Button>
-        <Button variant="outline" className="h-24 gap-4 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
-          <Link to="/admin/projects">
-            <Briefcase className="h-6 w-6 text-primary" />
-            Gerir Projetos
-          </Link>
-        </Button>
-        <Button variant="outline" className="h-24 gap-4 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
-          <Link to="/admin/finances">
-            <Wallet className="h-6 w-6 text-primary" />
-            Gerir Finanças
-          </Link>
-        </Button>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="col-span-1 bg-card/50 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <History className="h-5 w-5 text-primary" />
+              Histórico de Atividade
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentLogs.map((log: any) => (
+                <div key={log.id} className="flex gap-3 text-sm">
+                  <div className={cn(
+                    "mt-0.5 rounded-full p-1 h-fit",
+                    log.status === 'success' ? "bg-green-500/10 text-green-500" : 
+                    log.status === 'warning' ? "bg-yellow-500/10 text-yellow-500" : 
+                    "bg-red-500/10 text-red-500"
+                  )}>
+                    {log.status === 'success' ? <CheckCircle2 className="h-3 w-3" /> : 
+                     log.status === 'warning' ? <Clock className="h-3 w-3" /> : 
+                     <AlertCircle className="h-3 w-3" />}
+                  </div>
+                  <div className="space-y-1 min-w-0">
+                    <p className="font-medium text-foreground truncate capitalize">
+                      {log.action.replace(/_/g, ' ')}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {log.entity_type}: {log.details?.fileName || log.details?.projectName || log.action}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground opacity-60">
+                      {new Date(log.created_at).toLocaleString('pt-PT')}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {recentLogs.length === 0 && (
+                <p className="text-xs text-muted-foreground italic py-4">Sem atividade recente.</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="col-span-2 grid gap-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Button variant="outline" className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+              <Link to="/admin/leads">
+                <Users className="h-8 w-8 text-primary" />
+                Gerir Leads
+              </Link>
+            </Button>
+            <Button variant="outline" className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+              <Link to="/admin/projects">
+                <Briefcase className="h-8 w-8 text-primary" />
+                Gerir Projetos
+              </Link>
+            </Button>
+          </div>
+          <Button variant="outline" className="h-32 gap-4 text-xl border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+            <Link to="/admin/finances">
+              <Wallet className="h-8 w-8 text-primary" />
+              Gerir Finanças e Cash Flow
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );
