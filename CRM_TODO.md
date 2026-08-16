@@ -30,7 +30,7 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 
 ### Etapa 3: Gestão de Projetos e Ficheiros (Concluída ✅)
 - [x] **Dashboard de Projetos**: Criado `/admin/projects` com rentabilidade e estados.
-- [x] **Explorador de Ficheiros**: Integrado visualizador de ficheiros do Drive dentro de cada projeto (com fallback).
+- [x] **Explorador de Ficheiros**: Integrado visualizador de ficheiros do Drive com pré-visualização inline, thumbnails e detalhes técnicos.
 - [x] **Ações em Ficheiros**: Implementado Renomear, Eliminar e Mover ficheiros diretamente do CRM.
 - [x] **Ações em Lote**: Implementado Renomear, Eliminar e Mover vários ficheiros de uma vez com logs individuais.
 - [x] **Upload de Propostas**: Implementado upload direto para o Google Drive via CRM.
