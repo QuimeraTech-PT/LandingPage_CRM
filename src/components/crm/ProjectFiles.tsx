@@ -163,8 +163,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     reader.readAsDataURL(file);
   };
 
-  const files = result?.files || [];
-
   const toggleSelection = (fileId: string) => {
     const next = new Set(selectedFiles);
     if (next.has(fileId)) {
@@ -175,19 +173,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     setSelectedFiles(next);
   };
 
-  const selectAll = () => {
-    if (selectedFiles.size === files.length) {
-      setSelectedFiles(new Set());
-    } else {
-      setSelectedFiles(new Set(files.map((f: any) => f.id)));
-    }
-  };
-
-  const subfolders = useMemo(() => {
-    return files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
-  }, [files]);
-
   const handleBatchRename = () => {
+    const files = (data as any)?.files || [];
     const updates = Array.from(selectedFiles).map(id => ({
       fileId: id,
       newName: batchRenameValues[id] || files.find((f: any) => f.id === id)?.name || ''
@@ -197,6 +184,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   };
 
   const handleBatchDelete = () => {
+    const files = (data as any)?.files || [];
     const targets = Array.from(selectedFiles).map(id => ({
       fileId: id,
       fileName: files.find((f: any) => f.id === id)?.name || ''
