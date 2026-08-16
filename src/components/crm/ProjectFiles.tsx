@@ -1,11 +1,36 @@
 import { useQuery } from '@tanstack/react-query';
-import { listProjectFiles, renameDriveFile, deleteDriveFile, uploadFileToProject } from '@/lib/google-drive.functions';
-import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen, Upload, Trash2, Edit2, MoreVertical } from 'lucide-react';
+import { 
+  listProjectFiles, 
+  renameDriveFile, 
+  deleteDriveFile, 
+  uploadFileToProject,
+  moveDriveFile,
+  batchRenameDriveFiles,
+  batchDeleteDriveFiles
+} from '@/lib/google-drive.functions';
+import { 
+  File, 
+  FileText, 
+  Image as ImageIcon, 
+  ExternalLink, 
+  Loader2, 
+  AlertCircle, 
+  FolderOpen, 
+  Upload, 
+  Trash2, 
+  Edit2, 
+  MoreVertical,
+  CheckSquare,
+  Square,
+  Move,
+  FolderTree,
+  ChevronRight
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +45,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProjectFilesProps {
   folderId?: string | null;
@@ -32,12 +59,17 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
   const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [movingFile, setMovingFile] = useState<{ id: string, name: string, oldParentId: string } | null>(null);
+  const [batchRenaming, setBatchRenaming] = useState<boolean>(false);
+  const [batchDeleting, setBatchDeleting] = useState<boolean>(false);
+  const [batchRenameValues, setBatchRenameValues] = useState<Record<string, string>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['drive-files', folderId],
     queryFn: () => listProjectFiles({ data: { folderId: folderId! } }),
     enabled: !!folderId,
-    refetchInterval: 60000, // Refresh every minute for external changes
+    refetchInterval: 60000,
   });
 
   const uploadMutation = useMutation({
@@ -51,10 +83,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       }
       setIsUploading(false);
     },
-    onError: () => {
-      toast.error('Falha ao enviar ficheiro.');
-      setIsUploading(false);
-    }
   });
 
   const renameMutation = useMutation({
@@ -63,10 +91,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       if (res.success) {
         toast.success('Ficheiro renomeado!');
         queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setRenamingFile(null);
       } else {
         toast.error(`Erro ao renomear: ${res.error}`);
       }
-      setRenamingFile(null);
     },
   });
 
@@ -76,10 +104,41 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       if (res.success) {
         toast.success('Ficheiro eliminado!');
         queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setDeletingFile(null);
       } else {
         toast.error(`Erro ao eliminar: ${res.error}`);
       }
-      setDeletingFile(null);
+    },
+  });
+
+  const moveMutation = useMutation({
+    mutationFn: moveDriveFile,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Ficheiro movido!');
+        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setMovingFile(null);
+      } else {
+        toast.error(`Erro ao mover: ${res.error}`);
+      }
+    },
+  });
+
+  const batchRenameMutation = useMutation({
+    mutationFn: batchRenameDriveFiles,
+    onSuccess: () => {
+      toast.success('Ficheiros renomeados!');
+      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      setSelectedFiles(new Set());
+    },
+  });
+
+  const batchDeleteMutation = useMutation({
+    mutationFn: batchDeleteDriveFiles,
+    onSuccess: () => {
+      toast.success('Ficheiros eliminados!');
+      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      setSelectedFiles(new Set());
     },
   });
 
@@ -102,6 +161,32 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       });
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleBatchRename = (currentFiles: any[]) => {
+    const updates = Array.from(selectedFiles).map(id => ({
+      fileId: id,
+      newName: batchRenameValues[id] || currentFiles.find((f: any) => f.id === id)?.name || ''
+    }));
+    batchRenameMutation.mutate({ data: { projectId, files: updates } });
+    setBatchRenaming(false);
+  };
+
+  const handleBatchDelete = (currentFiles: any[]) => {
+    const targets = Array.from(selectedFiles).map(id => ({
+      fileId: id,
+      fileName: currentFiles.find((f: any) => f.id === id)?.name || ''
+    }));
+    batchDeleteMutation.mutate({ data: { projectId, files: targets } });
+    setBatchDeleting(false);
+  };
+
+  const selectAll = (allFiles: any[]) => {
+    if (selectedFiles.size === allFiles.length) {
+      setSelectedFiles(new Set());
+    } else {
+      setSelectedFiles(new Set(allFiles.map((f: any) => f.id)));
+    }
   };
 
   if (!folderId) {
@@ -137,6 +222,17 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   }
 
   const files = result?.files || [];
+  const subfolders = files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
+
+  const toggleSelection = (fileId: string) => {
+    const next = new Set(selectedFiles);
+    if (next.has(fileId)) {
+      next.delete(fileId);
+    } else {
+      next.add(fileId);
+    }
+    setSelectedFiles(next);
+  };
 
   const getFileIcon = (mimeType: string) => {
     if (mimeType.includes('image')) return <ImageIcon className="h-4 w-4 text-blue-400" />;
@@ -147,8 +243,42 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
 
   return (
     <div className="space-y-3">
+      {/* Batch Selection Bar */}
+      {selectedFiles.size > 0 && (
+        <div className="flex items-center justify-between p-2 rounded-md bg-primary/10 border border-primary/20 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              checked={selectedFiles.size === files.length} 
+              onCheckedChange={() => selectAll(files)}
+            />
+            <span className="text-xs font-medium text-primary">
+              {selectedFiles.size} selecionado{selectedFiles.size > 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchRenaming(true)}>
+              <Edit2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setBatchDeleting(true)}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setSelectedFiles(new Set())}>
+              <Trash2 className="h-3.5 w-3.5 rotate-45" />
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-2">
-        <span>FICHEIROS NO DRIVE</span>
+        <div className="flex items-center gap-2">
+          {files.length > 0 && (
+            <Checkbox 
+              checked={selectedFiles.size === files.length && files.length > 0} 
+              onCheckedChange={() => selectAll(files)}
+            />
+          )}
+          <span>FICHEIROS NO DRIVE</span>
+        </div>
         <div className="flex items-center gap-2">
           <input
             type="file"
@@ -168,13 +298,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           <Badge variant="outline" className="text-[10px] py-0">{files.length}</Badge>
         </div>
       </div>
+      
       <div className="grid gap-2">
-        {files.slice(0, 5).map((file: any) => (
+        {files.map((file: any) => (
           <div 
             key={file.id} 
-            className="flex items-center justify-between p-2 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-colors group"
+            className={`flex items-center justify-between p-2 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-colors group ${selectedFiles.has(file.id) ? 'border-primary/50 bg-primary/5' : ''}`}
           >
             <div className="flex items-center gap-3 min-w-0">
+              <Checkbox 
+                checked={selectedFiles.has(file.id)} 
+                onCheckedChange={() => toggleSelection(file.id)}
+                className="opacity-0 group-hover:opacity-100 data-[state=checked]:opacity-100 transition-opacity"
+              />
               {getFileIcon(file.mimeType)}
               <span className="text-sm truncate font-medium group-hover:text-primary transition-colors">
                 {file.name}
@@ -198,6 +334,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                     <Edit2 className="h-3 w-3" />
                     Renomear
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setMovingFile({ id: file.id, name: file.name, oldParentId: folderId })} className="flex items-center gap-2 cursor-pointer text-foreground">
+                    <Move className="h-3 w-3" />
+                    Mover
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setDeletingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
                     <Trash2 className="h-3 w-3" />
                     Eliminar
@@ -212,13 +352,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <File className="h-8 w-8 text-muted-foreground opacity-20 mb-2" />
             <p className="text-sm text-muted-foreground">Nenhum ficheiro nesta pasta.</p>
           </div>
-        )}
-        {files.length > 5 && (
-          <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" asChild>
-            <a href={`https://drive.google.com/drive/folders/${folderId}`} target="_blank" rel="noopener noreferrer">
-              Ver mais {files.length - 5} ficheiros...
-            </a>
-          </Button>
         )}
       </div>
 
@@ -287,6 +420,119 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
               });
             }} disabled={deleteMutation.isPending}>
               {deleteMutation.isPending ? "A eliminar..." : "Eliminar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Move Dialog */}
+      <Dialog open={!!movingFile} onOpenChange={(open) => !open && setMovingFile(null)}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Mover Ficheiro</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Selecione a pasta de destino para <span className="text-foreground font-medium">{movingFile?.name}</span>:
+            </p>
+            <ScrollArea className="h-[200px] rounded-md border border-white/10 p-2">
+              <div className="space-y-1">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start gap-2 h-9 text-sm" 
+                  disabled={movingFile?.oldParentId === folderId}
+                  onClick={() => {
+                    moveMutation.mutate({
+                      data: {
+                        projectId,
+                        fileId: movingFile!.id,
+                        fileName: movingFile!.name,
+                        oldParentId: movingFile!.oldParentId,
+                        newParentId: folderId!
+                      }
+                    });
+                  }}
+                >
+                  <FolderTree className="h-4 w-4 text-primary" />
+                  Pasta Principal (Projeto)
+                </Button>
+                {subfolders.map((folder: any) => (
+                  <Button 
+                    key={folder.id}
+                    variant="ghost" 
+                    className="w-full justify-start gap-2 h-9 text-sm pl-6" 
+                    disabled={movingFile?.oldParentId === folder.id}
+                    onClick={() => {
+                      moveMutation.mutate({
+                        data: {
+                          projectId,
+                          fileId: movingFile!.id,
+                          fileName: movingFile!.name,
+                          oldParentId: movingFile!.oldParentId,
+                          newParentId: folder.id
+                        }
+                      });
+                    }}
+                  >
+                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                    <FolderOpen className="h-4 w-4 text-yellow-400" />
+                    {folder.name}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setMovingFile(null)}>Cancelar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Batch Rename Dialog */}
+      <Dialog open={batchRenaming} onOpenChange={setBatchRenaming}>
+        <DialogContent className="bg-card border-white/10 text-foreground max-w-md">
+          <DialogHeader>
+            <DialogTitle>Renomear em Lote ({selectedFiles.size})</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[300px] pr-4">
+            <div className="space-y-4 py-4">
+              {Array.from(selectedFiles).map(id => {
+                const file = files.find((f: any) => f.id === id);
+                return (
+                  <div key={id} className="space-y-1.5">
+                    <label className="text-xs text-muted-foreground block truncate">{file?.name}</label>
+                    <Input 
+                      placeholder="Novo nome..." 
+                      defaultValue={file?.name}
+                      onChange={(e) => setBatchRenameValues(prev => ({ ...prev, [id]: e.target.value }))}
+                      className="bg-muted/50 border-white/10"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBatchRenaming(false)}>Cancelar</Button>
+            <Button onClick={() => handleBatchRename(files)} disabled={batchRenameMutation.isPending}>
+              {batchRenameMutation.isPending ? "A processar..." : "Renomear Todos"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Batch Delete Dialog */}
+      <Dialog open={batchDeleting} onOpenChange={setBatchDeleting}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Confirmar Eliminação em Lote</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-sm text-muted-foreground">
+            Tem a certeza que deseja mover <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span> para a reciclagem?
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBatchDeleting(false)}>Cancelar</Button>
+            <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => handleBatchDelete(files)} disabled={batchDeleteMutation.isPending}>
+              {batchDeleteMutation.isPending ? "A eliminar..." : "Eliminar Todos"}
             </Button>
           </DialogFooter>
         </DialogContent>
