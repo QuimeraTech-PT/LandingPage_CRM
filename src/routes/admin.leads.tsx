@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getLeads, createLead, updateLeadStatus, convertLeadToProject } from '@/lib/crm.functions';
+import { getLeads, createLead, updateLeadStatus, convertLeadToProject, updateLead } from '@/lib/crm.functions';
 import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -34,6 +34,7 @@ export const Route = createFileRoute('/admin/leads')({
 function LeadsPage() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState<any>(null);
   const { data: leads } = useSuspenseQuery({
     queryKey: ['crm-leads'],
     queryFn: () => getLeads(),
@@ -67,6 +68,16 @@ function LeadsPage() {
     },
   });
 
+  const updateLeadMutation = useMutation({
+    mutationFn: updateLead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
+      setEditingLead(null);
+      toast.success('Lead atualizada!');
+    },
+    onError: () => toast.error('Erro ao atualizar lead.')
+  });
+
   const handleCreateLead = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -81,7 +92,23 @@ function LeadsPage() {
         status: 'new'
       }
     });
+  };
 
+  const handleUpdateLead = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editingLead) return;
+    const formData = new FormData(e.currentTarget);
+    updateLeadMutation.mutate({
+      data: {
+        id: editingLead.id,
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        company: formData.get('company') as string,
+        estimated_value: Number(formData.get('estimated_value')),
+        notes: formData.get('notes') as string,
+      }
+    });
   };
 
   const getStatusBadge = (status: string) => {
@@ -253,6 +280,15 @@ function LeadsPage() {
                     </Button>
                   )}
                   
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-muted-foreground hover:text-primary"
+                    onClick={() => setEditingLead(lead)}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  
                   <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -269,6 +305,54 @@ function LeadsPage() {
           </div>
         )}
       </div>
+
+      <Dialog open={!!editingLead} onOpenChange={(open) => !open && setEditingLead(null)}>
+        <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
+          {editingLead && (
+            <form onSubmit={handleUpdateLead}>
+              <DialogHeader>
+                <DialogTitle>Editar Lead</DialogTitle>
+                <DialogDescription>
+                  Altere os dados da lead selecionada.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-name">Nome Completo</Label>
+                  <Input id="edit-name" name="name" defaultValue={editingLead.name} required className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-email">Email</Label>
+                    <Input id="edit-email" name="email" type="email" defaultValue={editingLead.email} className="bg-muted/50 border-white/10" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-phone">Telefone</Label>
+                    <Input id="edit-phone" name="phone" defaultValue={editingLead.phone} className="bg-muted/50 border-white/10" />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-company">Empresa</Label>
+                  <Input id="edit-company" name="company" defaultValue={editingLead.company} className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-value">Valor Estimado (€)</Label>
+                  <Input id="edit-value" name="estimated_value" type="number" defaultValue={editingLead.estimated_value} className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-notes">Notas</Label>
+                  <Textarea id="edit-notes" name="notes" defaultValue={editingLead.notes} className="bg-muted/50 border-white/10 min-h-[100px]" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={updateLeadMutation.isPending}>
+                  {updateLeadMutation.isPending ? "A guardar..." : "Guardar Alterações"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
