@@ -59,12 +59,14 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
   const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [movingFile, setMovingFile] = useState<{ id: string, name: string } | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['drive-files', folderId],
     queryFn: () => listProjectFiles({ data: { folderId: folderId! } }),
     enabled: !!folderId,
-    refetchInterval: 60000, // Refresh every minute for external changes
+    refetchInterval: 60000,
   });
 
   const uploadMutation = useMutation({
@@ -78,10 +80,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       }
       setIsUploading(false);
     },
-    onError: () => {
-      toast.error('Falha ao enviar ficheiro.');
-      setIsUploading(false);
-    }
   });
 
   const renameMutation = useMutation({
@@ -90,10 +88,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       if (res.success) {
         toast.success('Ficheiro renomeado!');
         queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setRenamingFile(null);
       } else {
         toast.error(`Erro ao renomear: ${res.error}`);
       }
-      setRenamingFile(null);
     },
   });
 
@@ -103,10 +101,41 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       if (res.success) {
         toast.success('Ficheiro eliminado!');
         queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setDeletingFile(null);
       } else {
         toast.error(`Erro ao eliminar: ${res.error}`);
       }
-      setDeletingFile(null);
+    },
+  });
+
+  const moveMutation = useMutation({
+    mutationFn: moveDriveFile,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Ficheiro movido!');
+        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        setMovingFile(null);
+      } else {
+        toast.error(`Erro ao mover: ${res.error}`);
+      }
+    },
+  });
+
+  const batchRenameMutation = useMutation({
+    mutationFn: batchRenameDriveFiles,
+    onSuccess: () => {
+      toast.success('Ficheiros renomeados!');
+      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      setSelectedFiles(new Set());
+    },
+  });
+
+  const batchDeleteMutation = useMutation({
+    mutationFn: batchDeleteDriveFiles,
+    onSuccess: () => {
+      toast.success('Ficheiros eliminados!');
+      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      setSelectedFiles(new Set());
     },
   });
 
