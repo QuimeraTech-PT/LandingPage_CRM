@@ -163,6 +163,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     reader.readAsDataURL(file);
   };
 
+  const files = result?.files || [];
+
   const toggleSelection = (fileId: string) => {
     const next = new Set(selectedFiles);
     if (next.has(fileId)) {
