@@ -1,11 +1,36 @@
 import { useQuery } from '@tanstack/react-query';
-import { listProjectFiles, renameDriveFile, deleteDriveFile, uploadFileToProject } from '@/lib/google-drive.functions';
-import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen, Upload, Trash2, Edit2, MoreVertical } from 'lucide-react';
+import { 
+  listProjectFiles, 
+  renameDriveFile, 
+  deleteDriveFile, 
+  uploadFileToProject,
+  moveDriveFile,
+  batchRenameDriveFiles,
+  batchDeleteDriveFiles
+} from '@/lib/google-drive.functions';
+import { 
+  File, 
+  FileText, 
+  Image as ImageIcon, 
+  ExternalLink, 
+  Loader2, 
+  AlertCircle, 
+  FolderOpen, 
+  Upload, 
+  Trash2, 
+  Edit2, 
+  MoreVertical,
+  CheckSquare,
+  Square,
+  Move,
+  FolderTree,
+  ChevronRight
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +45,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProjectFilesProps {
   folderId?: string | null;
