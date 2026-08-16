@@ -1,10 +1,23 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp } from 'lucide-react';
+import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getProjects } from '@/lib/crm.functions';
+import { getProjects, updateProject } from '@/lib/crm.functions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ProjectFiles } from '@/components/crm/ProjectFiles';
 import {
@@ -21,14 +34,41 @@ export const Route = createFileRoute('/admin/projects')({
 
 function ProjectsPage() {
   const [openFiles, setOpenFiles] = useState<Record<string, boolean>>({});
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const queryClient = useQueryClient();
   
   const { data: projects } = useSuspenseQuery({
     queryKey: ['crm-projects'],
     queryFn: () => getProjects(),
   });
 
+  const updateProjectMutation = useMutation({
+    mutationFn: updateProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm-projects'] });
+      setEditingProject(null);
+      toast.success('Projeto atualizado!');
+    },
+    onError: () => toast.error('Erro ao atualizar projeto.')
+  });
+
   const toggleFiles = (id: string) => {
     setOpenFiles(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleUpdateProject = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editingProject) return;
+    const formData = new FormData(e.currentTarget);
+    updateProjectMutation.mutate({
+      data: {
+        id: editingProject.id,
+        name: formData.get('name') as string,
+        status: formData.get('status') as any,
+        google_drive_folder_id: formData.get('folder_id') as string,
+        start_date: formData.get('start_date') as string,
+      }
+    });
   };
 
   const getStatusBadge = (status: string) => {
@@ -76,13 +116,23 @@ function ProjectsPage() {
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start mb-2">
                 {getStatusBadge(project.status)}
-                {project.google_drive_folder_id && (
-                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
-                     <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
-                       <Folder className="h-4 w-4" />
-                     </a>
-                   </Button>
-                )}
+                <div className="flex items-center gap-1">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-muted-foreground hover:text-primary"
+                    onClick={() => setEditingProject(project)}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  {project.google_drive_folder_id && (
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
+                      <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
+                        <Folder className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
               </div>
               <CardTitle className="text-xl font-bold">{project.name}</CardTitle>
             </CardHeader>
@@ -158,6 +208,56 @@ function ProjectsPage() {
           </div>
         )}
       </div>
+
+      <Dialog open={!!editingProject} onOpenChange={(open) => !open && setEditingProject(null)}>
+        <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
+          {editingProject && (
+            <form onSubmit={handleUpdateProject}>
+              <DialogHeader>
+                <DialogTitle>Editar Projeto</DialogTitle>
+                <DialogDescription>
+                  Altere os detalhes do projeto e a associação ao Drive.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-name">Nome do Projeto</Label>
+                  <Input id="edit-name" name="name" defaultValue={editingProject.name} required className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-status">Estado</Label>
+                  <Select name="status" defaultValue={editingProject.status}>
+                    <SelectTrigger className="bg-muted/50 border-white/10">
+                      <SelectValue placeholder="Selecione o estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planning">Planeamento</SelectItem>
+                      <SelectItem value="active">Ativo</SelectItem>
+                      <SelectItem value="on_hold">Em Pausa</SelectItem>
+                      <SelectItem value="completed">Concluído</SelectItem>
+                      <SelectItem value="cancelled">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-folder">ID da Pasta Google Drive</Label>
+                  <Input id="edit-folder" name="folder_id" defaultValue={editingProject.google_drive_folder_id} className="bg-muted/50 border-white/10" placeholder="ID da pasta no URL do Drive" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-start">Data de Início</Label>
+                  <Input id="edit-start" name="start_date" type="date" defaultValue={editingProject.start_date} className="bg-muted/50 border-white/10" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" type="button" onClick={() => setEditingProject(null)}>Cancelar</Button>
+                <Button type="submit" disabled={updateProjectMutation.isPending}>
+                  {updateProjectMutation.isPending ? "A guardar..." : "Guardar Alterações"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

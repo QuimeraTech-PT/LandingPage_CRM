@@ -1,17 +1,31 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getCRMStats, getLeads, getActivityLogs } from '@/lib/crm.functions';
-import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useState, useMemo } from 'react';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute('/admin/')({
   component: AdminDashboard,
 });
 
 function AdminDashboard() {
+  const [logFilter, setLogFilter] = useState({
+    type: 'all',
+    search: '',
+  });
+
   const { data: stats } = useSuspenseQuery({
     queryKey: ['crm-stats'],
     queryFn: () => getCRMStats(),
@@ -24,11 +38,23 @@ function AdminDashboard() {
 
   const { data: logs } = useSuspenseQuery({
     queryKey: ['crm-activity-logs'],
-    queryFn: () => getActivityLogs(),
+    queryFn: () => getActivityLogs({ data: { limit: 100 } }),
   });
 
   const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];
-  const recentLogs = Array.isArray(logs) ? logs.slice(0, 6) : [];
+  
+  const filteredLogs = useMemo(() => {
+    if (!Array.isArray(logs)) return [];
+    return logs.filter(log => {
+      const matchesType = logFilter.type === 'all' || log.entity_type === logFilter.type;
+      const searchStr = logFilter.search.toLowerCase();
+      const matchesSearch = !searchStr || 
+        log.action.toLowerCase().includes(searchStr) || 
+        log.entity_type.toLowerCase().includes(searchStr) ||
+        JSON.stringify(log.details).toLowerCase().includes(searchStr);
+      return matchesType && matchesSearch;
+    }).slice(0, 8);
+  }, [logs, logFilter]);
 
   const funnelData = Array.isArray(leads) ? leads.reduce((acc: any, lead: any) => {
     acc[lead.status] = (acc[lead.status] || 0) + 1;
@@ -152,16 +178,44 @@ function AdminDashboard() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="col-span-1 bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <History className="h-5 w-5 text-primary" />
-              Histórico de Atividade
+              Logs de Atividade
             </CardTitle>
+            <div className="flex flex-col gap-2 mt-4">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                <Input 
+                  placeholder="Pesquisar logs..." 
+                  className="pl-8 h-8 text-xs bg-muted/50 border-white/10"
+                  value={logFilter.search}
+                  onChange={(e) => setLogFilter(prev => ({ ...prev, search: e.target.value }))}
+                />
+              </div>
+              <Select 
+                value={logFilter.type} 
+                onValueChange={(val) => setLogFilter(prev => ({ ...prev, type: val }))}
+              >
+                <SelectTrigger className="h-8 text-xs bg-muted/50 border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-3 w-3" />
+                    <SelectValue placeholder="Filtrar por tipo" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-card border-white/10">
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="lead">Leads</SelectItem>
+                  <SelectItem value="project">Projetos</SelectItem>
+                  <SelectItem value="drive">Drive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentLogs.map((log: any) => (
-                <div key={log.id} className="flex gap-3 text-sm">
+            <div className="space-y-4 mt-2">
+              {filteredLogs.map((log: any) => (
+                <div key={log.id} className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0">
                   <div className={cn(
                     "mt-0.5 rounded-full p-1 h-fit",
                     log.status === 'success' ? "bg-green-500/10 text-green-500" : 
@@ -177,7 +231,7 @@ function AdminDashboard() {
                       {log.action.replace(/_/g, ' ')}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {log.entity_type}: {log.details?.fileName || log.details?.projectName || log.action}
+                      <span className="opacity-60">{log.entity_type}:</span> {log.details?.fileName || log.details?.projectName || log.details?.newName || log.action}
                     </p>
                     <p className="text-[10px] text-muted-foreground opacity-60">
                       {new Date(log.created_at).toLocaleString('pt-PT')}
@@ -185,8 +239,8 @@ function AdminDashboard() {
                   </div>
                 </div>
               ))}
-              {recentLogs.length === 0 && (
-                <p className="text-xs text-muted-foreground italic py-4">Sem atividade recente.</p>
+              {filteredLogs.length === 0 && (
+                <p className="text-xs text-muted-foreground italic py-4 text-center">Nenhum log encontrado.</p>
               )}
             </div>
           </CardContent>

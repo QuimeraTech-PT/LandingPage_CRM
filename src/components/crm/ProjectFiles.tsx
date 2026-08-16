@@ -1,12 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
-import { listProjectFiles } from '@/lib/google-drive.functions';
-import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen, Upload, X } from 'lucide-react';
+import { listProjectFiles, renameDriveFile, deleteDriveFile, uploadFileToProject } from '@/lib/google-drive.functions';
+import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen, Upload, Trash2, Edit2, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { uploadFileToProject } from '@/lib/google-drive.functions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useRef } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
 
 interface ProjectFilesProps {
   folderId?: string | null;
@@ -17,11 +30,14 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
+  const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
 
-  const { data, isLoading, error: queryError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['drive-files', folderId],
     queryFn: () => listProjectFiles({ data: { folderId: folderId! } }),
     enabled: !!folderId,
+    refetchInterval: 60000, // Refresh every minute for external changes
   });
 
   const uploadMutation = useMutation({
@@ -35,10 +51,36 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       }
       setIsUploading(false);
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error('Falha ao enviar ficheiro.');
       setIsUploading(false);
     }
+  });
+
+  const renameMutation = useMutation({
+    mutationFn: renameDriveFile,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Ficheiro renomeado!');
+        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      } else {
+        toast.error(`Erro ao renomear: ${res.error}`);
+      }
+      setRenamingFile(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteDriveFile,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Ficheiro eliminado!');
+        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      } else {
+        toast.error(`Erro ao eliminar: ${res.error}`);
+      }
+      setDeletingFile(null);
+    },
   });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,20 +138,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
 
   const files = result?.files || [];
 
-  if (files.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 text-center bg-muted/10 rounded-lg">
-        <File className="h-8 w-8 text-muted-foreground opacity-20 mb-2" />
-        <p className="text-sm text-muted-foreground">Nenhum ficheiro nesta pasta.</p>
-        <Button variant="link" className="mt-2 text-xs" asChild>
-          <a href={`https://drive.google.com/drive/folders/${folderId}`} target="_blank" rel="noopener noreferrer">
-            Abrir no Drive
-          </a>
-        </Button>
-      </div>
-    );
-  }
-
   const getFileIcon = (mimeType: string) => {
     if (mimeType.includes('image')) return <ImageIcon className="h-4 w-4 text-blue-400" />;
     if (mimeType.includes('pdf')) return <FileText className="h-4 w-4 text-red-400" />;
@@ -152,13 +180,39 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                 {file.name}
               </span>
             </div>
-            <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity" asChild>
-              <a href={file.webViewLink} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </Button>
+            <div className="flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <MoreVertical className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-card border-white/10">
+                  <DropdownMenuItem asChild>
+                    <a href={file.webViewLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 cursor-pointer text-foreground">
+                      <ExternalLink className="h-3 w-3" />
+                      Abrir
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRenamingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-foreground">
+                    <Edit2 className="h-3 w-3" />
+                    Renomear
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDeletingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
+                    <Trash2 className="h-3 w-3" />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         ))}
+        {files.length === 0 && (
+          <div className="flex flex-col items-center justify-center p-8 text-center bg-muted/10 rounded-lg">
+            <File className="h-8 w-8 text-muted-foreground opacity-20 mb-2" />
+            <p className="text-sm text-muted-foreground">Nenhum ficheiro nesta pasta.</p>
+          </div>
+        )}
         {files.length > 5 && (
           <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" asChild>
             <a href={`https://drive.google.com/drive/folders/${folderId}`} target="_blank" rel="noopener noreferrer">
@@ -167,6 +221,76 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           </Button>
         )}
       </div>
+
+      {/* Rename Dialog */}
+      <Dialog open={!!renamingFile} onOpenChange={(open) => !open && setRenamingFile(null)}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Renomear Ficheiro</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Input 
+              defaultValue={renamingFile?.name} 
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  renameMutation.mutate({
+                    data: {
+                      projectId,
+                      fileId: renamingFile!.id,
+                      newName: e.currentTarget.value
+                    }
+                  });
+                }
+              }}
+              className="bg-muted/50 border-white/10 text-foreground"
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setRenamingFile(null)}>Cancelar</Button>
+            <Button onClick={(e) => {
+              const input = e.currentTarget.parentElement?.previousElementSibling?.querySelector('input');
+              if (input) {
+                renameMutation.mutate({
+                  data: {
+                    projectId,
+                    fileId: renamingFile!.id,
+                    newName: input.value
+                  }
+                });
+              }
+            }} disabled={renameMutation.isPending}>
+              {renameMutation.isPending ? "A processar..." : "Renomear"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <Dialog open={!!deletingFile} onOpenChange={(open) => !open && setDeletingFile(null)}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Confirmar Eliminação</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-sm text-muted-foreground">
+            Tem a certeza que deseja mover <span className="text-foreground font-medium">{deletingFile?.name}</span> para a reciclagem?
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeletingFile(null)}>Cancelar</Button>
+            <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => {
+              deleteMutation.mutate({
+                data: {
+                  projectId,
+                  fileId: deletingFile!.id,
+                  fileName: deletingFile!.name
+                }
+              });
+            }} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? "A eliminar..." : "Eliminar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
