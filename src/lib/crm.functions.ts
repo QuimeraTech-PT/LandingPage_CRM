@@ -246,6 +246,39 @@ export const getProjects = createServerFn({ method: "GET" })
     }));
   });
 
+export const updateProject = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    id: z.string().uuid(),
+    name: z.string().optional(),
+    status: z.enum(['planning', 'active', 'on_hold', 'completed', 'cancelled']).optional(),
+    google_drive_folder_id: z.string().nullable().optional(),
+    start_date: z.string().nullable().optional(),
+    end_date: z.string().nullable().optional(),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { id, ...updateData } = data;
+    const { error } = await supabaseAdmin
+      .from("crm_projects")
+      .update(updateData)
+      .eq("id", id);
+    
+    if (error) throw error;
+
+    await logActivity({
+      userId: context.userId,
+      action: 'update_project',
+      entityType: 'project',
+      entityId: id,
+      details: updateData
+    });
+
+    return { success: true };
+  });
+
 export const getTransactions = createServerFn({ method: "GET" })
   .handler(async ({ context }: { context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
