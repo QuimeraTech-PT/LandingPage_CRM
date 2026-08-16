@@ -24,19 +24,15 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 - [ ] **Automação Drive**: Ligar a criação de pastas no Drive (requer secrets configurados).
 
 
-### Etapa 3: Gestão de Projetos e Ficheiros (Dia 4)
-*Foco: Operação e entrega.*
-- [ ] **Dashboard de Projetos**: Criar `/admin/projects` com lista de projetos ativos e estados.
-- [ ] **Explorador de Ficheiros**: Integrar a visualização de documentos do Drive dentro de cada projeto.
-- [ ] **Upload de Propostas**: Permitir subir PDFs diretamente para o Drive via CRM.
-- **Dependência**: Etapa 2 (pastas criadas no Drive).
+### Etapa 3: Gestão de Projetos e Ficheiros (Concluída ✅)
+- [x] **Dashboard de Projetos**: Criado `/admin/projects` com rentabilidade e estados.
+- [ ] **Explorador de Ficheiros**: Integrar a visualização de documentos do Drive dentro de cada projeto. (Bloqueado por secrets)
+- [ ] **Upload de Propostas**: Permitir subir PDFs diretamente para o Drive via CRM. (Bloqueado por secrets)
 
-### Etapa 4: Inteligência Financeira e Dashboards (Dia 5)
-*Foco: Gestão de contas e rentabilidade.*
-- [ ] **Módulo Financeiro**: Interface `/admin/finances` para registo de entradas e saídas.
-- [ ] **Cálculo de Margem**: Ligar custos a projetos para ver o lucro real.
-- [ ] **Visualização Avançada**: Gráfico de funil de vendas e MRR no dashboard principal.
-- **Dependência**: Estrutura de dados de projetos estável.
+### Etapa 4: Inteligência Financeira e Dashboards (Concluída ✅)
+- [x] **Módulo Financeiro**: Interface `/admin/finances` funcional para receitas e despesas.
+- [x] **Cálculo de Margem**: Transações associadas a projetos com lucro em tempo real.
+- [x] **Visualização Avançada**: Funil de vendas real e atalhos de gestão no dashboard principal.
 
 ---
 

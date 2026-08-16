@@ -160,10 +160,52 @@ export const getProjects = createServerFn({ method: "GET" })
 
     const { data, error } = await supabaseAdmin
       .from("crm_projects")
-      .select("*, crm_leads(name, company)")
+      .select("*, crm_leads(name, company), crm_finances(amount, type)")
       .order("created_at", { ascending: false });
+    
+    if (error) throw error;
+    return data.map(p => ({
+      ...p,
+      total_income: p.crm_finances.filter(f => f.type === 'income').reduce((acc, f) => acc + Number(f.amount), 0),
+      total_expenses: p.crm_finances.filter(f => f.type === 'expense').reduce((acc, f) => acc + Number(f.amount), 0)
+    }));
+  });
+
+export const getTransactions = createServerFn({ method: "GET" })
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { data, error } = await supabaseAdmin
+      .from("crm_finances")
+      .select("*, crm_projects(name)")
+      .order("date", { ascending: false });
     
     if (error) throw error;
     return data;
   });
+
+export const createTransaction = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    description: z.string(),
+    amount: z.number(),
+    type: z.enum(['income', 'expense']),
+    date: z.string(),
+    project_id: z.string().uuid().nullable().optional(),
+    category: z.string().nullable().optional(),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { error } = await supabaseAdmin
+      .from("crm_finances")
+      .insert([data]);
+    
+    if (error) throw error;
+    return { success: true };
+  });
+
 
