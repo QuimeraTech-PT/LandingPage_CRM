@@ -4,8 +4,8 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 
 ## 📌 Prioridades Imediatas (Bloqueadores)
 1. **Segurança e Acesso**: Sem o middleware e SSO, o CRM está vulnerável ou inacessível.
-2. **Ciclo de Vida da Lead**: Converter leads em projetos é o "core" da automação esperada.
-3. **Integração Google Drive**: Ativar a gestão de ficheiros para centralizar documentos.
+2. **Integração Google Drive**: Ativar a gestão de ficheiros (Falta inserir secrets).
+3. **Notificações**: Ligar Lark Bot para automatismos.
 
 ---
 
@@ -17,20 +17,24 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 - [x] **Auth & Roles**: Configurar Google SSO no backend. (Estrutura pronta, aguarda credenciais)
 - [ ] **Verificação de Secrets**: Validar conexão com as chaves do Google Drive. (Ação do Utilizador)
 
-### Etapa 2: Automação e Conversão (Em Progresso ⏳)
+### Etapa 2: Automação e Conversão (Concluída ✅)
 - [x] **UI de Gestão de Leads**: Criado `/admin/leads` com modal de criação e troca de estados.
 - [x] **Motor de Conversão**: Implementada função `convertLeadToProject`.
 - [x] **Listagem de Projetos**: Criada rota `/admin/projects` robusta.
 - [x] **Automação Drive**: Estrutura de criação de pastas pronta (resiliente a falta de secrets).
+- [x] **Logs de Atividade**: Sistema de histórico de eventos e logs implementado.
 - [ ] **Notificações**: Ligar Lark Bot para alertas de novas leads e projetos.
+
 
 
 
 ### Etapa 3: Gestão de Projetos e Ficheiros (Concluída ✅)
 - [x] **Dashboard de Projetos**: Criado `/admin/projects` com rentabilidade e estados.
 - [x] **Explorador de Ficheiros**: Integrado visualizador de ficheiros do Drive dentro de cada projeto (com fallback).
-- [x] **Upload de Propostas**: Fluxo de criação de pastas automatizado na conversão.
+- [x] **Upload de Propostas**: Implementado upload direto para o Google Drive via CRM.
+- [x] **Edição Avançada**: Modais de edição para Leads e Projetos finalizados.
 - [ ] **Gestão Local**: Permitir drag & drop para o Drive via CRM (requer secrets).
+
 
 
 ### Etapa 4: Inteligência Financeira e Dashboards (Concluída ✅)
