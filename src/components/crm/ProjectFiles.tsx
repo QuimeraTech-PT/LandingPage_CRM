@@ -166,13 +166,103 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                 {file.name}
               </span>
             </div>
-            <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity" asChild>
-              <a href={file.webViewLink} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </Button>
+            <div className="flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <MoreVertical className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-card border-white/10">
+                  <DropdownMenuItem asChild>
+                    <a href={file.webViewLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 cursor-pointer">
+                      <ExternalLink className="h-3 w-3" />
+                      Abrir
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRenamingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer">
+                    <Edit2 className="h-3 w-3" />
+                    Renomear
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDeletingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
+                    <Trash2 className="h-3 w-3" />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         ))}
+
+        {/* Rename Dialog */}
+        <Dialog open={!!renamingFile} onOpenChange={(open) => !open && setRenamingFile(null)}>
+          <DialogContent className="bg-card border-white/10 text-foreground">
+            <DialogHeader>
+              <DialogTitle>Renomear Ficheiro</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input 
+                defaultValue={renamingFile?.name} 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    renameMutation.mutate({
+                      data: {
+                        projectId,
+                        fileId: renamingFile!.id,
+                        newName: e.currentTarget.value
+                      }
+                    });
+                  }
+                }}
+                className="bg-muted/50 border-white/10"
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setRenamingFile(null)}>Cancelar</Button>
+              <Button onClick={(e) => {
+                const input = e.currentTarget.parentElement?.previousElementSibling?.querySelector('input');
+                if (input) {
+                  renameMutation.mutate({
+                    data: {
+                      projectId,
+                      fileId: renamingFile!.id,
+                      newName: input.value
+                    }
+                  });
+                }
+              }} disabled={renameMutation.isPending}>
+                Renomear
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation */}
+        <Dialog open={!!deletingFile} onOpenChange={(open) => !open && setDeletingFile(null)}>
+          <DialogContent className="bg-card border-white/10 text-foreground">
+            <DialogHeader>
+              <DialogTitle>Confirmar Eliminação</DialogTitle>
+            </DialogHeader>
+            <div className="py-4 text-sm text-muted-foreground">
+              Tem a certeza que deseja mover <span className="text-foreground font-medium">{deletingFile?.name}</span> para a reciclagem?
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setDeletingFile(null)}>Cancelar</Button>
+              <Button variant="destructive" onClick={() => {
+                deleteMutation.mutate({
+                  data: {
+                    projectId,
+                    fileId: deletingFile!.id,
+                    fileName: deletingFile!.name
+                  }
+                });
+              }} disabled={deleteMutation.isPending}>
+                Eliminar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         {files.length > 5 && (
           <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" asChild>
             <a href={`https://drive.google.com/drive/folders/${folderId}`} target="_blank" rel="noopener noreferrer">

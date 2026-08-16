@@ -24,7 +24,7 @@ function AdminDashboard() {
 
   const { data: logs } = useSuspenseQuery({
     queryKey: ['crm-activity-logs'],
-    queryFn: () => getActivityLogs(),
+    queryFn: () => getActivityLogs({ data: { limit: 50 } }),
   });
 
   const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];

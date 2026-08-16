@@ -317,19 +317,32 @@ export const createTransaction = createServerFn({ method: "POST" })
   });
 
 export const getActivityLogs = createServerFn({ method: "GET" })
-  .handler(async ({ context }: { context: any }) => {
+  .inputValidator((data: any) => z.object({
+    limit: z.number().optional().default(50),
+    entityType: z.string().nullable().optional(),
+    action: z.string().nullable().optional(),
+    startDate: z.string().nullable().optional(),
+    endDate: z.string().nullable().optional(),
+  }).parse(data || {}))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
-    const { data, error } = await supabaseAdmin
+    let query = supabaseAdmin
       .from("crm_activity_logs")
       .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
+      .order("created_at", { ascending: false });
+
+    if (data.entityType) query = query.eq('entity_type', data.entityType);
+    if (data.action) query = query.eq('action', data.action);
+    if (data.startDate) query = query.gte('created_at', data.startDate);
+    if (data.endDate) query = query.lte('created_at', data.endDate);
+    
+    const { data: logs, error } = await query.limit(data.limit || 50);
     
     if (error) throw error;
-    return data;
+    return logs;
   });
 
 
