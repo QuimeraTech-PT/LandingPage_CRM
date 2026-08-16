@@ -6,16 +6,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getProjects } from '@/lib/crm.functions';
 import { cn } from '@/lib/utils';
+import { ProjectFiles } from '@/components/crm/ProjectFiles';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/admin/projects')({
   component: ProjectsPage,
 });
 
 function ProjectsPage() {
+  const [openFiles, setOpenFiles] = useState<Record<string, boolean>>({});
+  
   const { data: projects } = useSuspenseQuery({
     queryKey: ['crm-projects'],
     queryFn: () => getProjects(),
   });
+
+  const toggleFiles = (id: string) => {
+    setOpenFiles(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
@@ -86,7 +100,7 @@ function ProjectsPage() {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/5 space-y-3">
+              <div className="pt-4 border-t border-white/5 space-y-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Rentabilidade:</span>
                   <span className={cn(
@@ -96,14 +110,41 @@ function ProjectsPage() {
                     {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
                   </span>
                 </div>
+
+                <Collapsible 
+                  open={openFiles[project.id]} 
+                  onOpenChange={() => toggleFiles(project.id)}
+                  className="w-full"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-full justify-between px-2 text-xs hover:bg-white/5">
+                      <div className="flex items-center gap-2">
+                        <Folder className="h-3 w-3 text-primary" />
+                        <span>Documentos e Ficheiros</span>
+                      </div>
+                      {openFiles[project.id] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pt-3">
+                    <ProjectFiles folderId={project.google_drive_folder_id} />
+                  </CollapsibleContent>
+                </Collapsible>
                 
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" className="w-full gap-2" asChild>
                     <Link to="/admin/finances">
-                      Ver Finanças
+                      Finanças
                       <TrendingUp className="h-3 w-3" />
                     </Link>
                   </Button>
+                  {project.google_drive_folder_id && (
+                    <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                      <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
+                        Drive
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>

@@ -8,16 +8,22 @@ const getDriveClient = () => {
   const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
   if (!email || !key) {
-    throw new Error("Credenciais do Google Drive não configuradas.");
+    console.warn("Google Drive: Credenciais não encontradas no ambiente.");
+    return null;
   }
 
-  const auth = new google.auth.JWT({
-    email,
-    key,
-    scopes: ['https://www.googleapis.com/auth/drive.file']
-  });
+  try {
+    const auth = new google.auth.JWT({
+      email,
+      key,
+      scopes: ['https://www.googleapis.com/auth/drive.file']
+    });
 
-  return google.drive({ version: 'v3', auth });
+    return google.drive({ version: 'v3', auth });
+  } catch (e) {
+    console.error("Google Drive: Erro ao inicializar cliente JWT:", e);
+    return null;
+  }
 };
 
 export const createProjectFolder = createServerFn({ method: "POST" })
@@ -33,6 +39,10 @@ export const createProjectFolder = createServerFn({ method: "POST" })
 
     try {
       const drive = getDriveClient();
+      if (!drive) {
+        return { error: "Drive não configurado", status: "pending_config" };
+      }
+
       const rootFolderId = process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID;
 
       const folderMetadata: drive_v3.Schema$File = {
@@ -73,14 +83,18 @@ export const listProjectFiles = createServerFn({ method: "GET" })
 
     try {
       const drive = getDriveClient();
+      if (!drive) {
+        return { error: "Drive não configurado", status: "pending_config", files: [] };
+      }
+
       const response = await drive.files.list({
         q: `'${data.folderId}' in parents and trashed = false`,
-        fields: 'files(id, name, mimeType, webViewLink, iconLink)',
+        fields: 'files(id, name, mimeType, webViewLink, iconLink, size, modifiedTime)',
       });
 
-      return response.data.files || [];
+      return { files: response.data.files || [], status: "success" };
     } catch (error) {
       console.error("Erro ao listar ficheiros do Drive:", error);
-      return [];
+      return { files: [], status: "error", error: "Erro na API do Drive" };
     }
   });

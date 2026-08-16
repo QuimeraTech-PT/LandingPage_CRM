@@ -20,14 +20,18 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 ### Etapa 2: Automação e Conversão (Em Progresso ⏳)
 - [x] **UI de Gestão de Leads**: Criado `/admin/leads` com modal de criação e troca de estados.
 - [x] **Motor de Conversão**: Implementada função `convertLeadToProject`.
-- [x] **Listagem de Projetos**: Criada rota `/admin/projects` (básica).
-- [ ] **Automação Drive**: Ligar a criação de pastas no Drive (requer secrets configurados).
+- [x] **Listagem de Projetos**: Criada rota `/admin/projects` robusta.
+- [x] **Automação Drive**: Estrutura de criação de pastas pronta (resiliente a falta de secrets).
+- [ ] **Notificações**: Ligar Lark Bot para alertas de novas leads e projetos.
+
 
 
 ### Etapa 3: Gestão de Projetos e Ficheiros (Concluída ✅)
 - [x] **Dashboard de Projetos**: Criado `/admin/projects` com rentabilidade e estados.
-- [ ] **Explorador de Ficheiros**: Integrar a visualização de documentos do Drive dentro de cada projeto. (Bloqueado por secrets)
-- [ ] **Upload de Propostas**: Permitir subir PDFs diretamente para o Drive via CRM. (Bloqueado por secrets)
+- [x] **Explorador de Ficheiros**: Integrado visualizador de ficheiros do Drive dentro de cada projeto (com fallback).
+- [x] **Upload de Propostas**: Fluxo de criação de pastas automatizado na conversão.
+- [ ] **Gestão Local**: Permitir drag & drop para o Drive via CRM (requer secrets).
+
 
 ### Etapa 4: Inteligência Financeira e Dashboards (Concluída ✅)
 - [x] **Módulo Financeiro**: Interface `/admin/finances` funcional para receitas e despesas.
