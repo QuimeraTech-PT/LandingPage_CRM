@@ -174,3 +174,81 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
       return { success: false, error: error.message };
     }
   });
+
+export const renameDriveFile = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    fileId: z.string(),
+    newName: z.string(),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      await drive.files.update({
+        fileId: data.fileId,
+        requestBody: { name: data.newName },
+      });
+
+      await supabaseAdmin
+        .from("crm_activity_logs")
+        .insert([{
+          user_id: userId,
+          action: 'rename_file',
+          entity_type: 'drive',
+          entity_id: data.projectId,
+          details: { fileId: data.fileId, newName: data.newName },
+          status: 'success'
+        }]);
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("Rename error:", error);
+      return { success: false, error: error.message };
+    }
+  });
+
+export const deleteDriveFile = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    fileId: z.string(),
+    fileName: z.string(),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      await drive.files.update({
+        fileId: data.fileId,
+        requestBody: { trashed: true },
+      });
+
+      await supabaseAdmin
+        .from("crm_activity_logs")
+        .insert([{
+          user_id: userId,
+          action: 'delete_file',
+          entity_type: 'drive',
+          entity_id: data.projectId,
+          details: { fileId: data.fileId, fileName: data.fileName },
+          status: 'success'
+        }]);
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("Delete error:", error);
+      return { success: false, error: error.message };
+    }
+  });
