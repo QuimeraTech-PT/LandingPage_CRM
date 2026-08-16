@@ -6,7 +6,8 @@ import {
   uploadFileToProject,
   moveDriveFile,
   batchRenameDriveFiles,
-  batchDeleteDriveFiles
+  batchDeleteDriveFiles,
+  batchMoveDriveFiles
 } from '@/lib/google-drive.functions';
 import { 
   File, 
@@ -64,6 +65,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const [batchRenaming, setBatchRenaming] = useState<boolean>(false);
   const [batchDeleting, setBatchDeleting] = useState<boolean>(false);
   const [batchRenameValues, setBatchRenameValues] = useState<Record<string, string>>({});
+  const [batchMoving, setBatchMoving] = useState<boolean>(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['drive-files', folderId],
@@ -142,6 +144,16 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     },
   });
 
+  const batchMoveMutation = useMutation({
+    mutationFn: batchMoveDriveFiles,
+    onSuccess: () => {
+      toast.success('Ficheiros movidos!');
+      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      setSelectedFiles(new Set());
+      setBatchMoving(false);
+    },
+  });
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !folderId) return;
@@ -179,6 +191,21 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     }));
     batchDeleteMutation.mutate({ data: { projectId, files: targets } });
     setBatchDeleting(false);
+  };
+
+  const handleBatchMove = (newParentId: string, currentFiles: any[]) => {
+    const targets = Array.from(selectedFiles).map(id => ({
+      fileId: id,
+      fileName: currentFiles.find((f: any) => f.id === id)?.name || '',
+      oldParentId: folderId!
+    }));
+    batchMoveMutation.mutate({ 
+      data: { 
+        projectId, 
+        newParentId, 
+        files: targets 
+      } 
+    });
   };
 
   const selectAll = (allFiles: any[]) => {
@@ -258,6 +285,9 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchRenaming(true)}>
               <Edit2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchMoving(true)}>
+              <Move className="h-3.5 w-3.5" />
             </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setBatchDeleting(true)}>
               <Trash2 className="h-3.5 w-3.5" />
@@ -534,6 +564,46 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => handleBatchDelete(files)} disabled={batchDeleteMutation.isPending}>
               {batchDeleteMutation.isPending ? "A eliminar..." : "Eliminar Todos"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Batch Move Dialog */}
+      <Dialog open={batchMoving} onOpenChange={setBatchMoving}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Mover em Lote ({selectedFiles.size})</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Selecione a pasta de destino para os <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span>:
+            </p>
+            <ScrollArea className="h-[200px] rounded-md border border-white/10 p-2">
+              <div className="space-y-1">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start gap-2 h-9 text-sm" 
+                  onClick={() => handleBatchMove(folderId!, files)}
+                >
+                  <FolderTree className="h-4 w-4 text-primary" />
+                  Pasta Principal (Projeto)
+                </Button>
+                {subfolders.map((folder: any) => (
+                  <Button 
+                    key={folder.id}
+                    variant="ghost" 
+                    className="w-full justify-start gap-2 h-9 text-sm pl-6" 
+                    onClick={() => handleBatchMove(folder.id, files)}
+                  >
+                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                    <FolderOpen className="h-4 w-4 text-yellow-400" />
+                    {folder.name}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBatchMoving(false)}>Cancelar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
