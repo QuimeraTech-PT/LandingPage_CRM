@@ -83,11 +83,14 @@ export const createProjectFolder = createServerFn({ method: "POST" })
           .from("crm_projects")
           .update({ google_drive_folder_id: folderId })
           .eq("id", data.projectId);
+        
+        await logDriveActivity('create_folder_success', { folderId });
       }
 
       return { folderId };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao criar pasta no Drive:", error);
+      await logDriveActivity('create_folder_error', { error: error.message }, 'failure');
       throw new Error("Falha na integração com o Google Drive.");
     }
   });
