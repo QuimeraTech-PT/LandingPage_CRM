@@ -208,7 +208,6 @@ function ProjectsPage() {
           </div>
         )}
       </div>
-      </div>
 
       <Dialog open={!!editingProject} onOpenChange={(open) => !open && setEditingProject(null)}>
         <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
