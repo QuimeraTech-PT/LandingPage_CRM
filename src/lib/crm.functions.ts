@@ -211,8 +211,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
           projectId: project.id,
           clientName: data.clientName,
           projectName: data.projectName
-        },
-        context
+        }
       });
     } catch (e) {
       console.warn("Google Drive folder creation failed or not configured:", e);
