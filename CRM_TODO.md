@@ -32,7 +32,7 @@ Este documento detalha as etapas de finalização do CRM, priorizadas por impact
 - [x] **Dashboard de Projetos**: Criado `/admin/projects` com rentabilidade e estados.
 - [x] **Explorador de Ficheiros**: Integrado visualizador de ficheiros do Drive dentro de cada projeto (com fallback).
 - [x] **Ações em Ficheiros**: Implementado Renomear, Eliminar e Mover ficheiros diretamente do CRM.
-- [x] **Ações em Lote**: Implementado Renomear e Eliminar vários ficheiros de uma vez com logs individuais.
+- [x] **Ações em Lote**: Implementado Renomear, Eliminar e Mover vários ficheiros de uma vez com logs individuais.
 - [x] **Upload de Propostas**: Implementado upload direto para o Google Drive via CRM.
 - [x] **Edição Avançada**: Modais de edição para Leads e Projetos finalizados.
 - [x] **Auto-Refresh**: Atualização automática da listagem e refresh periódico (60s).
