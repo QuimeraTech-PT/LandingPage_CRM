@@ -1,10 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon } from 'lucide-react';
+import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getProjects } from '@/lib/crm.functions';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/admin/projects')({
   component: ProjectsPage,
@@ -85,11 +86,25 @@ function ProjectsPage() {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/5 flex gap-2">
-                <Button variant="outline" size="sm" className="w-full gap-2">
-                  Ver Detalhes
-                  <ExternalLink className="h-3 w-3" />
-                </Button>
+              <div className="pt-4 border-t border-white/5 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Rentabilidade:</span>
+                  <span className={cn(
+                    "font-bold",
+                    (project.total_income - project.total_expenses) >= 0 ? "text-green-500" : "text-red-500"
+                  )}>
+                    {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
+                  </span>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                    <Link to="/admin/finances">
+                      Ver Finanças
+                      <TrendingUp className="h-3 w-3" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
