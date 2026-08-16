@@ -2,6 +2,38 @@ import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
+// Helper to log activities
+async function logActivity({ 
+  userId, 
+  action, 
+  entityType, 
+  entityId, 
+  details = {}, 
+  status = 'success' 
+}: { 
+  userId?: string, 
+  action: string, 
+  entityType: string, 
+  entityId?: string, 
+  details?: any, 
+  status?: 'success' | 'failure' | 'warning'
+}) {
+  try {
+    await supabaseAdmin
+      .from("crm_activity_logs")
+      .insert([{
+        user_id: userId,
+        action,
+        entity_type: entityType,
+        entity_id: entityId,
+        details,
+        status
+      }]);
+  } catch (e) {
+    console.error("Failed to log activity:", e);
+  }
+}
+
 export const getCRMStats = createServerFn({ method: "GET" })
   .handler(async ({ context }: { context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
