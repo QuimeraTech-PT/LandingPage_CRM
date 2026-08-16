@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getCRMStats, getLeads } from '@/lib/crm.functions';
-import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight } from 'lucide-react';
+import { getCRMStats, getLeads, getActivityLogs } from '@/lib/crm.functions';
+import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/admin/')({
   component: AdminDashboard,
