@@ -181,6 +181,14 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     setBatchDeleting(false);
   };
 
+  const selectAll = (allFiles: any[]) => {
+    if (selectedFiles.size === allFiles.length) {
+      setSelectedFiles(new Set());
+    } else {
+      setSelectedFiles(new Set(allFiles.map((f: any) => f.id)));
+    }
+  };
+
   if (!folderId) {
     return (
       <div className="flex flex-col items-center justify-center p-8 border border-dashed border-white/10 rounded-lg text-center bg-muted/20">
