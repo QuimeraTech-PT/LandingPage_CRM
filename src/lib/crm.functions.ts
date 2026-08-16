@@ -283,4 +283,21 @@ export const createTransaction = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+export const getActivityLogs = createServerFn({ method: "GET" })
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { data, error } = await supabaseAdmin
+      .from("crm_activity_logs")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    
+    if (error) throw error;
+    return data;
+  });
+
+
 
