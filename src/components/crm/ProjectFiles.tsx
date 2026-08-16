@@ -654,11 +654,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setBatchMoving(false)}>Cancelar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Batch Move Progress/Results */}
       <Dialog open={!!batchMoveProgress} onOpenChange={(open) => !open && setBatchMoveProgress(null)}>
