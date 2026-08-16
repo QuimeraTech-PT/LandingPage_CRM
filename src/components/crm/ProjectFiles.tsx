@@ -424,6 +424,119 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* Move Dialog */}
+      <Dialog open={!!movingFile} onOpenChange={(open) => !open && setMovingFile(null)}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Mover Ficheiro</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Selecione a pasta de destino para <span className="text-foreground font-medium">{movingFile?.name}</span>:
+            </p>
+            <ScrollArea className="h-[200px] rounded-md border border-white/10 p-2">
+              <div className="space-y-1">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start gap-2 h-9 text-sm" 
+                  disabled={movingFile?.oldParentId === folderId}
+                  onClick={() => {
+                    moveMutation.mutate({
+                      data: {
+                        projectId,
+                        fileId: movingFile!.id,
+                        fileName: movingFile!.name,
+                        oldParentId: movingFile!.oldParentId,
+                        newParentId: folderId!
+                      }
+                    });
+                  }}
+                >
+                  <FolderTree className="h-4 w-4 text-primary" />
+                  Pasta Principal (Projeto)
+                </Button>
+                {subfolders.map((folder: any) => (
+                  <Button 
+                    key={folder.id}
+                    variant="ghost" 
+                    className="w-full justify-start gap-2 h-9 text-sm pl-6" 
+                    disabled={movingFile?.oldParentId === folder.id}
+                    onClick={() => {
+                      moveMutation.mutate({
+                        data: {
+                          projectId,
+                          fileId: movingFile!.id,
+                          fileName: movingFile!.name,
+                          oldParentId: movingFile!.oldParentId,
+                          newParentId: folder.id
+                        }
+                      });
+                    }}
+                  >
+                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                    <FolderOpen className="h-4 w-4 text-yellow-400" />
+                    {folder.name}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setMovingFile(null)}>Cancelar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Batch Rename Dialog */}
+      <Dialog open={batchRenaming} onOpenChange={setBatchRenaming}>
+        <DialogContent className="bg-card border-white/10 text-foreground max-w-md">
+          <DialogHeader>
+            <DialogTitle>Renomear em Lote ({selectedFiles.size})</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[300px] pr-4">
+            <div className="space-y-4 py-4">
+              {Array.from(selectedFiles).map(id => {
+                const file = files.find((f: any) => f.id === id);
+                return (
+                  <div key={id} className="space-y-1.5">
+                    <label className="text-xs text-muted-foreground block truncate">{file?.name}</label>
+                    <Input 
+                      placeholder="Novo nome..." 
+                      defaultValue={file?.name}
+                      onChange={(e) => setBatchRenameValues(prev => ({ ...prev, [id]: e.target.value }))}
+                      className="bg-muted/50 border-white/10"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBatchRenaming(false)}>Cancelar</Button>
+            <Button onClick={() => handleBatchRename(files)} disabled={batchRenameMutation.isPending}>
+              {batchRenameMutation.isPending ? "A processar..." : "Renomear Todos"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Batch Delete Dialog */}
+      <Dialog open={batchDeleting} onOpenChange={setBatchDeleting}>
+        <DialogContent className="bg-card border-white/10 text-foreground">
+          <DialogHeader>
+            <DialogTitle>Confirmar Eliminação em Lote</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-sm text-muted-foreground">
+            Tem a certeza que deseja mover <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span> para a reciclagem?
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBatchDeleting(false)}>Cancelar</Button>
+            <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => handleBatchDelete(files)} disabled={batchDeleteMutation.isPending}>
+              {batchDeleteMutation.isPending ? "A eliminar..." : "Eliminar Todos"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
