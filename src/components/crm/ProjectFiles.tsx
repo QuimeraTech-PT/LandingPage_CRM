@@ -661,42 +661,44 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           <DialogHeader>
             <DialogTitle>Estado da Movimentação</DialogTitle>
           </DialogHeader>
-          <div className="py-4 space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{batchMoveProgress.current === batchMoveProgress.total ? 'Concluído' : 'A processar...'}</span>
-                <span>{batchMoveProgress.current} de {batchMoveProgress.total}</span>
-              </div>
-              <Progress value={(batchMoveProgress.current / batchMoveProgress.total) * 100} className="h-2" />
-            </div>
-            
-            {batchMoveProgress?.current === batchMoveProgress?.total && (
-              <ScrollArea className="h-[200px] border border-white/5 rounded-md p-2">
-                <div className="space-y-2">
-                  {batchMoveProgress.results.map((res: any, idx: number) => {
-                    const file = files.find((f: any) => f.id === res.fileId);
-                    return (
-                      <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/20">
-                        <span className="truncate max-w-[200px]">{file?.name || 'Ficheiro'}</span>
-                        {res.success ? (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                        ) : (
-                          <XCircle className="h-3.5 w-3.5 text-destructive" />
-                        )}
-                      </div>
-                    );
-                  })}
+          {batchMoveProgress && (
+            <div className="py-4 space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{batchMoveProgress.current === batchMoveProgress.total ? 'Concluído' : 'A processar...'}</span>
+                  <span>{batchMoveProgress.current} de {batchMoveProgress.total}</span>
                 </div>
-              </ScrollArea>
-            )}
-          </div>
+                <Progress value={(batchMoveProgress.current / batchMoveProgress.total) * 100} className="h-2" />
+              </div>
+              
+              {batchMoveProgress.current === batchMoveProgress.total && (
+                <ScrollArea className="h-[200px] border border-white/5 rounded-md p-2">
+                  <div className="space-y-2">
+                    {batchMoveProgress.results.map((res: any, idx: number) => {
+                      const file = files.find((f: any) => f.id === res.fileId);
+                      return (
+                        <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/20">
+                          <span className="truncate max-w-[200px]">{file?.name || 'Ficheiro'}</span>
+                          {res.success ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                          ) : (
+                            <XCircle className="h-3.5 w-3.5 text-destructive" />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              )}
+            </div>
+          )}
           <DialogFooter>
             <Button 
               onClick={() => {
                 setBatchMoveProgress(null);
                 setBatchMoving(false);
               }}
-              disabled={batchMoveProgress?.current !== batchMoveProgress?.total}
+              disabled={!batchMoveProgress || batchMoveProgress.current !== batchMoveProgress.total}
             >
               Fechar
             </Button>
