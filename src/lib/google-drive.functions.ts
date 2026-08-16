@@ -111,7 +111,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
 
       const response = await drive.files.list({
         q: `'${data.folderId}' in parents and trashed = false`,
-        fields: 'files(id, name, mimeType, webViewLink, iconLink, size, modifiedTime)',
+        fields: 'files(id, name, mimeType, webViewLink, iconLink, size, modifiedTime, thumbnailLink)',
       });
 
       return { files: response.data.files || [], status: "success" };
