@@ -126,7 +126,7 @@ function ProjectsPage() {
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pt-3">
-                    <ProjectFiles folderId={project.google_drive_folder_id} />
+                    <ProjectFiles folderId={project.google_drive_folder_id} projectId={project.id} />
                   </CollapsibleContent>
                 </Collapsible>
                 
