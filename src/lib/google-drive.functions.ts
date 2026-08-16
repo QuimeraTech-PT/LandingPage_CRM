@@ -252,3 +252,141 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
       return { success: false, error: error.message };
     }
   });
+
+export const moveDriveFile = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    fileId: z.string(),
+    fileName: z.string(),
+    oldParentId: z.string(),
+    newParentId: z.string(),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      await drive.files.update({
+        fileId: data.fileId,
+        addParents: data.newParentId,
+        removeParents: data.oldParentId,
+      });
+
+      await supabaseAdmin
+        .from("crm_activity_logs")
+        .insert([{
+          user_id: userId,
+          action: 'move_file',
+          entity_type: 'drive',
+          entity_id: data.projectId,
+          details: { fileId: data.fileId, fileName: data.fileName, oldParentId: data.oldParentId, newParentId: data.newParentId },
+          status: 'success'
+        }]);
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("Move error:", error);
+      return { success: false, error: error.message };
+    }
+  });
+
+export const batchRenameDriveFiles = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    files: z.array(z.object({
+      fileId: z.string(),
+      newName: z.string(),
+    })),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      const results = [];
+      for (const file of data.files) {
+        try {
+          await drive.files.update({
+            fileId: file.fileId,
+            requestBody: { name: file.newName },
+          });
+          await supabaseAdmin
+            .from("crm_activity_logs")
+            .insert([{
+              user_id: userId,
+              action: 'rename_file',
+              entity_type: 'drive',
+              entity_id: data.projectId,
+              details: { fileId: file.fileId, newName: file.newName },
+              status: 'success'
+            }]);
+          results.push({ fileId: file.fileId, success: true });
+        } catch (e: any) {
+          results.push({ fileId: file.fileId, success: false, error: e.message });
+        }
+      }
+
+      return { success: true, results };
+    } catch (error: any) {
+      console.error("Batch rename error:", error);
+      return { success: false, error: error.message };
+    }
+  });
+
+export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    files: z.array(z.object({
+      fileId: z.string(),
+      fileName: z.string(),
+    })),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      const results = [];
+      for (const file of data.files) {
+        try {
+          await drive.files.update({
+            fileId: file.fileId,
+            requestBody: { trashed: true },
+          });
+          await supabaseAdmin
+            .from("crm_activity_logs")
+            .insert([{
+              user_id: userId,
+              action: 'delete_file',
+              entity_type: 'drive',
+              entity_id: data.projectId,
+              details: { fileId: file.fileId, fileName: file.fileName },
+              status: 'success'
+            }]);
+          results.push({ fileId: file.fileId, success: true });
+        } catch (e: any) {
+          results.push({ fileId: file.fileId, success: false, error: e.message });
+        }
+      }
+
+      return { success: true, results };
+    } catch (error: any) {
+      console.error("Batch delete error:", error);
+      return { success: false, error: error.message };
+    }
+  });
