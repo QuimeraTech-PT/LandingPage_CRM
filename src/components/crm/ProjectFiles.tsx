@@ -243,8 +243,42 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
 
   return (
     <div className="space-y-3">
+      {/* Batch Selection Bar */}
+      {selectedFiles.size > 0 && (
+        <div className="flex items-center justify-between p-2 rounded-md bg-primary/10 border border-primary/20 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              checked={selectedFiles.size === files.length} 
+              onCheckedChange={() => selectAll(files)}
+            />
+            <span className="text-xs font-medium text-primary">
+              {selectedFiles.size} selecionado{selectedFiles.size > 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchRenaming(true)}>
+              <Edit2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setBatchDeleting(true)}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setSelectedFiles(new Set())}>
+              <Trash2 className="h-3.5 w-3.5 rotate-45" />
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-2">
-        <span>FICHEIROS NO DRIVE</span>
+        <div className="flex items-center gap-2">
+          {files.length > 0 && (
+            <Checkbox 
+              checked={selectedFiles.size === files.length && files.length > 0} 
+              onCheckedChange={() => selectAll(files)}
+            />
+          )}
+          <span>FICHEIROS NO DRIVE</span>
+        </div>
         <div className="flex items-center gap-2">
           <input
             type="file"
@@ -264,13 +298,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           <Badge variant="outline" className="text-[10px] py-0">{files.length}</Badge>
         </div>
       </div>
+      
       <div className="grid gap-2">
-        {files.slice(0, 5).map((file: any) => (
+        {files.map((file: any) => (
           <div 
             key={file.id} 
-            className="flex items-center justify-between p-2 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-colors group"
+            className={`flex items-center justify-between p-2 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-colors group ${selectedFiles.has(file.id) ? 'border-primary/50 bg-primary/5' : ''}`}
           >
             <div className="flex items-center gap-3 min-w-0">
+              <Checkbox 
+                checked={selectedFiles.has(file.id)} 
+                onCheckedChange={() => toggleSelection(file.id)}
+                className="opacity-0 group-hover:opacity-100 data-[state=checked]:opacity-100 transition-opacity"
+              />
               {getFileIcon(file.mimeType)}
               <span className="text-sm truncate font-medium group-hover:text-primary transition-colors">
                 {file.name}
@@ -294,6 +334,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                     <Edit2 className="h-3 w-3" />
                     Renomear
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setMovingFile({ id: file.id, name: file.name, oldParentId: folderId })} className="flex items-center gap-2 cursor-pointer text-foreground">
+                    <Move className="h-3 w-3" />
+                    Mover
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setDeletingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
                     <Trash2 className="h-3 w-3" />
                     Eliminar
@@ -308,13 +352,6 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <File className="h-8 w-8 text-muted-foreground opacity-20 mb-2" />
             <p className="text-sm text-muted-foreground">Nenhum ficheiro nesta pasta.</p>
           </div>
-        )}
-        {files.length > 5 && (
-          <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" asChild>
-            <a href={`https://drive.google.com/drive/folders/${folderId}`} target="_blank" rel="noopener noreferrer">
-              Ver mais {files.length - 5} ficheiros...
-            </a>
-          </Button>
         )}
       </div>
 
