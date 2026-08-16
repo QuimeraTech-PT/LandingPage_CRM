@@ -60,7 +60,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
   const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
-  const [movingFile, setMovingFile] = useState<{ id: string, name: string } | null>(null);
+  const [movingFile, setMovingFile] = useState<{ id: string, name: string, oldParentId: string } | null>(null);
+  const [batchRenaming, setBatchRenaming] = useState<boolean>(false);
+  const [batchDeleting, setBatchDeleting] = useState<boolean>(false);
+  const [batchRenameValues, setBatchRenameValues] = useState<Record<string, string>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['drive-files', folderId],
