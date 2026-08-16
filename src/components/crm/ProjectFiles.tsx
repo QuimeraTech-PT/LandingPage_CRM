@@ -163,6 +163,46 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     reader.readAsDataURL(file);
   };
 
+  const toggleSelection = (fileId: string) => {
+    const next = new Set(selectedFiles);
+    if (next.has(fileId)) {
+      next.delete(fileId);
+    } else {
+      next.add(fileId);
+    }
+    setSelectedFiles(next);
+  };
+
+  const selectAll = () => {
+    if (selectedFiles.size === files.length) {
+      setSelectedFiles(new Set());
+    } else {
+      setSelectedFiles(new Set(files.map((f: any) => f.id)));
+    }
+  };
+
+  const subfolders = useMemo(() => {
+    return files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
+  }, [files]);
+
+  const handleBatchRename = () => {
+    const updates = Array.from(selectedFiles).map(id => ({
+      fileId: id,
+      newName: batchRenameValues[id] || files.find((f: any) => f.id === id)?.name || ''
+    }));
+    batchRenameMutation.mutate({ data: { projectId, files: updates } });
+    setBatchRenaming(false);
+  };
+
+  const handleBatchDelete = () => {
+    const targets = Array.from(selectedFiles).map(id => ({
+      fileId: id,
+      fileName: files.find((f: any) => f.id === id)?.name || ''
+    }));
+    batchDeleteMutation.mutate({ data: { projectId, files: targets } });
+    setBatchDeleting(false);
+  };
+
   if (!folderId) {
     return (
       <div className="flex flex-col items-center justify-center p-8 border border-dashed border-white/10 rounded-lg text-center bg-muted/20">
