@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeads, createLead, updateLeadStatus, convertLeadToProject } from '@/lib/crm.functions';
-import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2 } from 'lucide-react';
+import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
