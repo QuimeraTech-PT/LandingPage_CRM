@@ -667,7 +667,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                 <span>{batchMoveProgress?.current === batchMoveProgress?.total ? 'Concluído' : 'A processar...'}</span>
                 <span>{batchMoveProgress?.current} de {batchMoveProgress?.total}</span>
               </div>
-              <Progress value={(batchMoveProgress?.current || 0) / (batchMoveProgress?.total || 1) * 100} className="h-2" />
+              <Progress value={((batchMoveProgress?.current || 0) / (batchMoveProgress?.total || 1)) * 100} className="h-2" />
             </div>
             
             {batchMoveProgress?.current === batchMoveProgress?.total && (
