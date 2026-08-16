@@ -213,9 +213,18 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     );
   }
 
-  
-
+  const files = result?.files || [];
   const subfolders = files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
+
+  const toggleSelection = (fileId: string) => {
+    const next = new Set(selectedFiles);
+    if (next.has(fileId)) {
+      next.delete(fileId);
+    } else {
+      next.add(fileId);
+    }
+    setSelectedFiles(next);
+  };
 
   const getFileIcon = (mimeType: string) => {
     if (mimeType.includes('image')) return <ImageIcon className="h-4 w-4 text-blue-400" />;
