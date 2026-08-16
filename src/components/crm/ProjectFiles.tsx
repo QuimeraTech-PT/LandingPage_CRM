@@ -29,7 +29,12 @@ import {
   Download,
   Eye,
   CheckCircle2,
-  XCircle
+  XCircle,
+  RefreshCcw,
+  Presentation,
+  Table as TableIcon,
+  FileCode,
+  Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -71,7 +76,12 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const [batchDeleting, setBatchDeleting] = useState<boolean>(false);
   const [batchRenameValues, setBatchRenameValues] = useState<Record<string, string>>({});
   const [batchMoving, setBatchMoving] = useState<boolean>(false);
-  const [batchMoveProgress, setBatchMoveProgress] = useState<{ current: number, total: number, results: any[] } | null>(null);
+  const [batchMoveProgress, setBatchMoveProgress] = useState<{ 
+    current: number, 
+    total: number, 
+    results: any[],
+    newParentId?: string 
+  } | null>(null);
   const [previewingFile, setPreviewingFile] = useState<any | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -153,12 +163,13 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
 
   const batchMoveMutation = useMutation({
     mutationFn: batchMoveDriveFiles,
-    onSuccess: (res: any) => {
+    onSuccess: (res: any, variables: any) => {
       if (res.success) {
         setBatchMoveProgress({ 
-          current: selectedFiles.size, 
-          total: selectedFiles.size, 
-          results: res.results 
+          current: selectedFiles.size || variables.data.files.length, 
+          total: selectedFiles.size || variables.data.files.length, 
+          results: res.results,
+          newParentId: variables.data.newParentId
         });
         queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
         setSelectedFiles(new Set());
@@ -281,6 +292,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     if (mimeType.includes('image')) return <ImageIcon className="h-8 w-8 text-blue-400 p-1" />;
     if (mimeType.includes('pdf')) return <FileText className="h-8 w-8 text-red-400 p-1" />;
     if (mimeType.includes('folder')) return <FolderOpen className="h-8 w-8 text-yellow-400 p-1" />;
+    if (mimeType.includes('presentation')) return <Presentation className="h-8 w-8 text-orange-400 p-1" />;
+    if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return <TableIcon className="h-8 w-8 text-green-400 p-1" />;
+    if (mimeType.includes('document') || mimeType.includes('word')) return <FileText className="h-8 w-8 text-blue-500 p-1" />;
+    if (mimeType.includes('script') || mimeType.includes('json')) return <FileCode className="h-8 w-8 text-purple-400 p-1" />;
     return <File className="h-8 w-8 text-muted-foreground p-1" />;
   };
 
@@ -385,14 +400,29 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             </div>
             <div className="flex items-center gap-1 ml-2">
               {!file.mimeType.includes('folder') && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => setPreviewingFile(file)}
-                >
-                  <Eye className="h-3.5 w-3.5" />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setPreviewingFile(file)}
+                    title="Pré-visualizar"
+                    aria-label={`Pré-visualizar ${file.name}`}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                    asChild
+                    title="Transferir / Abrir original"
+                  >
+                    <a href={file.webViewLink} target="_blank" rel="noopener noreferrer">
+                      <Download className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                </div>
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -656,49 +686,100 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       </Dialog>
 
       {/* Batch Move Progress/Results */}
-      <Dialog open={!!batchMoveProgress} onOpenChange={(open) => !open && setBatchMoveProgress(null)}>
+      <Dialog open={!!batchMoveProgress} onOpenChange={(open) => !open && !batchMoveMutation.isPending && setBatchMoveProgress(null)}>
         <DialogContent className="bg-card border-white/10 text-foreground">
           <DialogHeader>
-            <DialogTitle>Estado da Movimentação</DialogTitle>
+            <DialogTitle id="batch-move-title">Estado da Movimentação</DialogTitle>
           </DialogHeader>
           {batchMoveProgress && (
-            <div className="py-4 space-y-4">
+            <div className="py-4 space-y-4" aria-live="polite" aria-busy={batchMoveMutation.isPending}>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{batchMoveProgress.current === batchMoveProgress.total ? 'Concluído' : 'A processar...'}</span>
+                  <span className="flex items-center gap-1.5">
+                    {batchMoveMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        A processar...
+                      </>
+                    ) : batchMoveProgress.current === batchMoveProgress.total ? (
+                      'Concluído'
+                    ) : (
+                      'Em espera'
+                    )}
+                  </span>
                   <span>{batchMoveProgress.current} de {batchMoveProgress.total}</span>
                 </div>
                 <Progress value={(batchMoveProgress.current / batchMoveProgress.total) * 100} className="h-2" />
               </div>
               
-              {batchMoveProgress.current === batchMoveProgress.total && (
-                <ScrollArea className="h-[200px] border border-white/5 rounded-md p-2">
-                  <div className="space-y-2">
-                    {batchMoveProgress.results.map((res: any, idx: number) => {
-                      const file = files.find((f: any) => f.id === res.fileId);
-                      return (
-                        <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/20">
-                          <span className="truncate max-w-[200px]">{file?.name || 'Ficheiro'}</span>
+              <ScrollArea className="h-[200px] border border-white/5 rounded-md p-2">
+                <div className="space-y-2">
+                  {batchMoveProgress.results.length === 0 && batchMoveMutation.isPending && (
+                    <div className="flex flex-col items-center justify-center h-full py-8 text-muted-foreground italic text-xs">
+                      A iniciar operações em lote...
+                    </div>
+                  )}
+                  {batchMoveProgress.results.map((res: any, idx: number) => {
+                    return (
+                      <div key={idx} className={`flex items-center justify-between text-xs p-1.5 rounded ${res.success ? 'bg-green-500/10' : 'bg-destructive/10'}`}>
+                        <div className="flex items-center gap-2 min-w-0 pr-2">
                           {res.success ? (
-                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
                           ) : (
-                            <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            <XCircle className="h-3.5 w-3.5 text-destructive shrink-0" />
                           )}
+                          <span className="truncate">{res.fileName || 'Ficheiro'}</span>
                         </div>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
+                        {!res.success && res.error && (
+                          <span className="text-[10px] text-destructive/80 italic shrink-0">Erro</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+
+              {batchMoveProgress.results.some(r => !r.success) && !batchMoveMutation.isPending && (
+                <div className="flex items-center justify-between p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
+                  <span className="text-[10px] text-yellow-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Alguns ficheiros falharam.
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-7 text-[10px] gap-1.5"
+                    onClick={() => {
+                      const failed = batchMoveProgress.results.filter(r => !r.success).map(r => ({
+                        fileId: r.fileId,
+                        fileName: r.fileName,
+                        oldParentId: r.oldParentId
+                      }));
+                      setBatchMoveProgress({ ...batchMoveProgress, current: 0, total: failed.length, results: [] });
+                      batchMoveMutation.mutate({
+                        data: {
+                          projectId,
+                          newParentId: batchMoveProgress.newParentId!,
+                          files: failed
+                        }
+                      });
+                    }}
+                  >
+                    <RefreshCcw className="h-3 w-3" />
+                    Retentar Falhados
+                  </Button>
+                </div>
               )}
             </div>
           )}
           <DialogFooter>
             <Button 
+              variant="ghost"
               onClick={() => {
                 setBatchMoveProgress(null);
                 setBatchMoving(false);
               }}
-              disabled={!batchMoveProgress || batchMoveProgress.current !== batchMoveProgress.total}
+              disabled={batchMoveMutation.isPending}
             >
               Fechar
             </Button>
@@ -716,13 +797,13 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                 <Button variant="outline" size="sm" asChild>
                   <a href={previewingFile?.webViewLink} target="_blank" rel="noopener noreferrer" className="gap-2">
                     <ExternalLink className="h-4 w-4" />
-                    Drive
+                    Abrir em Nova Aba
                   </a>
                 </Button>
               </div>
             </div>
           </DialogHeader>
-          <div className="flex-1 overflow-hidden bg-black/20 relative">
+          <div className="flex-1 overflow-hidden bg-black/40 relative">
             {previewingFile?.mimeType.includes('image') ? (
               <div className="w-full h-full flex items-center justify-center p-4">
                 <img 
@@ -739,16 +820,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                   <p>Não foi possível pré-visualizar esta imagem.</p>
                 </div>
               </div>
-            ) : previewingFile?.mimeType.includes('pdf') ? (
+            ) : (previewingFile?.mimeType.includes('pdf') || previewingFile?.mimeType.startsWith('application/vnd.google-apps.')) ? (
               <iframe 
-                src={`${previewingFile.webViewLink.replace('/view', '/preview')}`}
-                className="w-full h-full border-none"
+                src={`${previewingFile.webViewLink.replace('/view', '/preview').replace('/edit', '/preview')}`}
+                className="w-full h-full border-none bg-white"
                 title={previewingFile.name}
+                allow="autoplay"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-muted-foreground">
-                <FileText className="h-16 w-16 opacity-20" />
-                <p>Pré-visualização não disponível para este tipo de ficheiro.</p>
+              <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-muted-foreground p-8 text-center">
+                <div className="h-20 w-20 flex items-center justify-center bg-white/5 rounded-full mb-2">
+                  {getFileIcon(previewingFile?.mimeType)}
+                </div>
+                <p className="max-w-[280px]">Pré-visualização direta não disponível para este formato ({previewingFile?.mimeType.split('/').pop()}).</p>
                 <Button variant="outline" asChild>
                   <a href={previewingFile?.webViewLink} target="_blank" rel="noopener noreferrer" className="gap-2">
                     <ExternalLink className="h-4 w-4" />

@@ -429,9 +429,20 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
               details: { fileId: file.fileId, fileName: file.fileName, oldParentId: file.oldParentId, newParentId: data.newParentId },
               status: 'success'
             }]);
-          results.push({ fileId: file.fileId, success: true });
+          results.push({ 
+            fileId: file.fileId, 
+            fileName: file.fileName,
+            oldParentId: file.oldParentId,
+            success: true 
+          });
         } catch (e: any) {
-          results.push({ fileId: file.fileId, success: false, error: e.message });
+          results.push({ 
+            fileId: file.fileId, 
+            fileName: file.fileName,
+            oldParentId: file.oldParentId,
+            success: false, 
+            error: e.message 
+          });
         }
       }
 
