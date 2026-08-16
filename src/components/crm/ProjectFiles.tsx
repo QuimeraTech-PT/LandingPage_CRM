@@ -163,31 +163,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     reader.readAsDataURL(file);
   };
 
-  const toggleSelection = (fileId: string) => {
-    const next = new Set(selectedFiles);
-    if (next.has(fileId)) {
-      next.delete(fileId);
-    } else {
-      next.add(fileId);
-    }
-    setSelectedFiles(next);
-  };
-
-  const handleBatchRename = () => {
-    const files = (data as any)?.files || [];
+  const handleBatchRename = (currentFiles: any[]) => {
     const updates = Array.from(selectedFiles).map(id => ({
       fileId: id,
-      newName: batchRenameValues[id] || files.find((f: any) => f.id === id)?.name || ''
+      newName: batchRenameValues[id] || currentFiles.find((f: any) => f.id === id)?.name || ''
     }));
     batchRenameMutation.mutate({ data: { projectId, files: updates } });
     setBatchRenaming(false);
   };
 
-  const handleBatchDelete = () => {
-    const files = (data as any)?.files || [];
+  const handleBatchDelete = (currentFiles: any[]) => {
     const targets = Array.from(selectedFiles).map(id => ({
       fileId: id,
-      fileName: files.find((f: any) => f.id === id)?.name || ''
+      fileName: currentFiles.find((f: any) => f.id === id)?.name || ''
     }));
     batchDeleteMutation.mutate({ data: { projectId, files: targets } });
     setBatchDeleting(false);
