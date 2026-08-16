@@ -33,9 +33,28 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     projectName: z.string()
   }).parse(data))
   .handler(async ({ data, context }: { data: any, context: any }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    // Internal helper for logging since we can't easily share the one in crm.functions due to circular imports
+    const logDriveActivity = async (action: string, details: any, status: 'success' | 'failure' | 'warning' = 'success') => {
+      try {
+        await supabaseAdmin
+          .from("crm_activity_logs")
+          .insert([{
+            user_id: userId,
+            action,
+            entity_type: 'drive',
+            entity_id: data.projectId,
+            details,
+            status
+          }]);
+      } catch (e) {
+        console.error("Log Drive failure:", e);
+      }
+    };
 
     try {
       const drive = getDriveClient();
