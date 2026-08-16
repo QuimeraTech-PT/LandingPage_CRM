@@ -2,6 +2,38 @@ import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
+// Helper to log activities
+async function logActivity({ 
+  userId, 
+  action, 
+  entityType, 
+  entityId, 
+  details = {}, 
+  status = 'success' 
+}: { 
+  userId?: string, 
+  action: string, 
+  entityType: string, 
+  entityId?: string, 
+  details?: any, 
+  status?: 'success' | 'failure' | 'warning'
+}) {
+  try {
+    await supabaseAdmin
+      .from("crm_activity_logs")
+      .insert([{
+        user_id: userId,
+        action,
+        entity_type: entityType,
+        entity_id: entityId,
+        details,
+        status
+      }]);
+  } catch (e) {
+    console.error("Failed to log activity:", e);
+  }
+}
+
 export const getCRMStats = createServerFn({ method: "GET" })
   .handler(async ({ context }: { context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
@@ -94,6 +126,41 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+export const updateLead = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    id: z.string().uuid(),
+    name: z.string().optional(),
+    email: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
+    company: z.string().nullable().optional(),
+    estimated_value: z.number().nullable().optional(),
+    notes: z.string().nullable().optional(),
+    status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']).optional()
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { id, ...updateData } = data;
+    const { error } = await supabaseAdmin
+      .from("crm_leads")
+      .update(updateData)
+      .eq("id", id);
+    
+    if (error) throw error;
+
+    await logActivity({
+      userId: context.userId,
+      action: 'update',
+      entityType: 'lead',
+      entityId: id,
+      details: updateData
+    });
+
+    return { success: true };
+  });
+
 export const convertLeadToProject = createServerFn({ method: "POST" })
   .inputValidator((data: any) => z.object({
     leadId: z.string().uuid(),
@@ -127,6 +194,14 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       .single();
 
     if (projectError) throw projectError;
+
+    await logActivity({
+      userId: context.userId,
+      action: 'convert_lead',
+      entityType: 'project',
+      entityId: project.id,
+      details: { leadId: data.leadId }
+    });
 
     // 2.1 Trigger Drive Folder Creation (async, don't wait if not configured)
     try {
@@ -207,5 +282,22 @@ export const createTransaction = createServerFn({ method: "POST" })
     if (error) throw error;
     return { success: true };
   });
+
+export const getActivityLogs = createServerFn({ method: "GET" })
+  .handler(async ({ context }: { context: any }) => {
+    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const { data, error } = await supabaseAdmin
+      .from("crm_activity_logs")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    
+    if (error) throw error;
+    return data;
+  });
+
 
 

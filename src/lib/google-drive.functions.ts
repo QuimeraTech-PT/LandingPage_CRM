@@ -33,13 +33,32 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     projectName: z.string()
   }).parse(data))
   .handler(async ({ data, context }: { data: any, context: any }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    const logDriveActivity = async (action: string, details: any, status: 'success' | 'failure' | 'warning' = 'success') => {
+      try {
+        await supabaseAdmin
+          .from("crm_activity_logs")
+          .insert([{
+            user_id: userId,
+            action,
+            entity_type: 'drive',
+            entity_id: data.projectId,
+            details,
+            status
+          }]);
+      } catch (e) {
+        console.error("Log Drive failure:", e);
+      }
+    };
 
     try {
       const drive = getDriveClient();
       if (!drive) {
+        await logDriveActivity('create_folder_failure', { error: 'Missing secrets' }, 'failure');
         return { error: "Drive não configurado", status: "pending_config" };
       }
 
@@ -63,11 +82,14 @@ export const createProjectFolder = createServerFn({ method: "POST" })
           .from("crm_projects")
           .update({ google_drive_folder_id: folderId })
           .eq("id", data.projectId);
+        
+        await logDriveActivity('create_folder_success', { folderId });
       }
 
       return { folderId };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao criar pasta no Drive:", error);
+      await logDriveActivity('create_folder_error', { error: error.message }, 'failure');
       throw new Error("Falha na integração com o Google Drive.");
     }
   });
@@ -96,5 +118,59 @@ export const listProjectFiles = createServerFn({ method: "GET" })
     } catch (error) {
       console.error("Erro ao listar ficheiros do Drive:", error);
       return { files: [], status: "error", error: "Erro na API do Drive" };
+    }
+  });
+
+export const uploadFileToProject = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    folderId: z.string(),
+    fileName: z.string(),
+    fileType: z.string(),
+    fileContent: z.string(), // base64
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      const buffer = Buffer.from(data.fileContent, 'base64');
+      const fileMetadata = {
+        name: data.fileName,
+        parents: [data.folderId]
+      };
+      
+      const { Readable } = await import('stream');
+      const media = {
+        mimeType: data.fileType,
+        body: Readable.from(buffer)
+      };
+
+      const file = await drive.files.create({
+        requestBody: fileMetadata,
+        media: media,
+        fields: 'id, webViewLink',
+      });
+
+      await supabaseAdmin
+        .from("crm_activity_logs")
+        .insert([{
+          user_id: userId,
+          action: 'upload_file',
+          entity_type: 'drive',
+          entity_id: data.projectId,
+          details: { fileName: data.fileName, fileId: file.data.id },
+          status: 'success'
+        }]);
+
+      return { success: true, fileId: file.data.id, link: file.data.webViewLink };
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      return { success: false, error: error.message };
     }
   });

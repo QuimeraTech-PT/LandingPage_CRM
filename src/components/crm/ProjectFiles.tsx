@@ -1,19 +1,66 @@
 import { useQuery } from '@tanstack/react-query';
 import { listProjectFiles } from '@/lib/google-drive.functions';
-import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen } from 'lucide-react';
+import { File, FileText, Image as ImageIcon, ExternalLink, Loader2, AlertCircle, FolderOpen, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { uploadFileToProject } from '@/lib/google-drive.functions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useRef } from 'react';
 
 interface ProjectFilesProps {
   folderId?: string | null;
+  projectId: string;
 }
 
-export function ProjectFiles({ folderId }: ProjectFilesProps) {
-  const { data, isLoading, error } = useQuery({
+export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const { data, isLoading, error: queryError } = useQuery({
     queryKey: ['drive-files', folderId],
     queryFn: () => listProjectFiles({ data: { folderId: folderId! } }),
     enabled: !!folderId,
   });
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadFileToProject,
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Ficheiro enviado com sucesso!');
+        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      } else {
+        toast.error(`Erro no upload: ${res.error}`);
+      }
+      setIsUploading(false);
+    },
+    onError: (err: any) => {
+      toast.error('Falha ao enviar ficheiro.');
+      setIsUploading(false);
+    }
+  });
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !folderId) return;
+
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      uploadMutation.mutate({
+        data: {
+          projectId,
+          folderId,
+          fileName: file.name,
+          fileType: file.type,
+          fileContent: base64
+        }
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   if (!folderId) {
     return (
@@ -74,7 +121,24 @@ export function ProjectFiles({ folderId }: ProjectFilesProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-2">
         <span>FICHEIROS NO DRIVE</span>
-        <Badge variant="outline" className="text-[10px] py-0">{files.length}</Badge>
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-6 w-6" 
+            disabled={isUploading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {isUploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+          </Button>
+          <Badge variant="outline" className="text-[10px] py-0">{files.length}</Badge>
+        </div>
       </div>
       <div className="grid gap-2">
         {files.slice(0, 5).map((file: any) => (
