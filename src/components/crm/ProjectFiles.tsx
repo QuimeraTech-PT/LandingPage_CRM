@@ -225,7 +225,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     );
   }
 
-  const files = result?.files || [];
+  
 
   const subfolders = files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
 
