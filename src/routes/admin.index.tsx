@@ -22,7 +22,13 @@ function AdminDashboard() {
     queryFn: () => getLeads(),
   });
 
+  const { data: logs } = useSuspenseQuery({
+    queryKey: ['crm-activity-logs'],
+    queryFn: () => getActivityLogs(),
+  });
+
   const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];
+  const recentLogs = Array.isArray(logs) ? logs.slice(0, 6) : [];
 
   const funnelData = Array.isArray(leads) ? leads.reduce((acc: any, lead: any) => {
     acc[lead.status] = (acc[lead.status] || 0) + 1;
