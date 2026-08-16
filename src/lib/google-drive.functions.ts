@@ -390,3 +390,54 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
       return { success: false, error: error.message };
     }
   });
+
+export const batchMoveDriveFiles = createServerFn({ method: "POST" })
+  .inputValidator((data: any) => z.object({
+    projectId: z.string(),
+    newParentId: z.string(),
+    files: z.array(z.object({
+      fileId: z.string(),
+      fileName: z.string(),
+      oldParentId: z.string(),
+    })),
+  }).parse(data))
+  .handler(async ({ data, context }: { data: any, context: any }) => {
+    const userId = context?.userId;
+    if (!userId) throw new Response("Unauthorized", { status: 401 });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+
+    try {
+      const drive = getDriveClient();
+      if (!drive) throw new Error("Drive não configurado");
+
+      const results = [];
+      for (const file of data.files) {
+        try {
+          await drive.files.update({
+            fileId: file.fileId,
+            addParents: data.newParentId,
+            removeParents: file.oldParentId,
+          });
+          await supabaseAdmin
+            .from("crm_activity_logs")
+            .insert([{
+              user_id: userId,
+              action: 'move_file',
+              entity_type: 'drive',
+              entity_id: data.projectId,
+              details: { fileId: file.fileId, fileName: file.fileName, oldParentId: file.oldParentId, newParentId: data.newParentId },
+              status: 'success'
+            }]);
+          results.push({ fileId: file.fileId, success: true });
+        } catch (e: any) {
+          results.push({ fileId: file.fileId, success: false, error: e.message });
+        }
+      }
+
+      return { success: true, results };
+    } catch (error: any) {
+      console.error("Batch move error:", error);
+      return { success: false, error: error.message };
+    }
+  });
