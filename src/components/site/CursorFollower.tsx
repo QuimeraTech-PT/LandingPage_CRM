@@ -70,6 +70,10 @@ export function CursorFollower() {
         cursorY.set(e.clientY);
         targetScale.set(1);
       }
+
+      // Update global mouse coordinates for the interaction-glow utility
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
 
     const handleMouseLeave = () => setIsVisible(false);
