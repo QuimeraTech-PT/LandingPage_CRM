@@ -198,6 +198,17 @@ function RootComponent() {
         if (config.gtmId) {
           initAnalytics(config.gtmId);
           
+          // Initialize GA4 if gaId is provided (complementary to GTM if needed)
+          if (config.gaId && typeof window.gtag === 'function') {
+            const gaScript = document.createElement("script");
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
+            document.head.appendChild(gaScript);
+            
+            window.gtag('config', config.gaId);
+          }
+
+          
           // Initial state is already handled by the inline script
           // updateAnalyticsConsent is now safer and doesn't need to be called here
           // as gtag('consent', 'default', ...) already reflects the stored choice.
