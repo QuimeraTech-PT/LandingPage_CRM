@@ -52,11 +52,19 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const acceptAll = () => {
     updateAnalyticsConsent("all");
     setIsVisible(false);
+    // Track consent acceptance
+    import("@/lib/analytics").then(({ trackEvent }) => {
+      trackEvent("cookie_consent_accepted", { type: "all" });
+    });
   };
 
   const acceptEssential = () => {
     updateAnalyticsConsent("essential");
     setIsVisible(false);
+    // Track consent acceptance
+    import("@/lib/analytics").then(({ trackEvent }) => {
+      trackEvent("cookie_consent_accepted", { type: "essential" });
+    });
   };
 
   if (!mounted) return null;
