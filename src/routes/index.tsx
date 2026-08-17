@@ -70,12 +70,11 @@ function Index() {
   const router = useRouterState();
 
   useEffect(() => {
-    if (router.location.hash) {
-      const targetId = router.location.hash;
-      // Wait a bit for components to mount if they are lazy loaded
-      // The skeletons are already there, but the height might change after lazy load
-      const scrollWithHash = () => {
-        const elem = document.getElementById(targetId);
+    const targetId = router.location.hash;
+    if (targetId) {
+      // Small delay to ensure the DOM is ready for the offset calculation
+      const timer = setTimeout(() => {
+        const elem = document.getElementById(targetId.replace('#', ''));
         if (elem) {
           const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
                                   document.documentElement.classList.contains("force-reduced-motion");
@@ -85,10 +84,7 @@ function Index() {
             behavior: isReducedMotion ? "auto" : "smooth",
           });
         }
-      };
-
-      // Small delay to ensure the DOM is ready for the offset calculation
-      const timer = setTimeout(scrollWithHash, 100);
+      }, 300); // Increased delay to 300ms for more reliable target measurement
       return () => clearTimeout(timer);
     }
   }, [router.location.hash]);
