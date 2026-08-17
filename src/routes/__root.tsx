@@ -124,6 +124,13 @@ function RootShell({ children }: { children: ReactNode }) {
             __html: `
               (function() {
                 try {
+                  // Theme Setting
+                  const savedTheme = localStorage.getItem('app-theme');
+                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  const theme = savedTheme || systemTheme;
+                  if (theme === 'dark') document.documentElement.classList.add('dark');
+                  else document.documentElement.classList.remove('dark');
+
                   // A11y Settings
                   const contrast = localStorage.getItem('a11y-high-contrast') === 'true';
                   if (contrast) document.documentElement.classList.add('high-contrast');
