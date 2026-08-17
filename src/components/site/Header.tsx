@@ -4,7 +4,7 @@ import { Menu, X, LayoutDashboard } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 import { Logo } from "./Logo";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -23,6 +23,9 @@ import { motion } from "framer-motion";
 
 export function Header() {
   const shouldReduceMotion = useReducedMotion();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -53,6 +56,16 @@ export function Header() {
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const targetId = href.replace("#", "");
+    
+    if (!isHome) {
+      navigate({ to: "/", hash: targetId });
+      if (open) {
+        setOpen(false);
+        window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+      }
+      return;
+    }
+
     const elem = document.getElementById(targetId);
     if (elem) {
       const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
