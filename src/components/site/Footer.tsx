@@ -183,7 +183,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="LinkedIn da QuimeraTech"
-              onClick={() => trackEvent('linkedin_click', { location: 'footer' })}
+              onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick('https://www.linkedin.com/company/quimeratech/'))}
             >
               <Linkedin className="h-5 w-5" aria-hidden="true" />
             </a>
@@ -193,7 +193,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="GitHub da QuimeraTech"
-              onClick={() => trackEvent('github_click', { location: 'footer' })}
+              onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick('https://github.com/quimeratech'))}
             >
               <Github className="h-5 w-5" aria-hidden="true" />
             </a>
