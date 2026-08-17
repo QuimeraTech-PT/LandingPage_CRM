@@ -59,6 +59,7 @@
   --color-surface-muted: var(--surface-muted);
   --color-surface-border: var(--surface-border);
   --color-surface-card: var(--surface-card);
+  --color-hover-border: var(--hover-border);
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
 }
 
