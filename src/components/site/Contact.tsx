@@ -76,7 +76,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contactos" className="bg-surface py-24 text-surface-foreground md:py-32" aria-labelledby="contact-heading">
+    <section id="contactos" className="bg-background py-24 text-foreground md:py-32" aria-labelledby="contact-heading">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <motion.div

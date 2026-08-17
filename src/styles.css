@@ -69,27 +69,27 @@
   /* Light Theme - Clean, Premium, Professional */
   --background: oklch(0.985 0.008 250);
   --foreground: oklch(0.208 0.042 265.755);
-  --card: oklch(1 0 0);
+  --card: oklch(1 0 0); /* Pure white cards as seen in Specialties */
   --card-foreground: oklch(0.208 0.042 265.755);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.208 0.042 265.755);
   --primary: oklch(0.546 0.245 262.881);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.950 0.015 250);
+  --secondary: oklch(0.965 0.01 250); /* Very subtle off-white for secondary areas */
   --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.950 0.015 250);
+  --muted: oklch(0.965 0.01 250);
   --muted-foreground: oklch(0.450 0.035 265);
   --accent: oklch(0.620 0.145 215.221);
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.208 0.042 265.755 / 10%);
-  --input: oklch(0.208 0.042 265.755 / 12%);
+  --border: oklch(0.208 0.042 265.755 / 8%);
+  --input: oklch(0.208 0.042 265.755 / 10%);
   --ring: oklch(0.546 0.245 262.881);
-  --surface: oklch(1 0 0);
+  --surface: oklch(0.985 0.008 250); /* Unified background for all sections */
   --surface-foreground: oklch(0.208 0.042 265.755);
   --surface-muted: oklch(0.450 0.035 265);
-  --surface-border: oklch(0.905 0.012 255.5);
+  --surface-border: oklch(0.208 0.042 265.755 / 8%);
   --surface-card: oklch(1 0 0);
   --chart-1: oklch(0.546 0.245 262.881);
   --chart-2: oklch(0.620 0.145 215.221);
