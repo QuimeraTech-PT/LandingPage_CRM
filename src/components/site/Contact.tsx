@@ -231,11 +231,10 @@ export function Contact() {
               </div>
 
               <Button 
-
                 type="submit" 
                 variant="primary"
                 size="lg" 
-                className="w-full shadow-premium hover:shadow-premium-hover transition-all duration-300 active:scale-95"
+                className="w-full shadow-premium hover:shadow-premium-hover transition-all duration-300 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
                 rightIcon={isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
               >
