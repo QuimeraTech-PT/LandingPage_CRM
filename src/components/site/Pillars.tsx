@@ -73,7 +73,7 @@ export function Pillars() {
               variants={itemVariants}
               className="glass-card glass-card-hover group flex flex-col p-8 transition-all"
             >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
+              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
                 <Icon className="h-6 w-6" />
               </div>
               <h3 className="text-lg leading-[1.3] font-semibold text-foreground">{title}</h3>
