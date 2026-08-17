@@ -120,13 +120,14 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
   if (isGranted) {
     if (window.gtag) {
       window.gtag("event", eventName, params);
-    } else {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: eventName,
-        ...params
-      });
-    }
+    } 
+    
+    // Always push to dataLayer for GTM consistency
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: eventName,
+      ...params
+    });
   } else {
     // Optional: Log to console in development when tracking is blocked by consent
     if (import.meta.env.DEV) {
