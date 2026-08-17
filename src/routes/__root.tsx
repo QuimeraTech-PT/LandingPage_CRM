@@ -15,7 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingActions } from "@/components/site/FloatingActions";
-import { initAnalytics, updateAnalyticsConsent } from "@/lib/analytics";
+import { initAnalytics, updateAnalyticsConsent, trackWebVitals } from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
 import { CursorFollower } from "@/components/site/CursorFollower";
 
@@ -201,6 +201,8 @@ function RootComponent() {
           // Initial state is already handled by the inline script
           // updateAnalyticsConsent is now safer and doesn't need to be called here
           // as gtag('consent', 'default', ...) already reflects the stored choice.
+          // Track Web Vitals
+          trackWebVitals();
         }
       } catch (error) {
         console.error("Failed to load analytics config:", error);

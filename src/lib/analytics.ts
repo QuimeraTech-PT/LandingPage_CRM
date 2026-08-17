@@ -89,17 +89,60 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
 
 /**
  * Track a custom event to dataLayer.
+ * Events are only tracked if consent is granted or if they are non-PII technical events.
  */
 export const trackEvent = (eventName: string, params?: Record<string, any>) => {
   if (typeof window === "undefined") return;
   
-  if (window.gtag) {
-    window.gtag("event", eventName, params);
+  const localConsent = localStorage.getItem('cookie-consent');
+  const isGranted = localConsent === 'all';
+
+  // Only track GA events if consent is granted
+  if (isGranted) {
+    if (window.gtag) {
+      window.gtag("event", eventName, params);
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: eventName,
+        ...params
+      });
+    }
   } else {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: eventName,
-      ...params
-    });
+    // Optional: Log to console in development when tracking is blocked by consent
+    if (import.meta.env.DEV) {
+      console.log(`[Analytics] Event "${eventName}" blocked by consent.`, params);
+    }
+  }
+};
+
+/**
+ * Web Vitals tracking.
+ * Sends Core Web Vitals to GA4.
+ */
+export const trackWebVitals = async () => {
+  if (typeof window === "undefined") return;
+  
+  try {
+    const { onCLS, onFID, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
+    
+    const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
+      trackEvent(name, {
+        value: delta,
+        metric_id: id,
+        metric_value: value,
+        metric_delta: delta,
+        non_interaction: true,
+      });
+    };
+
+    onCLS(sendToGoogleAnalytics);
+    onFID(sendToGoogleAnalytics);
+    onLCP(sendToGoogleAnalytics);
+    onINP(sendToGoogleAnalytics);
+    onFCP(sendToGoogleAnalytics);
+    onTTFB(sendToGoogleAnalytics);
+  } catch (error) {
+    console.error("Failed to load web-vitals:", error);
   }
 };
