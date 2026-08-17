@@ -74,7 +74,7 @@ const principles = [
 ];
 
 export function Methodology() {
-  const [activeStep, setActiveStep] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState<string | null>("01");
   const shouldReduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
