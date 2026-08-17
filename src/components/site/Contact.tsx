@@ -43,6 +43,14 @@ export function Contact() {
 
     try {
       await submitContact({ data });
+      
+      // Track conversion in analytics
+      import("@/lib/analytics").then(({ trackEvent }) => {
+        trackEvent("contact_form_submit", {
+          assunto: data.assunto
+        });
+      });
+
       setSent(true);
       toast.success("Mensagem enviada com sucesso!", {
         description: "Entraremos em contacto brevemente.",

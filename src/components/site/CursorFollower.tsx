@@ -17,24 +17,37 @@ export function CursorFollower() {
   const springScale = useSpring(targetScale, { damping: 20, stiffness: 200 });
 
   useEffect(() => {
+    // 1. Check if we should be enabled (a11y/preference)
     const checkEnabled = () => {
+      const isMobile = window.innerWidth < 1024;
       const interactions = localStorage.getItem("a11y-interactions") !== "false";
-      setIsEnabled(interactions);
+      const hasClassDisabled = document.documentElement.classList.contains("disable-interactions");
+      
+      // Fully disable on small screens to save battery/perf, or if a11y requested
+      setIsEnabled(!isMobile && interactions && !hasClassDisabled);
     };
     
     checkEnabled();
+    window.addEventListener('resize', checkEnabled);
     
     // Listen for changes (e.g. from AccessibilityMenu)
-    const observer = new MutationObserver(() => {
-      setIsEnabled(!document.documentElement.classList.contains("disable-interactions"));
-    });
-    
+    const observer = new MutationObserver(checkEnabled);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     
     if (shouldReduceMotion || !isEnabled) return;
 
+    // 2. Throttled movement for performance
+    let lastCall = 0;
+    const throttleMs = 16; // ~60fps cap for logic even if screen is higher
+
     const moveCursor = (e: MouseEvent) => {
+      const now = Date.now();
+      if (now - lastCall < throttleMs) return;
+      lastCall = now;
+
       const target = e.target as HTMLElement;
+      if (!target) return;
+
       const clickableElement = target.closest('button, a, [role="button"]');
       const isClickable = !!(clickableElement || window.getComputedStyle(target).cursor === 'pointer');
       
@@ -62,11 +75,12 @@ export function CursorFollower() {
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
 
-    window.addEventListener("mousemove", moveCursor);
+    window.addEventListener("mousemove", moveCursor, { passive: true });
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
 
     return () => {
+      window.removeEventListener('resize', checkEnabled);
       window.removeEventListener("mousemove", moveCursor);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
