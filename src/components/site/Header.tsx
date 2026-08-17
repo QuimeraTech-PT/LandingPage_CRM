@@ -120,6 +120,7 @@ export function Header() {
               <span>Dashboard</span>
             </Link>
           )}
+          <ThemeToggle />
           <AccessibilityMenu />
         </div>
 
