@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeads, createLead, updateLeadStatus, convertLeadToProject, updateLead } from '@/lib/crm.functions';
-import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2, Edit2 } from 'lucide-react';
+import { Users, Plus, MoreHorizontal, Mail, Phone, Building2, Briefcase, Trash2, Edit2, LayoutList, Kanban as KanbanIcon } from 'lucide-react';
+import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +36,8 @@ function LeadsPage() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
+  
   const { data: leads } = useSuspenseQuery({
     queryKey: ['crm-leads'],
     queryFn: () => getLeads(),
@@ -140,10 +143,33 @@ function LeadsPage() {
   return (
     <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          <Users className="h-8 w-8 text-primary" />
-          Gestão de Leads
-        </h1>
+        <div className="flex items-center gap-6">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+            <Users className="h-8 w-8 text-primary" />
+            Gestão de Leads
+          </h1>
+          
+          <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
+            <Button 
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'} 
+              size="sm" 
+              className="h-8 gap-2"
+              onClick={() => setViewMode('list')}
+            >
+              <LayoutList className="h-4 w-4" />
+              Lista
+            </Button>
+            <Button 
+              variant={viewMode === 'kanban' ? 'secondary' : 'ghost'} 
+              size="sm" 
+              className="h-8 gap-2"
+              onClick={() => setViewMode('kanban')}
+            >
+              <KanbanIcon className="h-4 w-4" />
+              Kanban
+            </Button>
+          </div>
+        </div>
         
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
@@ -198,113 +224,126 @@ function LeadsPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
-        {leads?.map((lead: any) => (
-          <Card key={lead.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-4 flex-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-semibold">{lead.name}</h3>
-                    {getStatusBadge(lead.status)}
-                    {lead.estimated_value && Number(lead.estimated_value) > 0 && (
-                      <span className="text-sm font-medium text-primary">
-                        {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(Number(lead.estimated_value))}
-                      </span>
+      {viewMode === 'list' ? (
+        <div className="grid gap-4">
+          {leads?.map((lead: any) => (
+            <Card key={lead.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-4 flex-1">
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-lg font-semibold">{lead.name}</h3>
+                      {getStatusBadge(lead.status)}
+                      {lead.estimated_value && Number(lead.estimated_value) > 0 && (
+                        <span className="text-sm font-medium text-primary">
+                          {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(Number(lead.estimated_value))}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                      {lead.email && (
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          {lead.email}
+                        </div>
+                      )}
+                      {lead.phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          {lead.phone}
+                        </div>
+                      )}
+                      {lead.company && (
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          {lead.company}
+                        </div>
+                      )}
+                    </div>
+
+                    {lead.notes && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 bg-muted/30 p-3 rounded-lg border border-white/5">
+                        {lead.notes}
+                      </p>
                     )}
                   </div>
-                  
-                  <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
-                    {lead.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        {lead.email}
-                      </div>
-                    )}
-                    {lead.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        {lead.phone}
-                      </div>
-                    )}
-                    {lead.company && (
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4" />
-                        {lead.company}
-                      </div>
-                    )}
-                  </div>
 
-                  {lead.notes && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 bg-muted/30 p-3 rounded-lg border border-white/5">
-                      {lead.notes}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Select 
-                    defaultValue={lead.status} 
-                    onValueChange={(val) => updateStatusMutation.mutate({ data: { id: lead.id, status: val as any } })}
-                  >
-                    <SelectTrigger className="w-[150px] bg-muted/50 border-white/10">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10 text-foreground">
-                      <SelectItem value="new">Novo</SelectItem>
-                      <SelectItem value="contacted">Contactado</SelectItem>
-                      <SelectItem value="proposal">Proposta</SelectItem>
-                      <SelectItem value="negotiation">Negociação</SelectItem>
-                      <SelectItem value="closed_won">Ganho</SelectItem>
-                      <SelectItem value="closed_lost">Perdido</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {lead.status !== 'closed_won' && lead.status !== 'closed_lost' && (
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="gap-2 border-primary/20 hover:bg-primary/10"
-                      onClick={() => convertMutation.mutate({ 
-                        data: {
-                          leadId: lead.id, 
-                          projectName: `Projeto: ${lead.name}`,
-                          clientName: lead.name
-                        }
-                      })}
-
-                      disabled={convertMutation.isPending}
+                  <div className="flex items-center gap-2">
+                    <Select 
+                      defaultValue={lead.status} 
+                      onValueChange={(val) => updateStatusMutation.mutate({ data: { id: lead.id, status: val as any } })}
                     >
-                      <Briefcase className="h-4 w-4 text-primary" />
-                      Converter
-                    </Button>
-                  )}
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-muted-foreground hover:text-primary"
-                    onClick={() => setEditingLead(lead)}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  
-                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                      <SelectTrigger className="w-[150px] bg-muted/50 border-white/10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-white/10 text-foreground">
+                        <SelectItem value="new">Novo</SelectItem>
+                        <SelectItem value="contacted">Contactado</SelectItem>
+                        <SelectItem value="proposal">Proposta</SelectItem>
+                        <SelectItem value="negotiation">Negociação</SelectItem>
+                        <SelectItem value="closed_won">Ganho</SelectItem>
+                        <SelectItem value="closed_lost">Perdido</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-        {leads?.length === 0 && (
-          <div className="text-center py-20 border border-dashed border-white/10 rounded-xl">
-            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-            <p className="text-muted-foreground">Nenhuma lead encontrada.</p>
-          </div>
-        )}
-      </div>
+                    {lead.status !== 'closed_won' && lead.status !== 'closed_lost' && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-2 border-primary/20 hover:bg-primary/10"
+                        onClick={() => convertMutation.mutate({ 
+                          data: {
+                            leadId: lead.id, 
+                            projectName: `Projeto: ${lead.name}`,
+                            clientName: lead.name
+                          }
+                        })}
+
+                        disabled={convertMutation.isPending}
+                      >
+                        <Briefcase className="h-4 w-4 text-primary" />
+                        Converter
+                      </Button>
+                    )}
+                    
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-muted-foreground hover:text-primary"
+                      onClick={() => setEditingLead(lead)}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {leads?.length === 0 && (
+            <div className="text-center py-20 border border-dashed border-white/10 rounded-xl">
+              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+              <p className="text-muted-foreground">Nenhuma lead encontrada.</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <KanbanBoard 
+          columns={[
+            { id: 'new', title: 'Novas', items: leads?.filter(l => l.status === 'new').map(l => ({ id: l.id, title: l.name, status: l.status, data: l })) || [], renderItem: (item) => <LeadKanbanCard lead={item.data} onEdit={() => setEditingLead(item.data)} /> },
+            { id: 'contacted', title: 'Contactadas', items: leads?.filter(l => l.status === 'contacted').map(l => ({ id: l.id, title: l.name, status: l.status, data: l })) || [], renderItem: (item) => <LeadKanbanCard lead={item.data} onEdit={() => setEditingLead(item.data)} /> },
+            { id: 'proposal', title: 'Proposta', items: leads?.filter(l => l.status === 'proposal').map(l => ({ id: l.id, title: l.name, status: l.status, data: l })) || [], renderItem: (item) => <LeadKanbanCard lead={item.data} onEdit={() => setEditingLead(item.data)} /> },
+            { id: 'negotiation', title: 'Negociação', items: leads?.filter(l => l.status === 'negotiation').map(l => ({ id: l.id, title: l.name, status: l.status, data: l })) || [], renderItem: (item) => <LeadKanbanCard lead={item.data} onEdit={() => setEditingLead(item.data)} /> },
+            { id: 'closed_won', title: 'Ganhas', items: leads?.filter(l => l.status === 'closed_won').map(l => ({ id: l.id, title: l.name, status: l.status, data: l })) || [], renderItem: (item) => <LeadKanbanCard lead={item.data} onEdit={() => setEditingLead(item.data)} /> },
+          ]}
+          onDragEnd={(leadId, newStatus) => updateStatusMutation.mutate({ data: { id: leadId, status: newStatus as any } })}
+        />
+      )}
 
       <Dialog open={!!editingLead} onOpenChange={(open) => !open && setEditingLead(null)}>
         <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
