@@ -107,7 +107,7 @@ export function Hero() {
           <motion.h1 
             id="hero-heading"
             variants={itemVariants}
-            className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl"
+            className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-7xl lg:tracking-[-0.03em]"
           >
             Soluções Inteligentes.{" "}
             <span className="text-gradient-brand">Impacto Real.</span>
