@@ -43,17 +43,17 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
   // Persist the choice with cross-subdomain support
   // We use a cookie for cross-subdomain persistence if possible
   const cookieName = "cookie-consent";
-  const domain = window.location.hostname.split('.').slice(-2).join('.'); // e.g., quimeratech.pt
+  const domain = window.location.hostname.includes('.') ? `.${window.location.hostname.split('.').slice(-2).join('.')}` : window.location.hostname; // e.g., .quimeratech.pt
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
 
   if (consent !== "none") {
     localStorage.setItem(cookieName, consent);
     // Also set a cookie for cross-subdomain persistence
-    document.cookie = `${cookieName}=${consent}; domain=.${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+    document.cookie = `${cookieName}=${consent}; domain=${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
   } else {
     localStorage.removeItem(cookieName);
-    document.cookie = `${cookieName}=; domain=.${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    document.cookie = `${cookieName}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
   }
 
   // Ensure gtag is available if it was not initialized yet
