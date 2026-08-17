@@ -131,7 +131,7 @@ export function About() {
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-                  <span className="ml-4 text-[10px] font-mono text-white/60">quimeratech.ts</span>
+                  <span className="ml-4 text-[10px] font-mono text-black/40 dark:text-white/60">quimeratech.ts</span>
                 </div>
 
                 <div className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
