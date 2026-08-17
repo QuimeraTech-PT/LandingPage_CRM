@@ -136,7 +136,7 @@ export function Methodology() {
                   key={phase.step}
                   variants={itemVariants}
                   onClick={() => handleStepClick(phase.step, phase.title)}
-                  className={`w-full group relative flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-300 glass-card-hover ${
+                  className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 text-left transition-all duration-300 glass-card-hover ${
                     isActive 
                       ? "border-accent/50 bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1" 
                       : "border-white/5 bg-white/5 hover:border-white/20"
