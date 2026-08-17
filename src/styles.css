@@ -376,14 +376,15 @@
     background-color: #000000 !important;
   }
 
-  /* Glassmorphism 2.0 Refinement */
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
-    position: relative;
-    overflow: hidden;
-  }
+}
 
-  .glass-card::before {
+/* Glassmorphism 2.0 Refinement */
+@utility glass-card {
+  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -401,26 +402,29 @@
     pointer-events: none;
     border-radius: inherit;
   }
+}
 
-  .glass-card-hover {
-    @apply transition-all duration-500 ease-out;
-  }
+@utility glass-card-hover {
+  @apply transition-all duration-500 ease-out;
 
-  .glass-card-hover:hover {
+  &:hover {
     @apply border-accent/30 shadow-accent/5 -translate-y-1;
     background-color: oklch(0.245 0.041 264.5 / 75%);
   }
+}
 
-  .text-gradient-brand {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto];
-    animation: text-gradient 6s linear infinite;
-  }
+@utility text-gradient-brand {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto];
+  animation: text-gradient 6s linear infinite;
+}
 
-  @keyframes text-gradient {
-    to {
-      background-position: 200% center;
-    }
+@keyframes text-gradient {
+  to {
+    background-position: 200% center;
   }
+}
+
+@layer base {
 
   /* ========================================= */
 
