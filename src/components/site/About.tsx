@@ -34,7 +34,7 @@ export function About() {
   return (
     <section 
       id="sobre" 
-      className="relative overflow-hidden bg-surface py-24 text-surface-foreground md:py-32 contain-paint"
+      className="relative overflow-hidden bg-background py-24 text-foreground md:py-32 contain-paint"
       aria-labelledby="about-heading"
     >
       {/* Background Orbs para profundidade (Glassmorphism context) */}
@@ -118,7 +118,7 @@ export function About() {
               {/* Moldura Glassmorphism com efeito de código */}
               <div 
                 tabIndex={0}
-                className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface outline-hidden rounded-3xl"
+                className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden rounded-3xl"
                 role="article"
                 aria-label="Editor de código: QuimeraTech Software House Logic"
               >
