@@ -5,6 +5,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { HeroSkeleton, AboutSkeleton, SpecialtiesSkeleton, MethodologySkeleton, PillarsSkeleton, ContactSkeleton } from "@/components/site/Skeletons";
 import { PageTransition } from "@/components/site/PageTransition";
+import { scrollToSection, waitForElement } from "@/utils/scroll";
+
 
 const Hero = lazy(() => import("@/components/site/Hero").then(m => ({ default: m.Hero })));
 const About = lazy(() => import("@/components/site/About").then(m => ({ default: m.About })));
@@ -70,22 +72,19 @@ function Index() {
   const router = useRouterState();
 
   useEffect(() => {
-    const targetId = router.location.hash;
-    if (targetId) {
-      // Small delay to ensure the DOM is ready for the offset calculation
-      const timer = setTimeout(() => {
-        const elem = document.getElementById(targetId.replace('#', ''));
+    const hash = router.location.hash;
+    if (hash) {
+      const targetId = hash.replace('#', '');
+      
+      // Use the utility to wait for the element then scroll
+      waitForElement(`#${targetId}`).then((elem) => {
         if (elem) {
-          const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                  document.documentElement.classList.contains("force-reduced-motion");
-          
-          window.scrollTo({
-            top: elem.offsetTop - 80,
-            behavior: isReducedMotion ? "auto" : "smooth",
-          });
+          // Additional slight delay to allow layout to settle after lazy load
+          setTimeout(() => {
+            scrollToSection(targetId);
+          }, 100);
         }
-      }, 300); // Increased delay to 300ms for more reliable target measurement
-      return () => clearTimeout(timer);
+      });
     }
   }, [router.location.hash]);
 

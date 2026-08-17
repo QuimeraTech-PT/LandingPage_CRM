@@ -20,6 +20,8 @@ const links = [
 import { transitions, variants } from "@/lib/animations";
 import { useReducedMotion } from "framer-motion";
 import { motion } from "framer-motion";
+import { scrollToSection as performScroll } from "@/utils/scroll";
+
 
 export function Header() {
   const shouldReduceMotion = useReducedMotion();
@@ -66,20 +68,11 @@ export function Header() {
       return;
     }
 
-    const elem = document.getElementById(targetId);
-    if (elem) {
-      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                              document.documentElement.classList.contains("force-reduced-motion");
-      
-      window.scrollTo({
-        top: elem.offsetTop - 80, // Offset for fixed header
-        behavior: isReducedMotion ? "auto" : "smooth",
-      });
-      
-      if (open) {
-        setOpen(false);
-        window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
-      }
+    performScroll(targetId);
+    
+    if (open) {
+      setOpen(false);
+      window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
     }
   };
 
