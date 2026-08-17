@@ -119,7 +119,7 @@ export function Contact() {
                 onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("https://quimeratech.pt"))}
                 className="flex items-center gap-4 rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
                   <Globe className="h-5 w-5" />
                 </span>
                 <span>
