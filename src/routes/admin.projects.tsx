@@ -69,6 +69,7 @@ function ProjectsPage() {
         status: formData.get('status') as any,
         google_drive_folder_id: formData.get('folder_id') as string,
         start_date: formData.get('start_date') as string,
+        budget: Number(formData.get('budget')),
       }
     });
   };
@@ -177,8 +178,36 @@ function ProjectsPage() {
                 </div>
 
                 <div className="pt-4 border-t border-white/5 space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Consumo do Orçamento:</span>
+                      <span className={cn(
+                        "font-medium",
+                        project.total_expenses > project.budget ? "text-red-500" : "text-muted-foreground"
+                      )}>
+                        {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_expenses)} / {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.budget || 0)}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className={cn(
+                          "h-full transition-all",
+                          project.total_expenses > project.budget ? "bg-red-500" : 
+                          project.total_expenses > (project.budget * 0.8) ? "bg-yellow-500" : "bg-primary"
+                        )}
+                        style={{ width: `${Math.min((project.total_expenses / (project.budget || 1)) * 100, 100)}%` }}
+                      />
+                    </div>
+                    {project.total_expenses > project.budget && (
+                      <div className="flex items-center gap-1 text-[10px] text-red-500 font-bold animate-pulse">
+                        <AlertTriangle className="h-3 w-3" />
+                        ORÇAMENTO ULTRAPASSADO
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Rentabilidade:</span>
+                    <span className="text-muted-foreground">Margem Atual:</span>
                     <span className={cn(
                       "font-bold",
                       (project.total_income - project.total_expenses) >= 0 ? "text-green-500" : "text-red-500"
@@ -283,6 +312,10 @@ function ProjectsPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="edit-start">Data de Início</Label>
                   <Input id="edit-start" name="start_date" type="date" defaultValue={editingProject.start_date} className="bg-muted/50 border-white/10" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-budget">Orçamento Previsto (€)</Label>
+                  <Input id="edit-budget" name="budget" type="number" step="0.01" defaultValue={editingProject.budget} className="bg-muted/50 border-white/10" placeholder="0.00" />
                 </div>
               </div>
               <DialogFooter>
