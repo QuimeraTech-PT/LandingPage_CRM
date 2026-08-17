@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History, LayoutList, Kanban as KanbanIcon, AlertTriangle } from 'lucide-react';
+import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History, LayoutList, Kanban as KanbanIcon, AlertTriangle, FileDown } from 'lucide-react';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
+import { ProjectReport } from '@/components/crm/ProjectReport';
+import { getTransactions } from '@/lib/crm.functions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +44,11 @@ function ProjectsPage() {
   const { data: projects } = useSuspenseQuery({
     queryKey: ['crm-projects'],
     queryFn: () => getProjects(),
+  });
+
+  const { data: transactions } = useSuspenseQuery({
+    queryKey: ['crm-transactions'],
+    queryFn: () => getTransactions(),
   });
 
   const updateProjectMutation = useMutation({
@@ -235,13 +242,15 @@ function ProjectsPage() {
                     </CollapsibleContent>
                   </Collapsible>
                   
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                  <div className="flex gap-2 flex-wrap">
+                    <Button variant="outline" size="sm" className="flex-1 min-w-[100px] gap-2" asChild>
                       <Link to="/admin/finances">
                         Finanças
                         <TrendingUp className="h-3 w-3" />
                       </Link>
                     </Button>
+                    <ProjectReport project={project} transactions={transactions || []} />
+                  </div>
                     {project.google_drive_folder_id && (
                       <Button variant="outline" size="sm" className="w-full gap-2" asChild>
                         <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
@@ -266,10 +275,10 @@ function ProjectsPage() {
       ) : (
         <KanbanBoard 
           columns={[
-            { id: 'planning', title: 'Planeamento', items: projectList.filter(p => p.status === 'planning').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} /> },
-            { id: 'active', title: 'Ativo', items: projectList.filter(p => p.status === 'active').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} /> },
-            { id: 'on_hold', title: 'Em Pausa', items: projectList.filter(p => p.status === 'on_hold').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} /> },
-            { id: 'completed', title: 'Concluído', items: projectList.filter(p => p.status === 'completed').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} /> },
+            { id: 'planning', title: 'Planeamento', items: projectList.filter(p => p.status === 'planning').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
+            { id: 'active', title: 'Ativo', items: projectList.filter(p => p.status === 'active').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
+            { id: 'on_hold', title: 'Em Pausa', items: projectList.filter(p => p.status === 'on_hold').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
+            { id: 'completed', title: 'Concluído', items: projectList.filter(p => p.status === 'completed').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
           ]}
           onDragEnd={(projectId, newStatus) => updateProjectMutation.mutate({ data: { id: projectId, status: newStatus as any } })}
         />
@@ -332,7 +341,7 @@ function ProjectsPage() {
   );
 }
 
-function ProjectKanbanCard({ project, onEdit }: { project: any, onEdit: () => void }) {
+function ProjectKanbanCard({ project, onEdit, transactions }: { project: any, onEdit: () => void, transactions: any[] }) {
   return (
     <Card className="bg-card border-white/10 hover:border-primary/50 transition-colors shadow-sm select-none">
       <CardContent className="p-4 space-y-3">
@@ -354,6 +363,9 @@ function ProjectKanbanCard({ project, onEdit }: { project: any, onEdit: () => vo
           )}>
             {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
           </p>
+        </div>
+        <div className="pt-2 border-t border-white/5">
+          <ProjectReport project={project} transactions={transactions} />
         </div>
       </CardContent>
     </Card>
