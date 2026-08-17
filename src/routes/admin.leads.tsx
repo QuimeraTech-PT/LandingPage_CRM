@@ -395,3 +395,38 @@ function LeadsPage() {
     </div>
   );
 }
+
+function LeadKanbanCard({ lead, onEdit }: { lead: any, onEdit: () => void }) {
+  return (
+    <Card className="bg-card border-white/10 hover:border-primary/50 transition-colors shadow-sm select-none">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex justify-between items-start">
+          <h4 className="font-semibold text-sm line-clamp-1">{lead.name}</h4>
+          <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+            <Edit2 className="h-3 w-3" />
+          </Button>
+        </div>
+        
+        <div className="space-y-1">
+          {lead.company && (
+            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+              <Building2 className="h-3 w-3" />
+              {lead.company}
+            </p>
+          )}
+          {lead.estimated_value && (
+            <p className="text-xs font-medium text-primary">
+              {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(Number(lead.estimated_value))}
+            </p>
+          )}
+        </div>
+
+        {lead.notes && (
+          <p className="text-[10px] text-muted-foreground line-clamp-2 bg-muted/30 p-2 rounded">
+            {lead.notes}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
