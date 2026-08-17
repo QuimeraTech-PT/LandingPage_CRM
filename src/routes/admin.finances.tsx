@@ -202,8 +202,11 @@ function FinancesPage() {
       </div>
 
       <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Histórico de Transações</CardTitle>
+          <div className="flex items-center gap-2">
+            <ProjectReport project={{ name: "Geral (Todas)", budget: 0, status: "active" }} transactions={transactions} />
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

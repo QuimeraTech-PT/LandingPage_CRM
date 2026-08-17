@@ -250,9 +250,8 @@ function ProjectsPage() {
                       </Link>
                     </Button>
                     <ProjectReport project={project} transactions={transactions || []} />
-                  </div>
                     {project.google_drive_folder_id && (
-                      <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                      <Button variant="outline" size="sm" className="flex-1 min-w-[100px] gap-2" asChild>
                         <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
                           Drive
                           <ExternalLink className="h-3 w-3" />
