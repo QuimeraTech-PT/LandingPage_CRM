@@ -102,6 +102,19 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
           <div className="flex flex-col gap-2 sm:flex-row md:flex-col lg:flex-row items-center">
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setIsVisible(false);
+                lastActiveElement.current?.focus();
+              }}
+              className="text-xs w-full sm:w-auto md:w-full lg:w-auto border-white/10 hover:bg-white/5"
+              aria-label="Personalizar preferências de cookies"
+            >
+              <Settings className="mr-2 h-3 w-3" />
+              Personalizar
+            </Button>
+            <Button
               variant="secondary"
               size="sm"
               onClick={acceptEssential}
