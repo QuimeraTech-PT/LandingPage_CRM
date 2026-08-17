@@ -300,8 +300,11 @@ export const createTransaction = createServerFn({ method: "POST" })
     amount: z.number(),
     type: z.enum(['income', 'expense']),
     date: z.string(),
+    due_date: z.string().nullable().optional(),
     project_id: z.string().uuid().nullable().optional(),
     category: z.string().nullable().optional(),
+    status: z.string().optional().default('pending'),
+    invoice_url: z.string().nullable().optional(),
   }).parse(data))
   .handler(async ({ data, context }: { data: any, context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
@@ -313,6 +316,14 @@ export const createTransaction = createServerFn({ method: "POST" })
       .insert([data]);
     
     if (error) throw error;
+
+    await logActivity({
+      userId: context.userId,
+      action: 'create_transaction',
+      entityType: 'finance',
+      details: data
+    });
+
     return { success: true };
   });
 

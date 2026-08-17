@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTransactions, getProjects, createTransaction } from '@/lib/crm.functions';
-import { Wallet, Plus, ArrowUpRight, ArrowDownRight, Calendar, Briefcase, Filter, Search } from 'lucide-react';
+import { Wallet, Plus, ArrowUpRight, ArrowDownRight, Calendar, Briefcase, Filter, Search, FileText, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/admin/finances')({
   component: FinancesPage,
@@ -50,8 +51,11 @@ function FinancesPage() {
         amount: Number(formData.get('amount')),
         type: formData.get('type') as 'income' | 'expense',
         date: formData.get('date') as string,
+        due_date: formData.get('due_date') as string || null,
         project_id: formData.get('project_id') === 'none' ? null : (formData.get('project_id') as string),
         category: formData.get('category') as string,
+        status: formData.get('status') as string || 'pending',
+        invoice_url: formData.get('invoice_url') as string || null,
       }
     });
   };
@@ -106,9 +110,38 @@ function FinancesPage() {
                     </Select>
                   </div>
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="date">Data de Registo</Label>
+                    <Input id="date" name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="bg-muted/50 border-white/10" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="due_date">Data de Vencimento</Label>
+                    <Input id="due_date" name="due_date" type="date" className="bg-muted/50 border-white/10" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="status">Estado</Label>
+                    <Select name="status" defaultValue="pending">
+                      <SelectTrigger className="bg-muted/50 border-white/10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-white/10 text-foreground">
+                        <SelectItem value="pending">Pendente</SelectItem>
+                        <SelectItem value="paid">Pago</SelectItem>
+                        <SelectItem value="overdue">Em Atraso</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="category">Categoria</Label>
+                    <Input id="category" name="category" placeholder="Ex: Software, Hardware" className="bg-muted/50 border-white/10" />
+                  </div>
+                </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="date">Data</Label>
-                  <Input id="date" name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="bg-muted/50 border-white/10" />
+                  <Label htmlFor="invoice_url">Link da Fatura / Comprovativo</Label>
+                  <Input id="invoice_url" name="invoice_url" placeholder="https://..." className="bg-muted/50 border-white/10" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="project_id">Projeto Associado</Label>
@@ -184,12 +217,34 @@ function FinancesPage() {
                     <h4 className="font-semibold">{t.description}</h4>
                     <div className="flex gap-4 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {new Date(t.date).toLocaleDateString('pt-PT')}</span>
+                      {t.due_date && <span className={`flex items-center gap-1 ${t.status !== 'paid' && new Date(t.due_date) < new Date() ? 'text-red-500 font-bold' : ''}`}>
+                        <Clock className="h-3 w-3" /> Vence: {new Date(t.due_date).toLocaleDateString('pt-PT')}
+                      </span>}
                       {t.crm_projects && <span className="flex items-center gap-1"><Briefcase className="h-3 w-3" /> {t.crm_projects.name}</span>}
                     </div>
                   </div>
                 </div>
-                <div className={`font-bold ${t.type === 'income' ? 'text-green-500' : 'text-red-500'}`}>
-                  {t.type === 'income' ? '+' : '-'}{new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(t.amount)}
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-end gap-1">
+                    <div className={`font-bold ${t.type === 'income' ? 'text-green-500' : 'text-red-500'}`}>
+                      {t.type === 'income' ? '+' : '-'}{new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(t.amount)}
+                    </div>
+                    <Badge variant="outline" className={cn(
+                      "text-[10px] px-1.5 py-0",
+                      t.status === 'paid' ? "text-green-500 border-green-500/20" : 
+                      t.status === 'overdue' || (t.status === 'pending' && t.due_date && new Date(t.due_date) < new Date()) ? "text-red-500 border-red-500/20" : 
+                      "text-yellow-500 border-yellow-500/20"
+                    )}>
+                      {t.status === 'paid' ? 'Pago' : t.status === 'overdue' || (t.status === 'pending' && t.due_date && new Date(t.due_date) < new Date()) ? 'Em Atraso' : 'Pendente'}
+                    </Badge>
+                  </div>
+                  {t.invoice_url && (
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
+                      <a href={t.invoice_url} target="_blank" rel="noopener noreferrer">
+                        <FileText className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
