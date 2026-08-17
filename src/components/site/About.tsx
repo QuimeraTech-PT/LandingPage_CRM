@@ -80,7 +80,7 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="group focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface focus-within:outline-hidden rounded-2xl border border-surface-border bg-surface-card/40 p-5 backdrop-blur-md transition-all duration-500 hover:bg-surface-card/60 hover:-translate-y-2 glass-card-hover"
+                    className="glass-card glass-card-hover group flex flex-col p-5"
                     onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("about_card_click", { label: stat.label }))}
                   >
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
@@ -118,7 +118,7 @@ export function About() {
               {/* Moldura Glassmorphism com efeito de código */}
               <div 
                 tabIndex={0}
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl backdrop-blur-sm transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface outline-hidden"
+                className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface outline-hidden"
                 role="article"
                 aria-label="Editor de código: QuimeraTech Software House Logic"
               >
