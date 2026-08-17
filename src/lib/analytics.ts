@@ -48,26 +48,42 @@ export const initAnalytics = (gtmId: string) => {
  * Update consent based on user preference.
  * Called when user interacts with the CookieBanner.
  */
-export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") => {
+export const updateAnalyticsConsent = (consent: "all" | "essential" | "none" | Record<string, boolean>) => {
   if (typeof window === "undefined") return;
 
-  // Persist the choice with cross-subdomain support
-  // We use a cookie for cross-subdomain persistence if possible
   const cookieName = "cookie-consent";
-  const domain = window.location.hostname.includes('.') ? `.${window.location.hostname.split('.').slice(-2).join('.')}` : window.location.hostname; // e.g., .quimeratech.pt
+  const domain = window.location.hostname.includes('.') ? `.${window.location.hostname.split('.').slice(-2).join('.')}` : window.location.hostname;
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
 
-  if (consent !== "none") {
-    localStorage.setItem(cookieName, consent);
-    // Also set a cookie for cross-subdomain persistence
-    document.cookie = `${cookieName}=${consent}; domain=${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+  let consentConfig: Record<string, "granted" | "denied">;
+  let consentValue: string;
+
+  if (typeof consent === "string") {
+    consentValue = consent;
+    const isGranted = consent === "all" ? "granted" : "denied";
+    consentConfig = {
+      ad_storage: isGranted,
+      analytics_storage: isGranted,
+      ad_user_data: isGranted,
+      ad_personalization: isGranted,
+    };
   } else {
-    localStorage.removeItem(cookieName);
-    document.cookie = `${cookieName}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    // Granular consent
+    consentValue = JSON.stringify(consent);
+    consentConfig = {
+      ad_storage: consent.marketing ? "granted" : "denied",
+      analytics_storage: consent.analytics ? "granted" : "denied",
+      ad_user_data: consent.marketing ? "granted" : "denied",
+      ad_personalization: consent.marketing ? "granted" : "denied",
+    };
   }
 
-  // Ensure gtag is available if it was not initialized yet
+  // Persist the choice
+  localStorage.setItem(cookieName, consentValue);
+  document.cookie = `${cookieName}=${encodeURIComponent(consentValue)}; domain=${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+
+  // Ensure gtag is available
   if (!window.gtag) {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function() {
@@ -76,34 +92,29 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
     };
   }
 
-  const consentConfig = consent === "all" ? {
-    ad_storage: "granted",
-    analytics_storage: "granted",
-    ad_user_data: "granted",
-    ad_personalization: "granted",
-  } : {
-    ad_storage: "denied",
-    analytics_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-  };
-
   window.gtag("consent", "update", consentConfig);
   
-  // Update dataLayer with consent state
+  // Update dataLayer
   window.dataLayer.push({
-    'ad_storage': consentConfig.ad_storage,
-    'analytics_storage': consentConfig.analytics_storage,
-    'ad_user_data': consentConfig.ad_user_data,
-    'ad_personalization': consentConfig.ad_personalization
-  });
-
-  // Push a custom event to dataLayer to signal consent change to GTM tags
-  window.dataLayer.push({
+    ...consentConfig,
     event: "consent_updated",
-    consent_type: consent,
-    ...consentConfig
+    consent_type: typeof consent === "string" ? consent : "granular",
   });
+};
+
+/**
+ * Get current consent state
+ */
+export const getAnalyticsConsent = () => {
+  if (typeof window === "undefined") return null;
+  const local = localStorage.getItem('cookie-consent');
+  if (!local) return null;
+  
+  try {
+    return JSON.parse(local) as Record<string, boolean>;
+  } catch {
+    return local as "all" | "essential" | "none";
+  }
 };
 
 /**
@@ -114,7 +125,16 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
   if (typeof window === "undefined") return;
   
   const localConsent = localStorage.getItem('cookie-consent');
-  const isGranted = localConsent === 'all';
+  let isGranted = localConsent === 'all';
+  
+  if (localConsent && localConsent.startsWith('{')) {
+    try {
+      const granular = JSON.parse(localConsent);
+      // Logic: analytics event tracking requires analytics consent
+      // If it's a marketing event, it would require marketing consent, but we'll use a general approach
+      isGranted = granular.analytics === true;
+    } catch {}
+  }
 
   // Only track GA events if consent is granted
   if (isGranted) {

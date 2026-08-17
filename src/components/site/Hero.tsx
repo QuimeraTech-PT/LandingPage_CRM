@@ -122,7 +122,7 @@ export function Hero() {
               size="lg" 
               className="w-full sm:w-auto" 
               rightIcon={<ArrowRight className="h-5 w-5" />}
-              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "especialidades" }))}
+              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "especialidades", type: "primary" }))}
             >
               <a href="#especialidades">
                 Descubra as Nossas Soluções
@@ -133,7 +133,7 @@ export function Hero() {
               size="lg"
               variant="secondary"
               className="w-full sm:w-auto"
-              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "contactos" }))}
+              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "contactos", type: "secondary" }))}
             >
               <a href="#contactos">Fale Connosco</a>
             </Button>
