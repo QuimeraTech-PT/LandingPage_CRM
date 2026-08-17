@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, lazy } from "react";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import { Suspense, lazy, useEffect } from "react";
 import { seoMeta, seoLinks, jsonLd } from "@/lib/seo";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -67,6 +67,32 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const router = useRouterState();
+
+  useEffect(() => {
+    if (router.location.hash) {
+      const targetId = router.location.hash;
+      // Wait a bit for components to mount if they are lazy loaded
+      // The skeletons are already there, but the height might change after lazy load
+      const scrollWithHash = () => {
+        const elem = document.getElementById(targetId);
+        if (elem) {
+          const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                  document.documentElement.classList.contains("force-reduced-motion");
+          
+          window.scrollTo({
+            top: elem.offsetTop - 80,
+            behavior: isReducedMotion ? "auto" : "smooth",
+          });
+        }
+      };
+
+      // Small delay to ensure the DOM is ready for the offset calculation
+      const timer = setTimeout(scrollWithHash, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [router.location.hash]);
+
   return (
     <PageTransition>
       <div className="flex min-h-screen flex-col">
