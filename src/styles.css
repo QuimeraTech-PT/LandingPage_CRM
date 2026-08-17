@@ -168,8 +168,8 @@
   @apply transition-all duration-500 ease-out;
 
   &:hover {
-    @apply border-accent/30 shadow-accent/10 -translate-y-1.5;
-    background-color: oklch(0.245 0.041 264.5 / 80%);
+    @apply border-accent/40 shadow-2xl shadow-accent/20 -translate-y-2;
+    background-color: oklch(0.245 0.041 264.5 / 90%);
   }
 
   .force-reduced-motion &:hover {
