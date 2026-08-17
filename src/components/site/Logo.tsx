@@ -23,8 +23,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
       alt="Logótipo QuimeraTech"
       className={cn(
         "w-auto transition-all duration-300",
-        // In Light Theme, we use invert to turn black to white, then we'll need to handle the "Quimera" part.
-        // Wait, if it's already black, we want it black in light mode and white in dark mode.
+        // The logo is naturally black.
+        // In dark mode, we invert it to make it white.
         "dark:invert dark:brightness-200",
         sizeClasses[size],
         className
