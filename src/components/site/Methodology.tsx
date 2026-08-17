@@ -190,7 +190,7 @@ export function Methodology() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + idx * 0.05 }}
-                        className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+                        className="flex items-center gap-3 p-3 rounded-xl bg-card/50 dark:bg-white/5 border border-border dark:border-white/5 shadow-sm dark:shadow-none"
                       >
                         <CheckCircle2 className="h-5 w-5 text-accent shrink-0" />
                         <span className="text-sm font-medium">{detail}</span>
