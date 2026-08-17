@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, LayoutDashboard } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
+import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
