@@ -9,16 +9,6 @@
 
 /*
  * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
  */
 
 @theme inline {
@@ -72,8 +62,6 @@
 
 :root {
   --radius: 0.625rem;
-
-  /* Brand: Midnight #0F172A, Electric Blue #2563EB, Cyan #06B6D4, Ice #F8FAFC, Slate #334155 */
   --background: oklch(0.208 0.042 265.755);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.245 0.041 264.5);
@@ -93,14 +81,11 @@
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
   --ring: oklch(0.546 0.245 262.881);
-
-  /* Light surface for alternating "breathing" sections */
   --surface: oklch(0.984 0.003 247.858);
   --surface-foreground: oklch(0.208 0.042 265.755);
   --surface-muted: oklch(0.372 0.044 257.287);
   --surface-border: oklch(0.905 0.012 255.5);
   --surface-card: oklch(1 0 0);
-
   --chart-1: oklch(0.546 0.245 262.881);
   --chart-2: oklch(0.715 0.143 215.221);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -133,256 +118,22 @@
   --accent-foreground: oklch(0.984 0.003 247.858);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-@layer base {
-  /* Accessibility Modifiers */
-  /* =========================================
-     MODO DE ALTO CONTRASTE (HIGH CONTRASTE)
-     ========================================= */
-  html.high-contrast {
-    /* Token Overrides */
-    --background: #000000 !important;
-    --foreground: #ffffff !important;
-    --primary: #ffff00 !important;
-    --primary-foreground: #000000 !important;
-    --secondary: #000000 !important;
-    --secondary-foreground: #ffffff !important;
-    --accent: #ffff00 !important;
-    --accent-foreground: #000000 !important;
-    --border: #ffffff !important;
-    --input: #000000 !important;
-    --ring: #ffff00 !important;
-    --muted: #1a1a1a !important;
-    --muted-foreground: #ffffff !important;
-    --card: #000000 !important;
-    --card-foreground: #ffffff !important;
-    --popover: #000000 !important;
-    --popover-foreground: #ffffff !important;
-    --surface: #000000 !important;
-    --surface-foreground: #ffffff !important;
-    --surface-border: #ffffff !important;
-    --surface-muted: #ffffff !important;
-    --surface-card: #000000 !important;
-    --destructive: #ff0000 !important;
-    --destructive-foreground: #ffffff !important;
-  }
-
-  /* Reset global em Alto Contraste */
-  html.high-contrast * {
-    background-color: transparent !important;
-    background-image: none !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    border-color: #ffffff !important;
-    color: #ffffff !important;
-    outline-color: #ffffff !important;
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-    transition: none !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-
-  /* Content Containers */
-  html.high-contrast html,
-  html.high-contrast body,
-  html.high-contrast section,
-  html.high-contrast footer,
-  html.high-contrast header,
-  html.high-contrast nav,
-  html.high-contrast main,
-  html.high-contrast article,
-  html.high-contrast div[class*="bg-"] {
-    background-color: #000000 !important;
-  }
-
-  /* Interactive Elements */
-  html.high-contrast button,
-  html.high-contrast a.inline-flex,
-  html.high-contrast a.flex,
-  html.high-contrast [role="button"] {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffffff !important;
-    text-decoration: none !important;
-    min-height: 3rem !important; /* Touch target */
-  }
-
-  html.high-contrast button:hover,
-  html.high-contrast a.inline-flex:hover,
-  html.high-contrast a.flex:hover,
-  html.high-contrast [role="button"]:hover,
-  html.high-contrast button:focus-visible,
-  html.high-contrast a.inline-flex:focus-visible,
-  html.high-contrast a.flex:focus-visible,
-  html.high-contrast [role="button"]:focus-visible {
-    background-color: #ffff00 !important;
-    color: #000000 !important;
-    border-color: #000000 !important;
-    outline: 4px solid #ffffff !important;
-  }
-
-  html.high-contrast button:hover *,
-  html.high-contrast a.inline-flex:hover *,
-  html.high-contrast a.flex:hover *,
-  html.high-contrast [role="button"]:hover *,
-  html.high-contrast button:focus-visible *,
-  html.high-contrast a.inline-flex:focus-visible *,
-  html.high-contrast a.flex:focus-visible *,
-  html.high-contrast [role="button"]:focus-visible * {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
-  }
-
-  html.high-contrast a:not(.inline-flex):not(.flex) {
-    color: #ffff00 !important;
-    text-decoration: underline !important;
-    text-underline-offset: 4px !important;
-    font-weight: bold !important;
-  }
-
-  /* Forms */
-  html.high-contrast input,
-  html.high-contrast textarea,
-  html.high-contrast select {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffffff !important;
-    opacity: 1 !important;
-  }
-
-  html.high-contrast input::placeholder,
-  html.high-contrast textarea::placeholder {
-    color: #cccccc !important;
-  }
-
-  /* Focus States */
-  html.high-contrast *:focus-visible {
-    outline: 4px solid #ffff00 !important;
-    outline-offset: 4px !important;
-    box-shadow: 0 0 0 8px #000000 !important;
-    z-index: 9999 !important;
-  }
-
-  /* Utility Overrides */
-  html.high-contrast .text-primary,
-  html.high-contrast .text-accent {
-    color: #ffff00 !important;
-  }
-
-  html.high-contrast .bg-primary,
-  html.high-contrast .bg-accent {
-    background-color: #ffff00 !important;
-    color: #000000 !important;
-    border: 2px solid #000000 !important;
-  }
-
-  html.high-contrast .bg-primary *,
-  html.high-contrast .bg-accent * {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
-  }
-
-  /* Visual Elements */
-  html.high-contrast img,
-  html.high-contrast svg {
-    filter: brightness(1) contrast(1.2) !important;
-  }
-
-  html.high-contrast .logo-img,
-  html.high-contrast img[alt*="Logo"],
-  html.high-contrast img[alt*="Logótipo"],
-  html.high-contrast .Logo_logo-img__n7h7b { /* Specific for generated classes if any */
-    filter: brightness(0) invert(1) !important;
-  }
-
-  /* Semantic Messaging */
-  html.high-contrast [role="alert"],
-  html.high-contrast .text-destructive {
-    border: 3px solid #ff0000 !important;
-    color: #ff0000 !important;
-    background-color: #000000 !important;
-    padding: 0.5rem !important;
-  }
-
-  html.high-contrast [role="status"],
-  html.high-contrast .text-success {
-    border: 3px solid #00ff00 !important;
-    color: #00ff00 !important;
-    padding: 0.5rem !important;
-  }
-
-  /* UI Components */
-  html.high-contrast [role="dialog"],
-  html.high-contrast [role="region"],
-  html.high-contrast .bg-card,
-  html.high-contrast .bg-surface-card,
-  html.high-contrast .rounded-xl {
-    background-color: #000000 !important;
-    border: 2px solid #ffffff !important;
-  }
-
-  html.high-contrast .grid-tech {
-    background-image: 
-      linear-gradient(to right, #ffffff 1px, transparent 1px),
-      linear-gradient(to bottom, #ffffff 1px, transparent 1px) !important;
-    opacity: 0.05 !important;
-  }
-
-  html.high-contrast ::selection {
-    background-color: #ffff00 !important;
-    color: #000000 !important;
-  }
-
-  /* Disabled State */
-  html.high-contrast *:disabled,
-  html.high-contrast [aria-disabled="true"] {
-    opacity: 0.5 !important;
-    border-color: #888888 !important;
-    color: #888888 !important;
-    cursor: not-allowed !important;
-    background-color: #1a1a1a !important;
-  }
-
-  /* Page Specific Overrides */
-  html.high-contrast .text-gradient-brand {
-    background-image: none !important;
-    background-clip: unset !important;
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-  }
-
-  html.high-contrast .backdrop-blur-xl {
-    backdrop-filter: none !important;
-    background-color: #000000 !important;
-  }
-
-}
-
-/* Glassmorphism 2.0 Refinement */
+/* Glassmorphism Utilities */
 @utility glass-card {
   @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
   position: relative;
   overflow: hidden;
+
+  /* Performance: Light fallback for mobile or reduced motion */
+  @media (max-width: 768px) {
+    @apply backdrop-blur-none bg-card/95;
+  }
+  
+  .force-reduced-motion & {
+    @apply backdrop-blur-none shadow-none;
+  }
 
   &::before {
     content: "";
@@ -416,6 +167,10 @@
 @utility text-gradient-brand {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto];
   animation: text-gradient 6s linear infinite;
+
+  .force-reduced-motion & {
+    @apply text-foreground bg-none animate-none;
+  }
 }
 
 @keyframes text-gradient {
@@ -425,16 +180,49 @@
 }
 
 @layer base {
-
-  /* ========================================= */
-
-  html.text-large {
-    font-size: 115%;
+  /* Accessibility Modifiers */
+  html.high-contrast {
+    --background: #000000 !important;
+    --foreground: #ffffff !important;
+    --primary: #ffff00 !important;
+    --primary-foreground: #000000 !important;
+    --border: #ffffff !important;
+    --card: #000000 !important;
+    --card-foreground: #ffffff !important;
   }
 
-  html.text-extra {
-    font-size: 130%;
+  html.high-contrast * {
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
   }
+
+  /* Interactive Elements */
+  html.high-contrast button,
+  html.high-contrast a.inline-flex,
+  html.high-contrast a.flex {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+  }
+
+  html.high-contrast .text-gradient-brand {
+    background-image: none !important;
+    background-clip: unset !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html.high-contrast .backdrop-blur-xl {
+    backdrop-filter: none !important;
+    background-color: #000000 !important;
+  }
+
+  html.text-large { font-size: 115%; }
+  html.text-extra { font-size: 130%; }
 
   html.force-reduced-motion,
   html.force-reduced-motion *,
@@ -446,40 +234,6 @@
     scroll-behavior: auto !important;
   }
 
-  /* Specific override for Framer Motion / CSS Transitions */
-  html.force-reduced-motion * {
-    transition-property: none !important;
-    transform: none !important;
-    animation: none !important;
-  }
-
-  html.force-reduced-motion,
-  html.force-reduced-motion body {
-    scroll-behavior: auto !important;
-  }
-
-  html.force-reduced-motion .framer-motion-container * {
-    transition: none !important;
-  }
-
-  /* Disable Micro-interactions utilities */
-  html.disable-interactions .cursor-follower-container,
-  html.disable-interactions .interaction-pulse,
-  html.disable-interactions .hover-scale,
-  html.disable-interactions .scroll-reveal-active {
-    display: none !important;
-    transform: none !important;
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Auto-disable interactions if reduced motion is on */
-  html.force-reduced-motion .cursor-follower-container,
-  html.force-reduced-motion .interaction-pulse,
-  html.force-reduced-motion .hover-scale {
-    display: none !important;
-  }
-
   * {
     border-color: var(--color-border);
   }
@@ -489,131 +243,5 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* Accessibility: Global visible focus indicator for keyboard navigation */
-  *:focus-visible {
-    outline: 2px solid var(--primary) !important;
-    outline-offset: 4px !important;
-  }
-
-  /* High Contrast Switch Overrides */
-  html.high-contrast [role="switch"] {
-    border: 2px solid #ffffff !important;
-    background-color: #000000 !important;
-  }
-
-  html.high-contrast [role="switch"][aria-checked="true"] {
-    background-color: #ffff00 !important;
-  }
-
-  html.high-contrast [role="switch"] span {
-    background-color: #ffffff !important;
-  }
-
-  html.high-contrast [role="switch"][aria-checked="true"] span {
-    background-color: #000000 !important;
-  }
-
-  /* Ensure interactive elements meet minimum touch target sizes */
-  button, a, input, textarea {
-    min-height: 2.75rem; /* ~44px per WCAG */
-    min-width: 2.75rem;
-  }
-
-  /* Links should have clear visual focus and sufficient contrast */
-  a:focus-visible {
-    border-radius: 0.125rem;
-  }
-
-  /* Increase base font size for better readability and contrast */
-  body {
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    *, ::before, ::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-}
-
-@layer base {
-  html:not(.force-reduced-motion) {
-    scroll-behavior: smooth;
-  }
-}
-
-@utility grid-tech {
-  background-image:
-    linear-gradient(to right, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.715 0.143 215.221 / 0.10) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-@utility text-gradient-brand {
-  background-image: linear-gradient(
-    100deg,
-    oklch(0.984 0.003 247.858) 10%,
-    oklch(0.715 0.143 215.221) 55%,
-    oklch(0.546 0.245 262.881) 95%
-  );
-  background-clip: text;
-  color: transparent;
-}
-
-@utility btn-shine {
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
-    transform: skewX(-25deg);
-    transition: none;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  &:hover:not(:disabled):not(.force-reduced-motion)::before {
-    animation: shine 0.75s ease-in-out;
-  }
-}
-
-@keyframes shine {
-  100% {
-    left: 200%;
-  }
-}
-
-@layer utilities {
-  .shadow-premium {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  }
-  
-  .shadow-premium-hover {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  }
-}
-
-
-@layer base {
-  section[id] {
-    scroll-margin-top: 5rem;
   }
 }
