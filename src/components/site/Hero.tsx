@@ -109,7 +109,7 @@ export function Hero() {
             variants={itemVariants}
             className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-7xl lg:tracking-[-0.03em]"
           >
-            Sua Visão, Nossa <span className="text-gradient-brand">Engenharia de Elite.</span>
+            Sua Visão, Nossa <span className="text-gradient-brand selection:bg-accent selection:text-accent-foreground">Engenharia de Elite.</span>
           </motion.h1>
 
           <motion.p 
