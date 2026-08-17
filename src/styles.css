@@ -460,6 +460,10 @@
 @utility text-gradient-brand {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto];
   animation: text-gradient 6s linear infinite;
+
+  .force-reduced-motion & {
+    @apply text-foreground bg-none animate-none;
+  }
 }
 
 @keyframes text-gradient {
