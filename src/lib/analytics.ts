@@ -157,26 +157,6 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
 };
 
 /**
- * Web Vitals tracking.
- * Sends Core Web Vitals to GA4.
- */
-export const trackWebVitals = async () => {
-  if (typeof window === "undefined") return;
-  
-  try {
-    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
-    
-    const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
-      trackEvent(name, {
-        value: delta,
-        metric_id: id,
-        metric_value: value,
-        metric_delta: delta,
-        non_interaction: true,
-      });
-};
-
-/**
  * Automatically tracks outbound link clicks.
  * Attach this to global click events or specific links.
  */
@@ -198,6 +178,26 @@ export const trackOutboundClick = (url: string) => {
     console.debug("[Analytics] Failed to parse outbound link URL:", url);
   }
 };
+
+/**
+ * Web Vitals tracking.
+ * Sends Core Web Vitals to GA4.
+ */
+export const trackWebVitals = async () => {
+  if (typeof window === "undefined") return;
+  
+  try {
+    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
+    
+    const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
+      trackEvent(name, {
+        value: delta,
+        metric_id: id,
+        metric_value: value,
+        metric_delta: delta,
+        non_interaction: true,
+      });
+    };
 
     onCLS(sendToGoogleAnalytics);
     onLCP(sendToGoogleAnalytics);
