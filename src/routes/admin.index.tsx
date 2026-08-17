@@ -148,7 +148,8 @@ function AdminDashboard() {
                 );
               })}
             </div>
-          </CardContent>
+            </CardContent>
+          </Card>
         </div>
         
         <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10">
