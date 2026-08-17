@@ -28,7 +28,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-border bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
+    <footer className="border-t border-border dark:border-white/5 bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Rodapé</h2>
       
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
