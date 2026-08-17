@@ -118,7 +118,7 @@ export function Hero() {
           >
             Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
           </motion.p>
-          </motion.h2>
+          
 
           <motion.div 
             variants={itemVariants}
