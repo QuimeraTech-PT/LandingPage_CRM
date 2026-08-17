@@ -204,7 +204,7 @@ export function Methodology() {
                   animate={{ opacity: 1 }}
                   className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-border dark:border-white/10 rounded-3xl"
                 >
-                  <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
+                  <div className="h-16 w-16 rounded-full bg-card dark:bg-white/5 flex items-center justify-center mb-6 shadow-inner">
                     <ChevronRight className="h-8 w-8 text-primary/40" />
                   </div>
                   <h4 className="text-xl font-semibold mb-2">Explore a nossa Metodologia</h4>
