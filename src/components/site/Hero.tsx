@@ -124,7 +124,7 @@ export function Hero() {
               rightIcon={<ArrowRight className="h-5 w-5" />}
               onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "especialidades" }))}
             >
-              <a href="#especialidades">
+              <a href="#especialidades" loading="lazy">
                 Descubra as Nossas Soluções
               </a>
             </Button>
@@ -135,7 +135,7 @@ export function Hero() {
               className="w-full sm:w-auto"
               onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "contactos" }))}
             >
-              <a href="#contactos">Fale Connosco</a>
+              <a href="#contactos" loading="lazy">Fale Connosco</a>
             </Button>
           </motion.div>
         </motion.div>
