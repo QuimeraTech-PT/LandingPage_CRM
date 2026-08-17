@@ -146,7 +146,7 @@ export const AccessibilityMenu = () => {
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true, initialFocus: '#accessibility-menu-title' }}>
           <motion.div 
             ref={menuRef}
-            className="fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] framer-motion-container"
+            className="fixed top-20 right-5 w-72 rounded-xl border border-border dark:border-white/10 bg-card p-6 shadow-2xl z-[9999] framer-motion-container"
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
