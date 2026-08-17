@@ -1,36 +1,37 @@
-# Plano de Implementação: Notificações, Kanban e Alertas Financeiros
+# Plano de Implementação: Kanban, Notificações e Alertas Financeiros
 
-Este plano detalha a implementação das melhorias solicitadas no CRM: Notificações (Lark Bot), Kanban para Leads/Projetos e Alertas Financeiros.
+Este plano foca em transformar o CRM numa ferramenta proativa com visualização Kanban e alertas automáticos.
 
 ## Alterações
 
-### 1. Notificações e Automação (Lark Bot)
-- **Extensão do `lark.server.ts`**: Adicionar funções para notificações de CRM:
-    - `sendLarkCRMNotification`: Notificar novas leads, conversões e alertas financeiros.
-- **Integração no `crm.functions.ts`**:
-    - Disparar notificações ao criar leads e converter projetos.
-    - Adicionar lógica de verificação de orçamento nas finanças.
+### 1. Servidor e Automação (`src/lib/`)
+- **`lark.server.ts`**: 
+  - Adicionar `sendLarkCRMNotification(type: 'lead' | 'project' | 'finance', details: any)`.
+- **`crm.functions.ts`**:
+  - Integrar chamadas de notificação no `createLead`, `convertLeadToProject` e `createTransaction`.
+  - Implementar lógica de alerta financeiro: se `type === 'expense'` e `project_id` definido, verificar se despesas totais > receitas totais.
 
-### 2. Experiência Kanban (UX)
-- **Novo Componente `KanbanBoard.tsx`**: Criar um componente de quadro Kanban reutilizável usando `dnd-kit` ou similar (ou uma implementação simplificada com colunas Tailwind se preferir evitar deps pesadas).
-- **Integração nas Páginas**:
-    - `/admin/leads`: Adicionar alternância entre vista de Lista e Kanban.
-    - `/admin/projects`: Adicionar alternância entre vista de Cards e Kanban por estado.
+### 2. Interface Kanban
+- **`src/components/crm/KanbanBoard.tsx`**: Novo componente utilizando `dnd-kit` para arrastar itens entre colunas de estado.
+- **`src/routes/admin.leads.tsx`**: Botão de toggle para alternar entre Tabela e Kanban.
+- **`src/routes/admin.projects.tsx`**: Vista Kanban por fase de projeto (Planeamento, Ativo, etc).
 
-### 3. Alertas Financeiros
-- **Dashboard Principal**: Adicionar um widget de "Alertas Críticos" (ex: Projetos com prejuízo ou margem baixa).
-- **Finanças**: 
-    - Implementar verificação automática de saldo por projeto.
-    - Notificar via Lark se uma despesa colocar o projeto em saldo negativo.
+### 3. Alertas e Dashboard
+- **`src/routes/admin.index.tsx`**:
+  - Novo widget "Alertas de Risco" no topo.
+  - Listar projetos com rentabilidade negativa ou prazos em risco.
+
+### 4. Gestão de Ficheiros
+- **`src/components/crm/ProjectFiles.tsx`**: 
+  - Adicionar suporte a `onDrop` para upload visual.
 
 ## Detalhes Técnicos
-
-- **Dependências**: Requer `LARK_APP_ID`, `LARK_APP_SECRET` e `LARK_CHAT_ID` configurados nos Secrets do CRM.
-- **Segurança**: Todas as novas funções de servidor manterão o middleware `requireAdmin`.
-- **UX**: Uso de animações suaves e feedback visual imediato para drag & drop no Kanban.
+- **Notificações**: Usarão o `LARK_CHAT_ID` principal para centralizar alertas.
+- **Kanban**: Persistência imediata no banco de dados após o "drop".
 
 ## Próximos Passos
-1. Atualizar `lark.server.ts` com novos tipos de notificação.
-2. Modificar `crm.functions.ts` para disparar alertas.
-3. Criar e integrar a visualização Kanban nas rotas admin.
-4. Adicionar secção de alertas no Dashboard.
+1. Atualizar funções de servidor (Lark + CRM).
+2. Criar componente Kanban base.
+3. Integrar Kanban nas rotas de Leads e Projetos.
+4. Adicionar secção de Alertas no Dashboard.
+
