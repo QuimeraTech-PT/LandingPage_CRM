@@ -31,7 +31,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     
     if (savedConsent) {
       if (typeof savedConsent === "object") {
-        setPreferences({ ...savedConsent, essential: true });
+        setPreferences({ essential: true, analytics: savedConsent.analytics ?? false, marketing: savedConsent.marketing ?? false });
         updateAnalyticsConsent(savedConsent);
       } else {
         const isAll = savedConsent === "all";
