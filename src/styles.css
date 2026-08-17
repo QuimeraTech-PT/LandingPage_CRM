@@ -109,11 +109,11 @@
 .dark {
   --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
   --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  /* Dark Theme - Technological, Depth, Atmosphere */
+  /* Dark Theme - Midnight Base */
   --foreground-rgb: 251, 251, 253; /* Ice White oklch to RGB approximation */
   --background: oklch(0.208 0.042 265.755);
   --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.245 0.041 264.5);
+  --card: oklch(0.245 0.041 264.5); /* Slightly lighter for depth */
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.245 0.041 264.5);
   --popover-foreground: oklch(0.984 0.003 247.858);
@@ -138,6 +138,11 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.546 0.245 262.881);
+  --surface: oklch(0.208 0.042 265.755);
+  --surface-foreground: oklch(0.984 0.003 247.858);
+  --surface-muted: oklch(0.704 0.04 256.788);
+  --surface-border: oklch(1 0 0 / 10%);
+  --surface-card: oklch(0.245 0.041 264.5);
 }
 
 /* Glassmorphism 2.0 & Brand Visuals */

@@ -100,7 +100,7 @@ export function Contact() {
               <a
                 href="mailto:hello@quimeratech.pt"
                 onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("mailto:hello@quimeratech.pt"))}
-                className="flex items-center gap-4 rounded-3xl border border-white/5 bg-card/30 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover"
+                className="flex items-center gap-4 rounded-3xl border border-border bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Mail className="h-5 w-5" />
@@ -117,7 +117,7 @@ export function Contact() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("https://quimeratech.pt"))}
-                className="flex items-center gap-4 rounded-3xl border border-white/5 bg-card/30 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover"
+                className="flex items-center gap-4 rounded-3xl border border-border bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Globe className="h-5 w-5" />
@@ -140,7 +140,7 @@ export function Contact() {
           >
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="rounded-3xl border border-white/5 bg-card/40 backdrop-blur-md p-7 shadow-premium md:p-9 transition-all duration-500 hover:shadow-premium-hover glass-card-hover"
+              className="rounded-3xl border border-border bg-card/60 backdrop-blur-xl p-7 shadow-premium md:p-9 transition-all duration-500 hover:shadow-premium-hover glass-card-hover"
             >
             <div className="grid gap-5">
               <div className="grid gap-2">
