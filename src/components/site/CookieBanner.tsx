@@ -95,7 +95,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           aria-label="Gestão de Cookies"
           className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-4xl md:bottom-8"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
