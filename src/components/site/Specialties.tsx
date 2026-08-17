@@ -78,7 +78,7 @@ export function Specialties() {
               key={title}
               variants={itemVariants}
               role="listitem"
-              className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-500 hover:-translate-y-2 glass-card glass-card-hover"
+              className="glass-card glass-card-hover group flex flex-col p-8"
               onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("specialty_click", { title, type: "secondary_cta" }))}
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-accent transition-colors group-hover:bg-accent/20">

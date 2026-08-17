@@ -120,19 +120,28 @@
   --destructive-foreground: oklch(0.984 0.003 247.858);
 }
 
-/* Glassmorphism Utilities */
+/* Glassmorphism 2.0 & Brand Visuals */
 @utility glass-card {
   @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
   position: relative;
   overflow: hidden;
 
+  /* Enhanced depth effect */
+  background-image: radial-gradient(
+    circle at 50% -20%,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 60%
+  );
+
   /* Performance: Light fallback for mobile or reduced motion */
   @media (max-width: 768px) {
     @apply backdrop-blur-none bg-card/95;
+    background-image: none;
   }
   
   .force-reduced-motion & {
     @apply backdrop-blur-none shadow-none;
+    background-image: none;
   }
 
   &::before {
@@ -159,8 +168,40 @@
   @apply transition-all duration-500 ease-out;
 
   &:hover {
-    @apply border-accent/30 shadow-accent/5 -translate-y-1;
-    background-color: oklch(0.245 0.041 264.5 / 75%);
+    @apply border-accent/40 shadow-2xl shadow-accent/20 -translate-y-2;
+    background-color: oklch(0.245 0.041 264.5 / 90%);
+  }
+
+  .force-reduced-motion &:hover {
+    @apply translate-y-0 shadow-none;
+  }
+}
+
+@utility glow-aurora {
+  @apply pointer-events-none absolute -z-10 blur-[120px] opacity-40 mix-blend-screen animate-pulse;
+  
+  .force-reduced-motion & {
+    @apply opacity-0;
+  }
+}
+
+@utility interaction-glow {
+  @apply absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(6, 182, 212, 0.12),
+    transparent 40%
+  );
+}
+
+@utility glow-border {
+  position: relative;
+  &::after {
+    content: "";
+    @apply absolute inset-0 rounded-[inherit] border border-accent/0 transition-colors duration-500;
+  }
+  &:hover::after {
+    @apply border-accent/40;
   }
 }
 
