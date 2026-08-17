@@ -55,9 +55,21 @@ export function Footer() {
                 </li>
                 <li>
                   <a 
-                    href="/#about" 
+                    href="#sobre" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={() => trackEvent('nav_click', { destination: 'about', location: 'footer' })}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent('nav_click', { destination: 'about', location: 'footer' });
+                      const elem = document.getElementById('sobre');
+                      if (elem) {
+                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                                document.documentElement.classList.contains("force-reduced-motion");
+                        window.scrollTo({
+                          top: elem.offsetTop - 80,
+                          behavior: isReducedMotion ? "auto" : "smooth",
+                        });
+                      }
+                    }}
                   >
                     <span className="relative">
                       Quem Somos
@@ -67,9 +79,21 @@ export function Footer() {
                 </li>
                 <li>
                   <a 
-                    href="/#specialties" 
+                    href="#especialidades" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={() => trackEvent('nav_click', { destination: 'specialties', location: 'footer' })}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent('nav_click', { destination: 'specialties', location: 'footer' });
+                      const elem = document.getElementById('especialidades');
+                      if (elem) {
+                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                                document.documentElement.classList.contains("force-reduced-motion");
+                        window.scrollTo({
+                          top: elem.offsetTop - 80,
+                          behavior: isReducedMotion ? "auto" : "smooth",
+                        });
+                      }
+                    }}
                   >
                     <span className="relative">
                       Especialidades
@@ -79,9 +103,21 @@ export function Footer() {
                 </li>
                 <li>
                   <a 
-                    href="/#methodology" 
+                    href="#metodologia" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={() => trackEvent('nav_click', { destination: 'methodology', location: 'footer' })}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent('nav_click', { destination: 'methodology', location: 'footer' });
+                      const elem = document.getElementById('metodologia');
+                      if (elem) {
+                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                                document.documentElement.classList.contains("force-reduced-motion");
+                        window.scrollTo({
+                          top: elem.offsetTop - 80,
+                          behavior: isReducedMotion ? "auto" : "smooth",
+                        });
+                      }
+                    }}
                   >
                     <span className="relative">
                       Metodologia
@@ -150,9 +186,21 @@ export function Footer() {
               <ul role="list" className="space-y-2">
                 <li>
                   <a 
-                    href="/#contact" 
+                    href="#contactos" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={() => trackEvent('nav_click', { destination: 'contact', location: 'footer' })}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent('nav_click', { destination: 'contact', location: 'footer' });
+                      const elem = document.getElementById('contactos');
+                      if (elem) {
+                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                                document.documentElement.classList.contains("force-reduced-motion");
+                        window.scrollTo({
+                          top: elem.offsetTop - 80,
+                          behavior: isReducedMotion ? "auto" : "smooth",
+                        });
+                      }
+                    }}
                   >
                     <span className="relative">
                       Fale Connosco

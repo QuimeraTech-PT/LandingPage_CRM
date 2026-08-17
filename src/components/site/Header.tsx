@@ -50,6 +50,26 @@ export function Header() {
     window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: newState } }));
   };
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace("#", "");
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                              document.documentElement.classList.contains("force-reduced-motion");
+      
+      window.scrollTo({
+        top: elem.offsetTop - 80, // Offset for fixed header
+        behavior: isReducedMotion ? "auto" : "smooth",
+      });
+      
+      if (open) {
+        setOpen(false);
+        window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+      }
+    }
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -71,6 +91,7 @@ export function Header() {
             <motion.a
               key={l.href}
               href={l.href}
+              onClick={(e) => scrollToSection(e, l.href)}
               whileHover={shouldReduceMotion ? {} : { y: -2 }}
               transition={transitions.default}
               className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
@@ -163,7 +184,7 @@ export function Header() {
                   window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
                 }}
               >
-                <a href={l.href}>{l.label}</a>
+                <a href={l.href} onClick={(e) => scrollToSection(e, l.href)}>{l.label}</a>
               </Button>
             ))}
           </nav>

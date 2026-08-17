@@ -44,7 +44,9 @@ export function Logo({ className, size = "md" }: LogoProps) {
         aria-label="QuimeraTech — Voltar ao topo da página"
         onClick={(e) => {
           e.preventDefault();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                                  document.documentElement.classList.contains("force-reduced-motion");
+          window.scrollTo({ top: 0, behavior: isReducedMotion ? "auto" : "smooth" });
           // Move focus to the top of the page for keyboard users
           const topElement = document.getElementById("top") || document.body;
           topElement.focus();

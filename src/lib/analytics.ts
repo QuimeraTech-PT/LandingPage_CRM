@@ -157,19 +157,37 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
 };
 
 /**
- * Automatically tracks outbound link clicks.
- * Attach this to global click events or specific links.
+ * Automatically tracks outbound link clicks, including mailto and tel links.
  */
 export const trackOutboundClick = (url: string) => {
   if (typeof window === "undefined") return;
   
   try {
+    const isMailto = url.startsWith('mailto:');
+    const isTel = url.startsWith('tel:');
+
+    if (isMailto || isTel) {
+      const type = isMailto ? 'email' : 'phone';
+      const value = url.split(':')[1] || '';
+      
+      trackEvent("outbound_click", {
+        link_url: url,
+        link_domain: isMailto ? 'mailto' : 'tel',
+        link_type: type,
+        link_value: value,
+        outbound: true
+      });
+      return;
+    }
+
     const targetUrl = new URL(url);
     // Only track if it's a different origin
     if (targetUrl.origin !== window.location.origin) {
       trackEvent("outbound_click", {
         link_url: url,
         link_domain: targetUrl.hostname,
+        link_path: targetUrl.pathname,
+        link_query: targetUrl.search,
         outbound: true
       });
     }
