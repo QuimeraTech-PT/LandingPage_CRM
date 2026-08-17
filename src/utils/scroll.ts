@@ -10,9 +10,11 @@ export const scrollToSection = (targetId: string, options: { behavior?: ScrollBe
                           document.documentElement.classList.contains("force-reduced-motion");
   
   // Calculate offset based on device (mobile vs desktop)
-  // 80px is the standard header height, but we can refine it
   const isMobile = window.innerWidth < 1024;
-  const offset = isMobile ? 80 : 80;
+  const header = document.querySelector('header');
+  const headerHeight = header ? header.offsetHeight : 80;
+  const offset = headerHeight;
+
 
   window.scrollTo({
     top: elem.offsetTop - offset,
