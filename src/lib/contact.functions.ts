@@ -7,11 +7,18 @@ const contactSchema = z.object({
   email: z.string().email("Endereço de email inválido"),
   assunto: z.string().min(3, "O assunto deve ter pelo menos 3 caracteres"),
   mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+  hp_field: z.string().optional(), // Honeypot field
 });
 
 export const submitContactForm = createServerFn({ method: "POST" })
   .inputValidator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
+    // 0. Spam Protection: Honeypot check
+    if (data.hp_field && data.hp_field.length > 0) {
+      console.warn("Spam detected via honeypot field");
+      return { success: true, spam: true }; // Silent rejection
+    }
+
     // 1. Gravar a submissão principal no Supabase
     const { data: submission, error: dbError } = await supabaseAdmin
       .from("contact_submissions")
