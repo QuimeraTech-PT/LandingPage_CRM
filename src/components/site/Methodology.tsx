@@ -221,7 +221,7 @@ export function Methodology() {
           {principles.map((p) => (
             <span
               key={p}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border dark:border-white/10 bg-card dark:bg-white/5 px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-card-hover dark:hover:bg-white/10 transition-colors shadow-sm"
             >
               <CheckCircle2 className="h-4 w-4 text-accent" />
               {p}
