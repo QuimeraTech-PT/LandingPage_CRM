@@ -172,7 +172,7 @@ export function Methodology() {
                   animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -20, filter: "blur(10px)" }}
                   transition={transitions.default}
-                  className="glass-card h-full min-h-[400px] p-8 md:p-10 flex flex-col"
+                  className="glass-card h-full min-h-[400px] p-8 md:p-10 flex flex-col rounded-3xl"
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <span className="text-4xl font-black text-accent/20">{activeStep}</span>
