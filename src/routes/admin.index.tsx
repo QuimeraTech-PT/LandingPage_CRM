@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getCRMStats, getLeads, getActivityLogs } from '@/lib/crm.functions';
-import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock, Search, Filter } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock, Search, Filter, AlertTriangle } from 'lucide-react';
+import { RevenueForecast } from '@/components/crm/RevenueForecast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -117,10 +118,12 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader>
-            <CardTitle>Pipeline de Vendas</CardTitle>
-          </CardHeader>
+        <div className="col-span-4 space-y-4">
+          <RevenueForecast />
+          <Card className="bg-card/50 backdrop-blur-sm border-white/10">
+            <CardHeader>
+              <CardTitle>Pipeline de Vendas</CardTitle>
+            </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {['new', 'contacted', 'proposal', 'negotiation', 'closed_won'].map((status) => {
@@ -146,7 +149,7 @@ function AdminDashboard() {
               })}
             </div>
           </CardContent>
-        </Card>
+        </div>
         
         <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10">
           <CardHeader className="flex flex-row items-center justify-between">
