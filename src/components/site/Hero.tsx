@@ -109,15 +109,14 @@ export function Hero() {
             variants={itemVariants}
             className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-7xl lg:tracking-[-0.03em]"
           >
-            Soluções Inteligentes.{" "}
-            <span className="text-gradient-brand">Impacto Real.</span>
+            Sua Visão, Nossa <span className="text-gradient-brand">Engenharia de Elite.</span>
           </motion.h1>
 
-          <motion.h2 
+          <motion.p 
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            A software house líder em Portugal para o desenvolvimento de soluções digitais robustas e escaláveis.
+            Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
           </motion.h2>
 
           <motion.div 
