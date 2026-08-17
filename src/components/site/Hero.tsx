@@ -41,23 +41,30 @@ export function Hero() {
     <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
       {/* Abstract geometric background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70 will-change-[opacity] interaction-pulse" />
+      
+      {/* Enhanced aurora effects */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/25 blur-[140px]"
+        className="glow-aurora -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 bg-primary/30"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-40 right-0 h-[420px] w-[420px] rounded-full bg-accent/20 blur-[130px]"
+        className="glow-aurora -bottom-40 right-0 h-[500px] w-[500px] bg-accent/25"
       />
+      <div
+        aria-hidden
+        className="glow-aurora top-1/4 -left-20 h-[400px] w-[400px] bg-blue-500/15"
+      />
+
       <svg
         aria-hidden
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-50"
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
         preserveAspectRatio="none"
       >
         <defs>
           <linearGradient id="hero-line" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#06B6D4" stopOpacity="0" />
-            <stop offset="50%" stopColor="#06B6D4" stopOpacity="0.7" />
+            <stop offset="50%" stopColor="#06B6D4" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -65,6 +72,7 @@ export function Hero() {
         <line x1="0%" y1="96%" x2="100%" y2="40%" stroke="url(#hero-line)" strokeWidth="1" />
         <line x1="12%" y1="0%" x2="88%" y2="100%" stroke="url(#hero-line)" strokeWidth="1" />
       </svg>
+
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {[
           [18, 28],
@@ -76,7 +84,7 @@ export function Hero() {
         ].map(([x, y]) => (
           <span
             key={`${x}-${y}`}
-            className="absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_18px_4px_rgba(6,182,212,0.55)] interaction-pulse"
+            className="absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_25px_6px_rgba(6,182,212,0.6)] interaction-pulse"
             style={{ left: `${x}%`, top: `${y}%` }}
           />
         ))}
