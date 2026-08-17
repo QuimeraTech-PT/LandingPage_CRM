@@ -217,7 +217,7 @@ export function Contact() {
                 type="submit" 
                 variant="primary"
                 size="lg" 
-                className="w-full"
+                className="w-full shadow-premium hover:shadow-premium-hover transition-all duration-300 active:scale-95"
                 disabled={isSubmitting}
                 rightIcon={isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
               >

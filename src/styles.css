@@ -137,7 +137,7 @@
 
   /* Performance: Light fallback for mobile or reduced motion */
   @media (max-width: 768px) {
-    @apply backdrop-blur-none bg-card/95;
+    @apply backdrop-blur-md bg-card/90 rounded-2xl p-5;
     background-image: none;
   }
   
