@@ -64,6 +64,7 @@
 
 :root {
   --radius: 1.5rem;
+  --foreground-rgb: 53, 62, 79; /* Midnight oklch to RGB approximation */
   
   /* Light Theme - Clean, Premium, Professional */
   --background: oklch(0.985 0.008 250);
