@@ -80,7 +80,7 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="glass-card glass-card-hover group flex flex-col p-5"
+                    className="glass-card glass-card-hover group flex flex-col p-5 bg-card/60 backdrop-blur-xl border border-border"
                     onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("about_card_click", { label: stat.label }))}
                   >
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
