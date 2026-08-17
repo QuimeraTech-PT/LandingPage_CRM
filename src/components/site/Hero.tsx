@@ -109,7 +109,7 @@ export function Hero() {
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            A sua parceira estratégica em desenvolvimento de software e consultoria tecnológica.
+            A software house líder em Portugal para o desenvolvimento de soluções digitais robustas e escaláveis.
           </motion.h2>
 
           <motion.div 
