@@ -138,7 +138,7 @@ export function Methodology() {
                   onClick={() => handleStepClick(phase.step, phase.title)}
                   className={`w-full group relative flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-300 ${
                     isActive 
-                      ? "border-accent/50 bg-accent/5 shadow-lg shadow-accent/5" 
+                      ? "border-accent/50 bg-accent/5 shadow-lg shadow-accent/10" 
                       : "border-white/5 bg-white/5 hover:border-white/20"
                   }`}
                   aria-expanded={isActive}
@@ -153,7 +153,7 @@ export function Methodology() {
                       <span className="text-xs font-bold tracking-widest text-primary/60">{phase.step}</span>
                       <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${isActive ? "rotate-90 text-accent" : ""}`} />
                     </div>
-                    <h3 className={`text-lg font-semibold transition-colors ${isActive ? "text-accent" : "text-foreground"}`}>
+                    <h3 className={`text-lg font-semibold transition-colors duration-300 ${isActive ? "text-accent" : "text-foreground group-hover:text-primary"}`}>
                       {phase.title}
                     </h3>
                   </div>
