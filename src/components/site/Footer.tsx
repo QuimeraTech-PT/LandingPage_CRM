@@ -92,19 +92,7 @@ export function Footer() {
                   <a 
                     href="#especialidades" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'specialties', location: 'footer' });
-                      const elem = document.getElementById('especialidades');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'especialidades', 'specialties')}
                   >
                     <span className="relative">
                       Especialidades
