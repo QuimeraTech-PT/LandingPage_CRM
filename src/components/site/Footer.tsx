@@ -4,6 +4,8 @@ import { Linkedin, Github } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
+import { scrollToSection as performScroll } from "@/utils/scroll";
+
 
 
 
@@ -22,15 +24,7 @@ export function Footer() {
       return;
     }
 
-    const elem = document.getElementById(targetId);
-    if (elem) {
-      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                              document.documentElement.classList.contains("force-reduced-motion");
-      window.scrollTo({
-        top: elem.offsetTop - 80,
-        behavior: isReducedMotion ? "auto" : "smooth",
-      });
-    }
+    performScroll(targetId);
   };
 
   return (
