@@ -94,7 +94,7 @@ export function Hero() {
             variants={itemVariants}
             className="mb-6 text-sm font-semibold tracking-wide text-primary/90 md:text-base lg:mb-8"
           >
-            {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            o que podmeos melhorar da landing page para ficar mesmo top level`}
+            Excelência em Desenvolvimento de Software
           </motion.div>
           <motion.h1 
             id="hero-heading"

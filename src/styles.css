@@ -411,6 +411,10 @@
     background-color: oklch(0.245 0.041 264.5 / 75%);
   }
 
+  @utility animate-text-gradient {
+    animation: text-gradient 6s linear infinite;
+  }
+
   .text-gradient-brand {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto] animate-text-gradient;
   }
@@ -419,10 +423,6 @@
     to {
       background-position: 200% center;
     }
-  }
-
-  .animate-text-gradient {
-    animation: text-gradient 6s linear infinite;
   }
 
   /* ========================================= */
