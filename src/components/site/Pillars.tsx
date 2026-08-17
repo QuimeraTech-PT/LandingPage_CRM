@@ -71,7 +71,7 @@ export function Pillars() {
               key={title}
               role="listitem"
               variants={itemVariants}
-              className="rounded-2xl border border-border bg-gradient-to-b from-card to-background p-8 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5"
+              className="rounded-2xl border border-border bg-gradient-to-b from-card to-background p-8 transition-all duration-500 hover:-translate-y-2 glass-card glass-card-hover"
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
                 <Icon className="h-6 w-6" />

@@ -83,7 +83,7 @@ export function Contact() {
             <div className="mt-10 space-y-4">
               <a
                 href="mailto:hello@quimeratech.pt"
-                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:-translate-y-1"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-500 hover:border-primary/50 hover:shadow-lg hover:-translate-y-2 glass-card-hover"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Mail className="h-5 w-5" />
@@ -99,7 +99,7 @@ export function Contact() {
                 href="https://quimeratech.pt"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:-translate-y-1"
+                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-500 hover:border-primary/50 hover:shadow-lg hover:-translate-y-2 glass-card-hover"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Globe className="h-5 w-5" />
@@ -122,7 +122,7 @@ export function Contact() {
           >
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9"
+              className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9 transition-all duration-500 hover:shadow-[0_32px_80px_-40px_rgba(37,99,235,0.2)] glass-card-hover"
             >
             <div className="grid gap-5">
               <div className="grid gap-2">
