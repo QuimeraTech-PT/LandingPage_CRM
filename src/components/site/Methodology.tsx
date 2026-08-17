@@ -168,9 +168,9 @@ export function Methodology() {
               {activeStep ? (
                 <motion.div
                   key={activeStep}
-                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -20 }}
+                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 20, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -20, filter: "blur(10px)" }}
                   transition={transitions.default}
                   className="glass-card h-full min-h-[400px] p-8 md:p-10 flex flex-col"
                 >
