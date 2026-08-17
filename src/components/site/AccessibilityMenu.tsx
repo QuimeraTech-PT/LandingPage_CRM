@@ -184,7 +184,7 @@ export const AccessibilityMenu = () => {
                     aria-describedby="desc-contrast"
                     onClick={toggleContrast}
                     className={cn(
-                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border dark:border-white/10 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                       highContrast ? "bg-primary" : "bg-muted"
                     )}
                   >
