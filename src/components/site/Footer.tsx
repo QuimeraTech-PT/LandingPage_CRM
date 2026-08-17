@@ -104,19 +104,7 @@ export function Footer() {
                   <a 
                     href="#metodologia" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'methodology', location: 'footer' });
-                      const elem = document.getElementById('metodologia');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'metodologia', 'methodology')}
                   >
                     <span className="relative">
                       Metodologia
