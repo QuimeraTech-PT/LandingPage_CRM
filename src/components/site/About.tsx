@@ -144,7 +144,6 @@ export function About() {
                     <div className="space-y-1">
                       <div className="text-[#a626a4] dark:text-[#c678dd]">class <span className="text-[#4078f2] dark:text-[#61afef]">SoftwareHouse</span> {"{"}</div>
                       <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> = [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>, <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];</div>
-                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> = [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>, <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];</div>
                       <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">mission</span> = <span className="text-[#50a14f] dark:text-[#98c379]">"Innovation"</span>;</div>
                       <div className="h-4" />
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">async <span className="text-[#e45649] dark:text-[#e06c75]">buildFuture</span>() {"{"}</div>
