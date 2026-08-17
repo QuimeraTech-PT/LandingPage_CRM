@@ -9,6 +9,29 @@ import { Button } from "@/components/ui/button";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+
+  const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, destination: string) => {
+    e.preventDefault();
+    trackEvent('nav_click', { destination, location: 'footer' });
+
+    if (!isHome) {
+      navigate({ to: "/", hash: targetId });
+      return;
+    }
+
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                              document.documentElement.classList.contains("force-reduced-motion");
+      window.scrollTo({
+        top: elem.offsetTop - 80,
+        behavior: isReducedMotion ? "auto" : "smooth",
+      });
+    }
+  };
 
   return (
     <footer className="border-t border-border bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
