@@ -358,19 +358,20 @@
 :focus-visible,
 [data-state="open"]:focus-visible,
 .select-trigger:focus-visible,
-.menu-item:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-  ring-offset-width: 2px;
-}
-
-/* Ensure Radix/Shadcn components show rings correctly */
+.menu-item:focus-visible,
 [data-radix-collection-item]:focus-visible,
 [role="menuitem"]:focus-visible,
 [role="option"]:focus-visible,
 .ring-offset-background:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+/* Ensure focus rings are visible on elements that might clip them */
+.glass-card:focus-within {
+  ring-width: 2px;
+  ring-color: var(--ring);
+  ring-offset-width: 2px;
 }
 
 /* Disabled states contrast */
