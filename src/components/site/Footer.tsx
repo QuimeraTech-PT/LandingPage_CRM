@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Linkedin, Github } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
@@ -9,6 +9,29 @@ import { Button } from "@/components/ui/button";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+
+  const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, destination: string) => {
+    e.preventDefault();
+    trackEvent('nav_click', { destination, location: 'footer' });
+
+    if (!isHome) {
+      navigate({ to: "/", hash: targetId });
+      return;
+    }
+
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                              document.documentElement.classList.contains("force-reduced-motion");
+      window.scrollTo({
+        top: elem.offsetTop - 80,
+        behavior: isReducedMotion ? "auto" : "smooth",
+      });
+    }
+  };
 
   return (
     <footer className="border-t border-border bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
@@ -57,19 +80,7 @@ export function Footer() {
                   <a 
                     href="#sobre" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'about', location: 'footer' });
-                      const elem = document.getElementById('sobre');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'sobre', 'about')}
                   >
                     <span className="relative">
                       Quem Somos
@@ -81,19 +92,7 @@ export function Footer() {
                   <a 
                     href="#especialidades" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'specialties', location: 'footer' });
-                      const elem = document.getElementById('especialidades');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'especialidades', 'specialties')}
                   >
                     <span className="relative">
                       Especialidades
@@ -105,19 +104,7 @@ export function Footer() {
                   <a 
                     href="#metodologia" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'methodology', location: 'footer' });
-                      const elem = document.getElementById('metodologia');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'metodologia', 'methodology')}
                   >
                     <span className="relative">
                       Metodologia
@@ -188,19 +175,7 @@ export function Footer() {
                   <a 
                     href="#contactos" 
                     className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackEvent('nav_click', { destination: 'contact', location: 'footer' });
-                      const elem = document.getElementById('contactos');
-                      if (elem) {
-                        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                                document.documentElement.classList.contains("force-reduced-motion");
-                        window.scrollTo({
-                          top: elem.offsetTop - 80,
-                          behavior: isReducedMotion ? "auto" : "smooth",
-                        });
-                      }
-                    }}
+                    onClick={(e) => handleSectionClick(e, 'contactos', 'contact')}
                   >
                     <span className="relative">
                       Fale Connosco
