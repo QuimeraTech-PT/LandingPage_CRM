@@ -38,9 +38,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
@@ -68,6 +69,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
   const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
@@ -201,6 +203,44 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     reader.readAsDataURL(file);
   };
 
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !folderId) return;
+
+    setIsUploading(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      uploadMutation.mutate({
+        data: {
+          projectId,
+          folderId,
+          fileName: file.name,
+          fileType: file.type,
+          fileContent: base64
+        }
+      });
+    };
+    reader.readAsDataURL(file);
+  }, [folderId, projectId, uploadMutation]);
+
+
   const handleBatchRename = (currentFiles: any[]) => {
     const updates = Array.from(selectedFiles).map(id => ({
       fileId: id,
@@ -308,7 +348,15 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   };
 
   return (
-    <div className="space-y-3">
+    <div 
+      className={cn(
+        "space-y-3 p-1 rounded-lg transition-colors border-2 border-transparent",
+        isDraggingOver && "border-primary border-dashed bg-primary/5"
+      )}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       {/* Batch Selection Bar */}
       {selectedFiles.size > 0 && (
         <div className="flex items-center justify-between p-2 rounded-md bg-primary/10 border border-primary/20 animate-in fade-in slide-in-from-top-1 duration-200">
