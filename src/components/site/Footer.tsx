@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Linkedin, Github } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
