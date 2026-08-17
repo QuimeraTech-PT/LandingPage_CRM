@@ -122,7 +122,7 @@
 
 /* Glassmorphism 2.0 & Brand Visuals */
 @utility glass-card {
-  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl;
+  @apply bg-card/60 backdrop-blur-xl border border-white/5 shadow-premium rounded-3xl transition-all duration-300;
   position: relative;
   overflow: hidden;
 
