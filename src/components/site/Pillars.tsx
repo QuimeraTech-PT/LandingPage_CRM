@@ -71,9 +71,9 @@ export function Pillars() {
               key={title}
               role="listitem"
               variants={itemVariants}
-              className="glass-card glass-card-hover group flex flex-col p-8 transition-all"
+              className="glass-card glass-card-hover group flex flex-col p-8 border border-border dark:border-white/10"
             >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
+              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/20 dark:border-accent/30 bg-accent/5 dark:bg-accent/10 text-accent transition-transform group-hover:scale-110">
                 <Icon className="h-6 w-6" />
               </div>
               <h3 className="text-lg leading-[1.3] font-semibold text-foreground">{title}</h3>
