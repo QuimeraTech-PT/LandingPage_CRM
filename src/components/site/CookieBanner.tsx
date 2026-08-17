@@ -139,7 +139,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden space-y-4 border-t border-white/5 pt-4"
+                    className="overflow-hidden space-y-4 border-t border-border dark:border-white/5 pt-4"
                   >
                     <div className="flex items-center justify-between py-2">
                       <div className="space-y-0.5">
