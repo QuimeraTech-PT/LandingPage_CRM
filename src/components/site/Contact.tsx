@@ -47,7 +47,8 @@ export function Contact() {
       // Track conversion in analytics
       import("@/lib/analytics").then(({ trackEvent }) => {
         trackEvent("contact_form_submit", {
-          assunto: data.assunto
+          assunto: data.assunto,
+          method: "web_form"
         });
       });
 
