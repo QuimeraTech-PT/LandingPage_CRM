@@ -7,7 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 export const getAnalyticsConfig = createServerFn({ method: "GET" })
   .handler(async () => {
     return {
-      gtmId: process.env.VITE_GTM_ID || "",
-      gaId: process.env.VITE_GA_ID || "",
+      gtmId: process.env.GOOGLE_TAG_MANAGER_ID || "",
+      gaId: process.env.GOOGLE_ANALYTICS_ID || "",
     };
   });
