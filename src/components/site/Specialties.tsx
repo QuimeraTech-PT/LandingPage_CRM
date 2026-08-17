@@ -81,7 +81,7 @@ export function Specialties() {
               className="glass-card glass-card-hover group flex flex-col p-8"
               onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("specialty_click", { title, type: "secondary_cta" }))}
             >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-accent transition-colors group-hover:bg-accent/20">
+              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-accent transition-colors group-hover:bg-accent/20">
                 <Icon className="h-6 w-6" />
               </div>
               <h3 className="text-lg leading-[1.3] font-semibold text-card-foreground">{title}</h3>

@@ -136,14 +136,14 @@ export function Methodology() {
                   key={phase.step}
                   variants={itemVariants}
                   onClick={() => handleStepClick(phase.step, phase.title)}
-                  className={`w-full group relative flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-300 glass-card-hover ${
+                  className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 text-left transition-all duration-300 glass-card-hover ${
                     isActive 
                       ? "border-accent/50 bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1" 
                       : "border-white/5 bg-white/5 hover:border-white/20"
                   }`}
                   aria-expanded={isActive}
                 >
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${
+                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300 ${
                     isActive ? "bg-accent text-accent-foreground" : "bg-white/5 text-primary group-hover:text-accent"
                   }`}>
                     <Icon className="h-6 w-6" />
@@ -172,7 +172,7 @@ export function Methodology() {
                   animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -20, filter: "blur(10px)" }}
                   transition={transitions.default}
-                  className="glass-card h-full min-h-[400px] p-8 md:p-10 flex flex-col"
+                  className="glass-card h-full min-h-[400px] p-8 md:p-10 flex flex-col rounded-3xl"
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <span className="text-4xl font-black text-accent/20">{activeStep}</span>
