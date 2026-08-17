@@ -13,17 +13,15 @@ Enhancing QuimeraTech's landing page to a "top level" standard by refining visua
 ## Proposed Changes
 
 ### Visual & Interactive Refinement
+
 - **Glassmorphism 2.0**: Update `src/styles.css` to use more refined backdrop-blur values and subtle border gradients for a cleaner "glass" look.
 - **Micro-Interactions**: Add subtle hover animations to all cards using `framer-motion` (e.g., slight lift + glowing border).
 - **Cursor Follower Upgrade**: Enhance `src/components/site/CursorFollower.tsx` with a "magnetic" effect near buttons and links.
 
 ### Performance & SEO
+
 - **Image Optimization**: Ensure all image assets use `loading="lazy"` (except Hero) and suggest/implement WebP fallbacks where possible.
 - **Semantic SEO**: Update `src/lib/seo.ts` with more specific meta descriptions for service sections.
-
-### Content & Layout
-- **Portfolio Preview**: Create a new `src/components/site/Portfolio.tsx` section showing high-quality project mockups.
-- **Social Proof**: Add a "Trusted By" or "Technology Stack" ticker to build immediate credibility.
 
 ## Technical Details
 
