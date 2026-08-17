@@ -174,7 +174,30 @@ export const trackWebVitals = async () => {
         metric_delta: delta,
         non_interaction: true,
       });
-    };
+};
+
+/**
+ * Automatically tracks outbound link clicks.
+ * Attach this to global click events or specific links.
+ */
+export const trackOutboundClick = (url: string) => {
+  if (typeof window === "undefined") return;
+  
+  try {
+    const targetUrl = new URL(url);
+    // Only track if it's a different origin
+    if (targetUrl.origin !== window.location.origin) {
+      trackEvent("outbound_click", {
+        link_url: url,
+        link_domain: targetUrl.hostname,
+        outbound: true
+      });
+    }
+  } catch (e) {
+    // If URL parsing fails, it might be a relative link or something else
+    console.debug("[Analytics] Failed to parse outbound link URL:", url);
+  }
+};
 
     onCLS(sendToGoogleAnalytics);
     onLCP(sendToGoogleAnalytics);
