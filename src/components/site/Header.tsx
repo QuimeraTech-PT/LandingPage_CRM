@@ -87,7 +87,7 @@ export function Header() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "border-b border-white/5 bg-background/80 backdrop-blur-xl py-0 shadow-lg" : "bg-transparent py-2"
+        scrolled ? "border-b border-border/50 dark:border-white/5 bg-background/80 backdrop-blur-xl py-0 shadow-lg" : "bg-transparent py-2"
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
