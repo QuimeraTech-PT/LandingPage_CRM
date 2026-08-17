@@ -118,7 +118,7 @@ export function About() {
               {/* Moldura Glassmorphism com efeito de código */}
               <div 
                 tabIndex={0}
-                className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#f8f9fa] dark:bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden rounded-3xl"
+                className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#f8f9fa] dark:bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden rounded-3xl shadow-sm dark:shadow-none"
                 role="article"
                 aria-label="Editor de código: QuimeraTech Software House Logic"
               >
