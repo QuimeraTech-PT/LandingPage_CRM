@@ -116,7 +116,9 @@ export type Database = {
           created_at: string
           date: string
           description: string
+          due_date: string | null
           id: string
+          invoice_url: string | null
           project_id: string | null
           status: string | null
           type: Database["public"]["Enums"]["crm_transaction_type"]
@@ -127,7 +129,9 @@ export type Database = {
           created_at?: string
           date?: string
           description: string
+          due_date?: string | null
           id?: string
+          invoice_url?: string | null
           project_id?: string | null
           status?: string | null
           type: Database["public"]["Enums"]["crm_transaction_type"]
@@ -138,7 +142,9 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string
+          due_date?: string | null
           id?: string
+          invoice_url?: string | null
           project_id?: string | null
           status?: string | null
           type?: Database["public"]["Enums"]["crm_transaction_type"]

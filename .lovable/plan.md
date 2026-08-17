@@ -1,37 +1,34 @@
-# Plano de Implementação: Kanban, Notificações e Alertas Financeiros
+# Implementation Plan - CRM Finance & Revenue Forecast
 
-Este plano foca em transformar o CRM numa ferramenta proativa com visualização Kanban e alertas automáticos.
+## Overview
+Add revenue forecasting for the next 3-6 months and expand the Finance module to handle project-specific expenses, invoices, and due dates.
 
-## Alterações
+## Proposed Changes
 
-### 1. Servidor e Automação (`src/lib/`)
-- **`lark.server.ts`**: 
-  - Adicionar `sendLarkCRMNotification(type: 'lead' | 'project' | 'finance', details: any)`.
-- **`crm.functions.ts`**:
-  - Integrar chamadas de notificação no `createLead`, `convertLeadToProject` e `createTransaction`.
-  - Implementar lógica de alerta financeiro: se `type === 'expense'` e `project_id` definido, verificar se despesas totais > receitas totais.
+### Database & Backend
+1.  **Schema Update**:
+    *   Add `due_date` (date) and `invoice_url` (text) to `crm_finances`.
+    *   Add `status` (text: 'paid', 'pending', 'overdue') to `crm_finances` if not already flexible.
+2.  **Server Functions (`src/lib/crm.functions.ts`)**:
+    *   `getRevenueForecast`: Calculate expected revenue based on:
+        *   Won leads with `estimated_value` not yet fully invoiced.
+        *   Pending `income` transactions in `crm_finances`.
+        *   Average conversion rate of current `negotiation` and `proposal` leads.
+    *   Update `createTransaction` and `getTransactions` to handle new fields.
 
-### 2. Interface Kanban
-- **`src/components/crm/KanbanBoard.tsx`**: Novo componente utilizando `dnd-kit` para arrastar itens entre colunas de estado.
-- **`src/routes/admin.leads.tsx`**: Botão de toggle para alternar entre Tabela e Kanban.
-- **`src/routes/admin.projects.tsx`**: Vista Kanban por fase de projeto (Planeamento, Ativo, etc).
+### Components
+1.  **Revenue Forecast Widget (`src/components/crm/RevenueForecast.tsx`)**:
+    *   Visual chart (Bar or Area) showing projected income vs. expenses for the next 6 months.
+    *   Breakdown of "Confirmed" (closed deals) vs "Probable" (leads in funnel).
+2.  **Invoice/Expense Modal (`src/routes/admin.finances.tsx`)**:
+    *   Update the transaction form to include `due_date` and `project` classification.
+    *   Add status indicators (Pending/Paid) and visual alerts for overdue items.
 
-### 3. Alertas e Dashboard
-- **`src/routes/admin.index.tsx`**:
-  - Novo widget "Alertas de Risco" no topo.
-  - Listar projetos com rentabilidade negativa ou prazos em risco.
+### Dashboard Integration
+1.  **Home Widget (`src/routes/admin.index.tsx`)**:
+    *   Mount the new `RevenueForecast` widget.
+    *   Add a "Financial Alerts" list for overdue payments/expenses.
 
-### 4. Gestão de Ficheiros
-- **`src/components/crm/ProjectFiles.tsx`**: 
-  - Adicionar suporte a `onDrop` para upload visual.
-
-## Detalhes Técnicos
-- **Notificações**: Usarão o `LARK_CHAT_ID` principal para centralizar alertas.
-- **Kanban**: Persistência imediata no banco de dados após o "drop".
-
-## Próximos Passos
-1. Atualizar funções de servidor (Lark + CRM).
-2. Criar componente Kanban base.
-3. Integrar Kanban nas rotas de Leads e Projetos.
-4. Adicionar secção de Alertas no Dashboard.
-
+## Technical Details
+*   **Forecast Formula**: `ConfirmedRevenue + (ProposalValue * 0.7) + (NegotiationValue * 0.4)`.
+*   **Dependencies**: TanStack Query for data fetching, Lucide icons for status.
