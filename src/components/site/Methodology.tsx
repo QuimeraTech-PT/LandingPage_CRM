@@ -202,7 +202,7 @@ export function Methodology() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-white/10 rounded-3xl"
+                  className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-border dark:border-white/10 rounded-3xl"
                 >
                   <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
                     <ChevronRight className="h-8 w-8 text-primary/40" />
