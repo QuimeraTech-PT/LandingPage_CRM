@@ -178,7 +178,7 @@
 }
 
 @utility glow-aurora {
-  @apply pointer-events-none absolute -z-10 blur-[120px] opacity-40 mix-blend-screen;
+  @apply pointer-events-none absolute -z-10 blur-[120px] opacity-40 mix-blend-screen animate-pulse;
   
   .force-reduced-motion & {
     @apply opacity-0;
