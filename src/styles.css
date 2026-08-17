@@ -107,6 +107,8 @@
 }
 
 .dark {
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   /* Dark Theme - Technological, Depth, Atmosphere */
   --foreground-rgb: 251, 251, 253; /* Ice White oklch to RGB approximation */
   --background: oklch(0.208 0.042 265.755);
