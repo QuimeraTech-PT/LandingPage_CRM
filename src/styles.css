@@ -133,6 +133,50 @@
   --accent-foreground: oklch(0.984 0.003 247.858);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
+}
+
+@utility glass-card {
+  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  position: relative;
+  overflow: hidden;
+
+  /* Performance: Light fallback for mobile or reduced motion */
+  @media (max-width: 768px) {
+    @apply backdrop-blur-none bg-card/95;
+  }
+  
+  .force-reduced-motion & {
+    @apply backdrop-blur-none shadow-none;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
+
+@utility text-gradient-brand {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-primary to-accent bg-[length:200%_auto];
+  animation: text-gradient 6s linear infinite;
+
+  .force-reduced-motion & {
+    @apply text-foreground bg-none animate-none;
+  }
+}
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
