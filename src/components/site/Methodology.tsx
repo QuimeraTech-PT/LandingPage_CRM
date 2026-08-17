@@ -143,7 +143,7 @@ export function Methodology() {
                   }`}
                   aria-expanded={isActive}
                 >
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${
+                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300 ${
                     isActive ? "bg-accent text-accent-foreground" : "bg-white/5 text-primary group-hover:text-accent"
                   }`}>
                     <Icon className="h-6 w-6" />
