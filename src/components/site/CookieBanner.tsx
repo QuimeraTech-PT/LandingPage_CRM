@@ -179,7 +179,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                 )}
               </AnimatePresence>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-white/5 pt-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-border dark:border-white/5 pt-6">
                 {showDetails ? (
                   <Button variant="secondary" size="sm" onClick={savePreferences}>
                     Guardar Preferências
