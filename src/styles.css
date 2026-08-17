@@ -12,6 +12,8 @@
  */
 
 @theme inline {
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -122,7 +124,7 @@
 
 /* Glassmorphism 2.0 & Brand Visuals */
 @utility glass-card {
-  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl;
+  @apply bg-card/60 backdrop-blur-xl border border-white/5 shadow-premium rounded-3xl transition-all duration-300;
   position: relative;
   overflow: hidden;
 
@@ -135,7 +137,7 @@
 
   /* Performance: Light fallback for mobile or reduced motion */
   @media (max-width: 768px) {
-    @apply backdrop-blur-none bg-card/95;
+    @apply backdrop-blur-md bg-card/90 rounded-2xl p-5;
     background-image: none;
   }
   
@@ -165,11 +167,11 @@
 }
 
 @utility glass-card-hover {
-  @apply transition-all duration-500 ease-out;
+  @apply transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-4 focus-within:ring-offset-background;
 
   &:hover {
-    @apply border-accent/40 shadow-2xl shadow-accent/20 -translate-y-2;
-    background-color: oklch(0.245 0.041 264.5 / 90%);
+    @apply border-accent/20 shadow-premium-hover -translate-y-2 ring-1 ring-white/10;
+    background-color: oklch(0.245 0.041 264.5 / 80%);
   }
 
   .force-reduced-motion &:hover {
@@ -178,7 +180,7 @@
 }
 
 @utility glow-aurora {
-  @apply pointer-events-none absolute -z-10 blur-[120px] opacity-40 mix-blend-screen animate-pulse;
+  @apply pointer-events-none absolute -z-10 blur-[100px] opacity-30 mix-blend-screen animate-pulse;
   
   .force-reduced-motion & {
     @apply opacity-0;
