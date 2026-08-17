@@ -101,10 +101,10 @@ export function Header() {
               onClick={(e) => scrollToSection(e, l.href)}
               whileHover={shouldReduceMotion ? {} : { y: -2 }}
               transition={transitions.default}
-              className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               {l.label}
-              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-accent transition-all duration-300 group-hover:w-full" aria-hidden="true" />
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" aria-hidden="true" />
             </motion.a>
           ))}
         </nav>

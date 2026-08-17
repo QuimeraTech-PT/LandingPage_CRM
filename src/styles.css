@@ -83,8 +83,8 @@
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.208 0.042 265.755 / 8%);
-  --input: oklch(0.208 0.042 265.755 / 10%);
+  --border: oklch(0.208 0.042 265.755 / 15%);
+  --input: oklch(0.208 0.042 265.755 / 18%);
   --ring: oklch(0.546 0.245 262.881);
   --surface: oklch(0.985 0.008 250); /* Unified background for all sections */
   --surface-foreground: oklch(0.208 0.042 265.755);
@@ -193,8 +193,8 @@
   @apply transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-4 focus-within:ring-offset-background;
 
   &:hover {
-    @apply border-accent/20 shadow-premium-hover -translate-y-2 ring-1 ring-white/10;
-    background-color: oklch(0.245 0.041 264.5 / 80%);
+    @apply border-primary/20 shadow-premium-hover -translate-y-2 ring-1 ring-primary/10;
+    background-color: var(--card);
   }
 
   .force-reduced-motion &:hover {
