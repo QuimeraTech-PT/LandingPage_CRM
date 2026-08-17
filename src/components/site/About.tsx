@@ -142,20 +142,21 @@ export function About() {
                       ))}
                     </div>
                     <div className="space-y-1">
-                      <div className="text-[#c678dd]">class <span className="text-[#61afef]">SoftwareHouse</span> {"{"}</div>
-                      <div className="pl-4 text-[#61afef]">private <span className="text-[#abb2bf]">stack</span> = [<span className="text-[#98c379]">"React"</span>, <span className="text-[#98c379]">"Node"</span>];</div>
-                      <div className="pl-4 text-[#61afef]">private <span className="text-[#abb2bf]">mission</span> = <span className="text-[#98c379]">"Innovation"</span>;</div>
+                      <div className="text-[#a626a4] dark:text-[#c678dd]">class <span className="text-[#4078f2] dark:text-[#61afef]">SoftwareHouse</span> {"{"}</div>
+                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> = [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>, <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];</div>
+                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> = [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>, <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];</div>
+                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">mission</span> = <span className="text-[#50a14f] dark:text-[#98c379]">"Innovation"</span>;</div>
                       <div className="h-4" />
-                      <div className="pl-4 text-[#c678dd]">async <span className="text-[#e06c75]">buildFuture</span>() {"{"}</div>
-                      <div className="pl-8 text-[#c678dd]">await <span className="text-[#abb2bf]">this</span>.<span className="text-[#d19a66]">transform</span>({"{"}</div>
-                      <div className="pl-12 text-[#abb2bf]">quality: <span className="text-[#d19a66]">true</span>,</div>
-                      <div className="pl-12 text-[#abb2bf]">speed: <span className="text-[#d19a66]">Infinity</span>,</div>
-                      <div className="pl-12 text-[#abb2bf]">purpose: <span className="text-[#98c379]">"Impact"</span></div>
-                      <div className="pl-8 text-[#c678dd]">{"})"};</div>
-                      <div className="pl-4 text-[#c678dd]">{"}"}</div>
+                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">async <span className="text-[#e45649] dark:text-[#e06c75]">buildFuture</span>() {"{"}</div>
+                      <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">await <span className="text-[#383a42] dark:text-[#abb2bf]">this</span>.<span className="text-[#986801] dark:text-[#d19a66]">transform</span>({"{"}</div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">quality: <span className="text-[#986801] dark:text-[#d19a66]">true</span>,</div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">speed: <span className="text-[#986801] dark:text-[#d19a66]">Infinity</span>,</div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">purpose: <span className="text-[#50a14f] dark:text-[#98c379]">"Impact"</span></div>
+                      <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">{"})"};</div>
+                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                       <div className="h-4" />
-                      <div className="pl-4 text-white/20">// Continuous improvement...</div>
-                      <div className="text-[#c678dd]">{"}"}</div>
+                      <div className="pl-4 text-black/30 dark:text-white/20">// Continuous improvement...</div>
+                      <div className="text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                     </div>
                   </div>
                 </div>
