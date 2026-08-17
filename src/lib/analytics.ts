@@ -90,6 +90,14 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
 
   window.gtag("consent", "update", consentConfig);
   
+  // Update dataLayer with consent state
+  window.dataLayer.push({
+    'ad_storage': consentConfig.ad_storage,
+    'analytics_storage': consentConfig.analytics_storage,
+    'ad_user_data': consentConfig.ad_user_data,
+    'ad_personalization': consentConfig.ad_personalization
+  });
+
   // Push a custom event to dataLayer to signal consent change to GTM tags
   window.dataLayer.push({
     event: "consent_updated",
