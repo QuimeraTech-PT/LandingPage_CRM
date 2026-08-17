@@ -127,7 +127,7 @@ export function About() {
                   A classe SoftwareHouse possui uma stack com React e Node, e um método assíncrono para construir o futuro com qualidade e velocidade infinitas.
                 </div>
                 {/* Header de janela de código */}
-                <div className="flex shrink-0 items-center space-x-2 border-b border-white/5 bg-white/5 px-4 py-3" aria-hidden="true">
+                <div className="flex shrink-0 items-center space-x-2 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 px-4 py-3" aria-hidden="true">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
