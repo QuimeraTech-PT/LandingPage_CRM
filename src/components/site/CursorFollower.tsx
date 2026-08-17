@@ -9,10 +9,12 @@ export function CursorFollower() {
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
+  const targetScale = useMotionValue(1);
 
-  const springConfig = { damping: 25, stiffness: 250 };
+  const springConfig = { damping: 30, stiffness: 280, mass: 0.5 };
   const springX = useSpring(cursorX, springConfig);
   const springY = useSpring(cursorY, springConfig);
+  const springScale = useSpring(targetScale, { damping: 20, stiffness: 200 });
 
   useEffect(() => {
     const checkEnabled = () => {
