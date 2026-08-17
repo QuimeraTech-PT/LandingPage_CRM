@@ -355,9 +355,22 @@
 }
 
 /* Custom Accessibility Focus Styles */
-:focus-visible {
+:focus-visible,
+[data-state="open"]:focus-visible,
+.select-trigger:focus-visible,
+.menu-item:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 4px;
+  outline-offset: 2px;
+  ring-offset-width: 2px;
+}
+
+/* Ensure Radix/Shadcn components show rings correctly */
+[data-radix-collection-item]:focus-visible,
+[role="menuitem"]:focus-visible,
+[role="option"]:focus-visible,
+.ring-offset-background:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Disabled states contrast */
