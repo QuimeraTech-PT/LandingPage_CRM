@@ -298,3 +298,31 @@ function ProjectsPage() {
     </div>
   );
 }
+
+function ProjectKanbanCard({ project, onEdit }: { project: any, onEdit: () => void }) {
+  return (
+    <Card className="bg-card border-white/10 hover:border-primary/50 transition-colors shadow-sm select-none">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex justify-between items-start">
+          <h4 className="font-semibold text-sm line-clamp-1">{project.name}</h4>
+          <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+            <Edit2 className="h-3 w-3" />
+          </Button>
+        </div>
+        
+        <div className="space-y-1">
+          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <UsersIcon className="h-3 w-3" />
+            {project.crm_leads?.name || 'Cliente'}
+          </p>
+          <p className={cn(
+            "text-xs font-bold",
+            (project.total_income - project.total_expenses) >= 0 ? "text-green-500" : "text-red-500"
+          )}>
+            {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
