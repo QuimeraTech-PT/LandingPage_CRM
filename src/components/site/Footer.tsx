@@ -28,7 +28,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-border bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
+    <footer className="border-t border-border dark:border-white/5 bg-background py-6 lg:py-8" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Rodapé</h2>
       
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -188,7 +188,7 @@ export function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mt-6 pt-4 border-t border-border flex flex-col items-center justify-between gap-4 sm:flex-row"
+          className="mt-6 pt-4 border-t border-border dark:border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row"
         >
           <p className="text-xs font-light text-muted-foreground text-center sm:text-left">
             © {year} QuimeraTech. Todos os direitos reservados.

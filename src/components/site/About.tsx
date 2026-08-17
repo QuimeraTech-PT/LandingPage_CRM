@@ -80,10 +80,10 @@ export function About() {
                   <motion.div 
                     key={idx}
                     variants={itemVariants}
-                    className="glass-card glass-card-hover group flex flex-col p-5 bg-card/60 backdrop-blur-xl border border-border"
+                    className="glass-card glass-card-hover group flex flex-col p-5 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10"
                     onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("about_card_click", { label: stat.label }))}
                   >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 text-primary transition-transform group-hover:scale-110">
                       <stat.icon className="h-6 w-6" aria-hidden="true" />
                     </div>
                     <h3 className="text-base font-bold text-surface-foreground">{stat.label}</h3>

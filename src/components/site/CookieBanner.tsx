@@ -95,10 +95,10 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           aria-label="Gestão de Cookies"
           className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-4xl md:bottom-8"
         >
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
+          <div className="relative overflow-hidden rounded-3xl border border-border dark:border-white/10 bg-card/90 dark:bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
                   <Cookie className="h-6 w-6" />
                 </div>
 
@@ -139,7 +139,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden space-y-4 border-t border-white/5 pt-4"
+                    className="overflow-hidden space-y-4 border-t border-border dark:border-white/5 pt-4"
                   >
                     <div className="flex items-center justify-between py-2">
                       <div className="space-y-0.5">
@@ -179,7 +179,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                 )}
               </AnimatePresence>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-white/5 pt-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-border dark:border-white/5 pt-6">
                 {showDetails ? (
                   <Button variant="secondary" size="sm" onClick={savePreferences}>
                     Guardar Preferências

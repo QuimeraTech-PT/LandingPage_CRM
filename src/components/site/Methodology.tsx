@@ -138,13 +138,13 @@ export function Methodology() {
                   onClick={() => handleStepClick(phase.step, phase.title)}
                   className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 text-left transition-all duration-300 glass-card-hover ${
                     isActive 
-                      ? "border-accent/50 bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1" 
-                      : "border-white/5 bg-white/5 hover:border-white/20"
+                      ? "border-accent/50 bg-accent/10 dark:bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1" 
+                      : "border-border bg-card/40 dark:bg-white/5 hover:border-primary/30"
                   }`}
                   aria-expanded={isActive}
                 >
                   <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300 ${
-                    isActive ? "bg-accent text-accent-foreground" : "bg-white/5 text-primary group-hover:text-accent"
+                    isActive ? "bg-accent text-accent-foreground" : "bg-primary/5 dark:bg-white/5 text-primary group-hover:text-accent"
                   }`}>
                     <Icon className="h-6 w-6" />
                   </div>
@@ -190,7 +190,7 @@ export function Methodology() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + idx * 0.05 }}
-                        className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+                        className="flex items-center gap-3 p-3 rounded-xl bg-card/50 dark:bg-white/5 border border-border dark:border-white/5 shadow-sm dark:shadow-none"
                       >
                         <CheckCircle2 className="h-5 w-5 text-accent shrink-0" />
                         <span className="text-sm font-medium">{detail}</span>
@@ -202,9 +202,9 @@ export function Methodology() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-white/10 rounded-3xl"
+                  className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-border dark:border-white/10 rounded-3xl"
                 >
-                  <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
+                  <div className="h-16 w-16 rounded-full bg-card dark:bg-white/5 flex items-center justify-center mb-6 shadow-inner">
                     <ChevronRight className="h-8 w-8 text-primary/40" />
                   </div>
                   <h4 className="text-xl font-semibold mb-2">Explore a nossa Metodologia</h4>
@@ -221,7 +221,7 @@ export function Methodology() {
           {principles.map((p) => (
             <span
               key={p}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border dark:border-white/10 bg-card dark:bg-white/5 px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-card-hover dark:hover:bg-white/10 transition-colors shadow-sm"
             >
               <CheckCircle2 className="h-4 w-4 text-accent" />
               {p}

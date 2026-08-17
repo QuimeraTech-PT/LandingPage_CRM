@@ -146,7 +146,7 @@ export const AccessibilityMenu = () => {
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true, initialFocus: '#accessibility-menu-title' }}>
           <motion.div 
             ref={menuRef}
-            className="fixed top-20 right-5 w-72 rounded-xl border border-border bg-card p-6 shadow-2xl z-[9999] framer-motion-container"
+            className="fixed top-20 right-5 w-72 rounded-xl border border-border dark:border-white/10 bg-card p-6 shadow-2xl z-[9999] framer-motion-container"
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -184,7 +184,7 @@ export const AccessibilityMenu = () => {
                     aria-describedby="desc-contrast"
                     onClick={toggleContrast}
                     className={cn(
-                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border dark:border-white/10 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                       highContrast ? "bg-primary" : "bg-muted"
                     )}
                   >
@@ -216,7 +216,7 @@ export const AccessibilityMenu = () => {
                     aria-describedby="desc-motion"
                     onClick={toggleMotion}
                     className={cn(
-                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border dark:border-white/10 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                       reducedMotion ? "bg-primary" : "bg-muted"
                     )}
                   >
@@ -248,7 +248,7 @@ export const AccessibilityMenu = () => {
                     aria-describedby="desc-interactions"
                     onClick={toggleInteractions}
                     className={cn(
-                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border/60 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border dark:border-white/10 p-0 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                       interactions ? "bg-primary" : "bg-muted"
                     )}
                   >

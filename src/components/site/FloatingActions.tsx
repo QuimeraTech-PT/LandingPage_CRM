@@ -150,7 +150,7 @@ export function FloatingActions() {
               onClick={() => setIsOpen(!isOpen)}
               className={cn(
                 "group relative flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/50 active:scale-95 sm:h-12 sm:w-12 md:h-14 md:w-14",
-                isOpen && "bg-white text-black border border-border ring-1 ring-border shadow-md"
+                isOpen && "bg-white text-black dark:bg-card dark:text-foreground border border-border dark:border-white/20 ring-1 ring-border dark:ring-white/10 shadow-md"
               )}
               aria-label={isOpen ? "Fechar menu de ações" : "Abrir menu de ações rápidas"}
               aria-expanded={isOpen}

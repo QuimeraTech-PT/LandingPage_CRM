@@ -86,7 +86,7 @@
   --destructive-foreground: oklch(1 0 0);
   
   /* Semantic Light Theme Tokens for consistency */
-  --border: oklch(0.208 0.042 265.755 / 15%);
+  --border: oklch(0.208 0.042 265.755 / 12%);
   --input: oklch(0.208 0.042 265.755 / 18%);
   --ring: var(--primary);
   --ring-offset: var(--background);
@@ -138,7 +138,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   
-  --border: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 16%);
   --ring: var(--primary);
   --ring-offset: var(--background);
