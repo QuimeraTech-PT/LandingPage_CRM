@@ -136,7 +136,7 @@ export function About() {
 
                 <div className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
                   <div className="flex space-x-4">
-                    <div className="select-none text-white/30">
+                    <div className="select-none text-black/20 dark:text-white/30">
                       {Array.from({ length: 14 }).map((_, i) => (
                         <div key={i}>{String(i + 1).padStart(2, '0')}</div>
                       ))}
