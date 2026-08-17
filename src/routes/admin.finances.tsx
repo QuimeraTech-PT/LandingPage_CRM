@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTransactions, getProjects, createTransaction } from '@/lib/crm.functions';
-import { Wallet, Plus, ArrowUpRight, ArrowDownRight, Calendar, Briefcase, Filter, Search, FileText, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { Wallet, Plus, ArrowUpRight, ArrowDownRight, Calendar, Briefcase, Filter, Search, FileText, AlertTriangle, CheckCircle2, Clock, FileDown } from 'lucide-react';
+import { ProjectReport } from '@/components/crm/ProjectReport';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
