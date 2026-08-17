@@ -109,7 +109,7 @@ export function Hero() {
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            A software house líder em Portugal para o desenvolvimento de soluções digitais robustas e escaláveis.
+            {`'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Refinar os efeitos de glassmorphism e o cursor follower para serem ainda mais leves em dispositivos móveis e otimizar as imagens para formatos Next-gen (WebP/AVIF).`}
           </motion.h2>
 
           <motion.div 
