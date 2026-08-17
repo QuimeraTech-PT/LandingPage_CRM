@@ -206,6 +206,8 @@ export type Database = {
       }
       crm_projects: {
         Row: {
+          budget: number | null
+          budget_alert_threshold: number | null
           created_at: string
           end_date: string | null
           google_drive_folder_id: string | null
@@ -218,6 +220,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          budget?: number | null
+          budget_alert_threshold?: number | null
           created_at?: string
           end_date?: string | null
           google_drive_folder_id?: string | null
@@ -230,6 +234,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          budget?: number | null
+          budget_alert_threshold?: number | null
           created_at?: string
           end_date?: string | null
           google_drive_folder_id?: string | null

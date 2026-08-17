@@ -254,6 +254,8 @@ export const updateProject = createServerFn({ method: "POST" })
     google_drive_folder_id: z.string().nullable().optional(),
     start_date: z.string().nullable().optional(),
     end_date: z.string().nullable().optional(),
+    budget: z.number().optional(),
+    budget_alert_threshold: z.number().optional(),
   }).parse(data))
   .handler(async ({ data, context }: { data: any, context: any }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
