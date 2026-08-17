@@ -43,17 +43,17 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
   // Persist the choice with cross-subdomain support
   // We use a cookie for cross-subdomain persistence if possible
   const cookieName = "cookie-consent";
-  const domain = window.location.hostname.split('.').slice(-2).join('.'); // e.g., quimeratech.pt
+  const domain = window.location.hostname.includes('.') ? `.${window.location.hostname.split('.').slice(-2).join('.')}` : window.location.hostname; // e.g., .quimeratech.pt
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
 
   if (consent !== "none") {
     localStorage.setItem(cookieName, consent);
     // Also set a cookie for cross-subdomain persistence
-    document.cookie = `${cookieName}=${consent}; domain=.${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+    document.cookie = `${cookieName}=${consent}; domain=${domain}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
   } else {
     localStorage.removeItem(cookieName);
-    document.cookie = `${cookieName}=; domain=.${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    document.cookie = `${cookieName}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
   }
 
   // Ensure gtag is available if it was not initialized yet
@@ -89,17 +89,59 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none") =>
 
 /**
  * Track a custom event to dataLayer.
+ * Events are only tracked if consent is granted or if they are non-PII technical events.
  */
 export const trackEvent = (eventName: string, params?: Record<string, any>) => {
   if (typeof window === "undefined") return;
   
-  if (window.gtag) {
-    window.gtag("event", eventName, params);
+  const localConsent = localStorage.getItem('cookie-consent');
+  const isGranted = localConsent === 'all';
+
+  // Only track GA events if consent is granted
+  if (isGranted) {
+    if (window.gtag) {
+      window.gtag("event", eventName, params);
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: eventName,
+        ...params
+      });
+    }
   } else {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: eventName,
-      ...params
-    });
+    // Optional: Log to console in development when tracking is blocked by consent
+    if (import.meta.env.DEV) {
+      console.log(`[Analytics] Event "${eventName}" blocked by consent.`, params);
+    }
+  }
+};
+
+/**
+ * Web Vitals tracking.
+ * Sends Core Web Vitals to GA4.
+ */
+export const trackWebVitals = async () => {
+  if (typeof window === "undefined") return;
+  
+  try {
+    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
+    
+    const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
+      trackEvent(name, {
+        value: delta,
+        metric_id: id,
+        metric_value: value,
+        metric_delta: delta,
+        non_interaction: true,
+      });
+    };
+
+    onCLS(sendToGoogleAnalytics);
+    onLCP(sendToGoogleAnalytics);
+    onINP(sendToGoogleAnalytics);
+    onFCP(sendToGoogleAnalytics);
+    onTTFB(sendToGoogleAnalytics);
+  } catch (error) {
+    console.error("Failed to load web-vitals:", error);
   }
 };
