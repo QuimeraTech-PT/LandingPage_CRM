@@ -22,7 +22,12 @@ export const submitContactForm = createServerFn({ method: "POST" })
     // 1. Gravar a submissão principal no Supabase
     const { data: submission, error: dbError } = await supabaseAdmin
       .from("contact_submissions")
-      .insert([data])
+      .insert([{
+        nome: data.nome,
+        email: data.email,
+        assunto: data.assunto,
+        mensagem: data.mensagem
+      }])
       .select()
       .single();
 
