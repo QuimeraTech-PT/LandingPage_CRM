@@ -1,5 +1,5 @@
 export const SITE_URL = "https://quimeratech.pt";
-export const SITE_NAME = "QuimeraTech";
+export const SITE_NAME = "QuimeraTech | Inovação em Software e Cloud";
 export const SITE_LOCALE = "pt_PT";
 
 /** Fallback social image used whenever a route has no dedicated image. */

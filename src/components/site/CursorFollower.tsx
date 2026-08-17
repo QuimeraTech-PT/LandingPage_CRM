@@ -34,15 +34,29 @@ export function CursorFollower() {
     if (shouldReduceMotion || !isEnabled) return;
 
     const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-      
       const target = e.target as HTMLElement;
       const clickableElement = target.closest('button, a, [role="button"]');
-      const isClickable = clickableElement || window.getComputedStyle(target).cursor === 'pointer';
+      const isClickable = !!(clickableElement || window.getComputedStyle(target).cursor === 'pointer');
       
-      setIsPointer(!!isClickable);
+      setIsPointer(isClickable);
       if (!isVisible) setIsVisible(true);
+
+      // Magnetic/Spotlight effect logic
+      if (isClickable && clickableElement) {
+        const rect = clickableElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Pull towards center but keep some user control
+        const pull = 0.15;
+        cursorX.set(e.clientX + (centerX - e.clientX) * pull);
+        cursorY.set(e.clientY + (centerY - e.clientY) * pull);
+        targetScale.set(1.5);
+      } else {
+        cursorX.set(e.clientX);
+        cursorY.set(e.clientY);
+        targetScale.set(1);
+      }
     };
 
     const handleMouseLeave = () => setIsVisible(false);
@@ -78,6 +92,7 @@ export function CursorFollower() {
       style={{
         x: springX,
         y: springY,
+        scale: springScale,
         translateX: "-50%",
         translateY: "-50%",
       }}

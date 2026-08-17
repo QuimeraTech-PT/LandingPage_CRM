@@ -79,7 +79,7 @@ export function Methodology() {
               key={phase.step}
               variants={itemVariants}
               role="listitem"
-              className="relative flex flex-col rounded-2xl border border-surface-border bg-surface-card p-6 transition-shadow duration-300 hover:shadow-[0_20px_45px_-28px_rgba(37,99,235,0.6)] hover-scale"
+              className="relative flex flex-col rounded-2xl border border-surface-border bg-surface-card p-6 transition-all duration-500 hover:shadow-[0_20px_45px_-28px_rgba(37,99,235,0.4)] hover:-translate-y-2"
               onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("methodology_step_click", { step: phase.step, title: phase.title }))}
             >
               <span className="text-sm font-bold tracking-widest text-primary">{phase.step}</span>
