@@ -169,7 +169,7 @@ export function About() {
               </div>
 
               {/* Badge de Tecnologia */}
-              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
+              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-background dark:bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 <span className="text-[10px] font-bold tracking-widest text-primary uppercase">Clean Code</span>
               </div>
