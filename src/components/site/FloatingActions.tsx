@@ -64,7 +64,8 @@ export function FloatingActions() {
 
   const scrollToTop = () => {
     trackClick('scroll_to_top');
-    const isReducedMotion = document.documentElement.classList.contains("force-reduced-motion");
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+                            document.documentElement.classList.contains("force-reduced-motion");
     window.scrollTo({
       top: 0,
       behavior: isReducedMotion ? "auto" : "smooth",
