@@ -18,6 +18,7 @@ const contactSchema = z.object({
   email: z.string().email("Endereço de email inválido"),
   assunto: z.string().min(3, "O assunto deve ter pelo menos 3 caracteres"),
   mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+  hp_field: z.string().optional(),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;
@@ -42,7 +43,13 @@ export function Contact() {
     setSent(false);
 
     try {
-      await submitContact({ data });
+      const result = await submitContact({ data });
+      
+      if (result.spam) {
+        setSent(true);
+        reset();
+        return;
+      }
       
       // Track conversion in analytics
       import("@/lib/analytics").then(({ trackEvent }) => {
@@ -213,7 +220,18 @@ export function Contact() {
                 )}
               </div>
 
+              {/* Honeypot field - hidden from users */}
+              <div className="sr-only" aria-hidden="true">
+                <Input
+                  tabIndex={-1}
+                  autoComplete="off"
+                  {...register("hp_field")}
+                  placeholder="Leave this empty"
+                />
+              </div>
+
               <Button 
+
                 type="submit" 
                 variant="primary"
                 size="lg" 
