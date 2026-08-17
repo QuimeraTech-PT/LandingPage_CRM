@@ -117,6 +117,7 @@ export function Hero() {
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
             Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
+          </motion.p>
           </motion.h2>
 
           <motion.div 
