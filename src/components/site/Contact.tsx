@@ -93,9 +93,9 @@ export function Contact() {
               <a
                 href="mailto:hello@quimeratech.pt"
                 onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("mailto:hello@quimeratech.pt"))}
-                className="flex items-center gap-4 rounded-xl border border-surface-border bg-surface-card p-5 transition-all duration-500 hover:border-primary/50 hover:shadow-lg hover:-translate-y-2 glass-card-hover"
+                className="flex items-center gap-4 rounded-3xl border border-surface-border bg-surface-card p-5 transition-all duration-500 hover:border-primary/50 hover:shadow-lg hover:-translate-y-2 glass-card-hover"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Mail className="h-5 w-5" />
                 </span>
                 <span>
