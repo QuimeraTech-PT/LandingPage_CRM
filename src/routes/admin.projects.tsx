@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History, LayoutList, Kanban as KanbanIcon } from 'lucide-react';
+import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History, LayoutList, Kanban as KanbanIcon, AlertTriangle } from 'lucide-react';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
