@@ -133,7 +133,7 @@ export function Contact() {
           >
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="rounded-2xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9 transition-all duration-500 hover:shadow-[0_32px_80px_-40px_rgba(37,99,235,0.2)] glass-card-hover"
+              className="rounded-3xl border border-surface-border bg-surface-card p-7 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] md:p-9 transition-all duration-500 hover:shadow-[0_32px_80px_-40px_rgba(37,99,235,0.2)] glass-card-hover"
             >
             <div className="grid gap-5">
               <div className="grid gap-2">
