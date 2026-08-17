@@ -124,7 +124,7 @@ export const trackWebVitals = async () => {
   if (typeof window === "undefined") return;
   
   try {
-    const { onCLS, onFID, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
+    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
     
     const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
       trackEvent(name, {
@@ -137,7 +137,6 @@ export const trackWebVitals = async () => {
     };
 
     onCLS(sendToGoogleAnalytics);
-    onFID(sendToGoogleAnalytics);
     onLCP(sendToGoogleAnalytics);
     onINP(sendToGoogleAnalytics);
     onFCP(sendToGoogleAnalytics);
