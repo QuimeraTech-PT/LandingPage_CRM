@@ -40,7 +40,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
       {/* Abstract geometric background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-70 will-change-[opacity] interaction-pulse" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40 dark:opacity-70 transition-opacity duration-700 will-change-[opacity] interaction-pulse" />
       
       {/* Enhanced aurora effects */}
       <div
@@ -100,7 +100,7 @@ export function Hero() {
         >
           <motion.div
             variants={itemVariants}
-            className="mb-6 text-sm font-semibold tracking-wide text-primary/90 md:text-base lg:mb-8"
+            className="mb-6 text-sm font-semibold tracking-wide text-primary/80 dark:text-primary/90 md:text-base lg:mb-8"
           >
             Excelência em Desenvolvimento de Software
           </motion.div>
