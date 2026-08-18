@@ -120,7 +120,7 @@ export function CursorFollower() {
           scale: isPointer ? 1.1 : 1,
           opacity: isVisible ? 1 : 0,
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="flex items-center justify-center"
       >
         {/* Main core circle */}
@@ -134,7 +134,7 @@ export function CursorFollower() {
           }}
           transition={{
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-            scale: { duration: 0.2 }
+            scale: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
           }}
           className="absolute h-6 w-6 rounded-full border border-secondary/60"
         />
