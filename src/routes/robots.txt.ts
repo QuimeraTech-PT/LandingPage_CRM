@@ -8,7 +8,9 @@ export const Route = createFileRoute('/robots/txt')({
 Allow: /
 Disallow: /api/
 
-Sitemap: https://quimeratech.pt/sitemap.xml`;
+Sitemap: https://quimeratech.pt/sitemap.xml
+Sitemap: https://quimeratech.pt/sitemap-pages.xml
+Sitemap: https://quimeratech.pt/sitemap-legal.xml`;
 
         return new Response(robots, {
           headers: {
