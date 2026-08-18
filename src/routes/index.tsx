@@ -28,13 +28,7 @@ export const Route = createFileRoute("/")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Início",
-          "item": "https://quimeratech.pt/"
-        }]
+        ...breadcrumbList([{ name: "Início", path: "/" }])
       }),
       jsonLd({
         "@context": "https://schema.org",

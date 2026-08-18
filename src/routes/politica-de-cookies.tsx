@@ -28,6 +28,13 @@ export const Route = createFileRoute("/politica-de-cookies")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
+        ...breadcrumbList([
+          { name: "Início", path: "/" },
+          { name: "Política de Cookies", path },
+        ])
+      }),
+      jsonLd({
+        "@context": "https://schema.org",
         "@type": "WebPage",
         "@id": `${SITE_URL}${path}#webpage`,
         name: "Política de Cookies",
@@ -38,10 +45,6 @@ export const Route = createFileRoute("/politica-de-cookies")({
         dateModified: "2026-08-15",
         isPartOf: { "@id": `${SITE_URL}/#website` },
         publisher: { "@id": `${SITE_URL}/#organization` },
-        breadcrumb: breadcrumbList([
-          { name: "Início", path: "/" },
-          { name: "Política de Cookies", path },
-        ]),
       }),
     ],
   }),

@@ -25,6 +25,13 @@ export const Route = createFileRoute("/politica-de-privacidade")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
+        ...breadcrumbList([
+          { name: "Início", path: "/" },
+          { name: "Política de Privacidade", path },
+        ])
+      }),
+      jsonLd({
+        "@context": "https://schema.org",
         "@type": "PrivacyPolicy",
         "@id": `${SITE_URL}${path}#webpage`,
         name: "Política de Privacidade",
@@ -35,10 +42,6 @@ export const Route = createFileRoute("/politica-de-privacidade")({
         dateModified: "2026-08-15",
         isPartOf: { "@id": `${SITE_URL}/#website` },
         publisher: { "@id": `${SITE_URL}/#organization` },
-        breadcrumb: breadcrumbList([
-          { name: "Início", path: "/" },
-          { name: "Política de Privacidade", path },
-        ]),
       }),
     ],
   }),

@@ -25,6 +25,13 @@ export const Route = createFileRoute("/termos-de-servico")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
+        ...breadcrumbList([
+          { name: "Início", path: "/" },
+          { name: "Termos de Serviço", path },
+        ])
+      }),
+      jsonLd({
+        "@context": "https://schema.org",
         "@type": "WebPage",
         "additionalType": "http://schema.org/TermsOfService",
         "@id": `${SITE_URL}${path}#webpage`,
@@ -36,10 +43,6 @@ export const Route = createFileRoute("/termos-de-servico")({
         dateModified: "2026-08-15",
         isPartOf: { "@id": `${SITE_URL}/#website` },
         publisher: { "@id": `${SITE_URL}/#organization` },
-        breadcrumb: breadcrumbList([
-          { name: "Início", path: "/" },
-          { name: "Termos de Serviço", path },
-        ]),
       }),
     ],
   }),
