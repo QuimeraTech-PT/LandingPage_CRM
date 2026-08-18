@@ -14,7 +14,7 @@ export function CursorFollower() {
   const springConfig = { damping: 30, stiffness: 280, mass: 0.5 };
   const springX = useSpring(cursorX, springConfig);
   const springY = useSpring(cursorY, springConfig);
-  const springScale = useSpring(targetScale, { damping: 20, stiffness: 200 });
+  const springScale = useSpring(targetScale, { damping: 30, stiffness: 280, mass: 0.5 });
 
   useEffect(() => {
     // 1. Check if we should be enabled (a11y/preference)
@@ -120,11 +120,11 @@ export function CursorFollower() {
           scale: isPointer ? 1.1 : 1,
           opacity: isVisible ? 1 : 0,
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="flex items-center justify-center"
       >
         {/* Main core circle */}
-        <div className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
+        <div className="h-2 w-2 rounded-full bg-accent border border-white/20 shadow-premium" />
         
         {/* Outer ring */}
         <motion.div 
@@ -134,7 +134,7 @@ export function CursorFollower() {
           }}
           transition={{
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-            scale: { duration: 0.2 }
+            scale: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
           }}
           className="absolute h-6 w-6 rounded-full border border-secondary/60"
         />
