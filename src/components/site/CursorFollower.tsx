@@ -64,7 +64,7 @@ export function CursorFollower() {
         const pull = 0.15;
         cursorX.set(e.clientX + (centerX - e.clientX) * pull);
         cursorY.set(e.clientY + (centerY - e.clientY) * pull);
-        targetScale.set(1.5);
+        targetScale.set(1.1); // Subtler scale increase
       } else {
         cursorX.set(e.clientX);
         cursorY.set(e.clientY);
@@ -117,31 +117,31 @@ export function CursorFollower() {
     >
       <motion.div
         animate={{
-          scale: isPointer ? 1.5 : 1,
+          scale: isPointer ? 1.1 : 1,
           opacity: isVisible ? 1 : 0,
         }}
         transition={{ duration: 0.2 }}
         className="flex items-center justify-center"
       >
         {/* Main core circle */}
-        <div className="h-3 w-3 rounded-full bg-primary shadow-[0_0_15px_rgba(6,182,212,0.8)]" />
+        <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(6,182,212,0.6)]" />
         
         {/* Outer ring */}
         <motion.div 
           animate={{
-            scale: isPointer ? 1.2 : 1,
+            scale: isPointer ? 1.05 : 1,
             rotate: 360
           }}
           transition={{
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
             scale: { duration: 0.2 }
           }}
-          className="absolute h-8 w-8 rounded-full border border-primary/30"
+          className="absolute h-6 w-6 rounded-full border border-primary/20"
         />
         
         {/* Tech crosshairs */}
-        <div className="absolute h-10 w-[1px] bg-primary/20" />
-        <div className="absolute h-[1px] w-10 bg-primary/20" />
+        <div className="absolute h-8 w-[1px] bg-primary/10" />
+        <div className="absolute h-[1px] w-8 bg-primary/10" />
       </motion.div>
     </motion.div>
   );
