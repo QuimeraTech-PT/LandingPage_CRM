@@ -68,6 +68,7 @@ export function seoLinks(path: string) {
     { rel: "canonical", href: url },
     { rel: "alternate", hrefLang: "pt-PT", href: url },
     { rel: "alternate", hrefLang: "pt", href: url },
+    { rel: "alternate", hrefLang: "en", href: url }, // Future expansion support
     { rel: "alternate", hrefLang: "x-default", href: url },
   ];
 }
