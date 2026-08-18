@@ -1,6 +1,6 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { Suspense, lazy, useEffect } from "react";
-import { seoMeta, seoLinks, jsonLd, faqSchema } from "@/lib/seo";
+import { seoMeta, seoLinks, jsonLd, faqSchema, breadcrumbList } from "@/lib/seo";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { HeroSkeleton, AboutSkeleton, SpecialtiesSkeleton, MethodologySkeleton, PillarsSkeleton, ContactSkeleton } from "@/components/site/Skeletons";
@@ -28,13 +28,7 @@ export const Route = createFileRoute("/")({
     scripts: [
       jsonLd({
         "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Início",
-          "item": "https://quimeratech.pt/"
-        }]
+        ...breadcrumbList([{ name: "Início", path: "/" }])
       }),
       jsonLd({
         "@context": "https://schema.org",
