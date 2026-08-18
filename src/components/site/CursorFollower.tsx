@@ -129,7 +129,7 @@ export function CursorFollower() {
         {/* Outer ring */}
         <motion.div 
           animate={{
-            scale: isPointer ? 1.2 : 1,
+            scale: isPointer ? 1.05 : 1,
             rotate: 360
           }}
           transition={{
