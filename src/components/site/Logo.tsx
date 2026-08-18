@@ -22,10 +22,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
       src={logoAsset.url}
       alt="Logótipo QuimeraTech"
       className={cn(
-        "w-auto transition-all duration-300",
-        // The logo is naturally black.
-        // In dark mode, we invert it to make it white.
-        "dark:invert dark:brightness-200",
+        "w-auto brightness-110 dark:brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]",
         sizeClasses[size],
         className
       )}
