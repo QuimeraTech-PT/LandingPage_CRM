@@ -117,7 +117,7 @@ export function CursorFollower() {
     >
       <motion.div
         animate={{
-          scale: isPointer ? 1.5 : 1,
+          scale: isPointer ? 1.1 : 1,
           opacity: isVisible ? 1 : 0,
         }}
         transition={{ duration: 0.2 }}
