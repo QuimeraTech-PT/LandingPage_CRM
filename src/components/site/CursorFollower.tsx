@@ -124,7 +124,7 @@ export function CursorFollower() {
         className="flex items-center justify-center"
       >
         {/* Main core circle */}
-        <div className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(var(--accent-rgb),0.6)]" />
+        <div className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
         
         {/* Outer ring */}
         <motion.div 
@@ -136,12 +136,12 @@ export function CursorFollower() {
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
             scale: { duration: 0.2 }
           }}
-          className="absolute h-6 w-6 rounded-full border border-secondary/40"
+          className="absolute h-6 w-6 rounded-full border border-secondary/60"
         />
         
         {/* Tech crosshairs */}
-        <div className="absolute h-8 w-[1px] bg-secondary/20" />
-        <div className="absolute h-[1px] w-8 bg-secondary/20" />
+        <div className="absolute h-8 w-[1px] bg-secondary/30" />
+        <div className="absolute h-[1px] w-8 bg-secondary/30" />
       </motion.div>
     </motion.div>
   );
