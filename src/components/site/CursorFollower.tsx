@@ -136,7 +136,7 @@ export function CursorFollower() {
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
             scale: { duration: 0.2 }
           }}
-          className="absolute h-8 w-8 rounded-full border border-primary/30"
+          className="absolute h-6 w-6 rounded-full border border-primary/20"
         />
         
         {/* Tech crosshairs */}
