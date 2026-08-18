@@ -79,7 +79,23 @@ export function breadcrumbList(items: Array<{ name: string; path: string }>) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: absoluteUrl(item.path),
+  };
+}
+
+/**
+ * FAQ Schema generator
+ */
+export function faqSchema(questions: Array<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": questions.map((item) => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.a,
+      },
     })),
   };
 }
