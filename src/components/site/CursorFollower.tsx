@@ -14,7 +14,7 @@ export function CursorFollower() {
   const springConfig = { damping: 30, stiffness: 280, mass: 0.5 };
   const springX = useSpring(cursorX, springConfig);
   const springY = useSpring(cursorY, springConfig);
-  const springScale = useSpring(targetScale, { damping: 20, stiffness: 200 });
+  const springScale = useSpring(targetScale, { damping: 30, stiffness: 280, mass: 0.5 });
 
   useEffect(() => {
     // 1. Check if we should be enabled (a11y/preference)
