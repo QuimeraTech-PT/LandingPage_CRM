@@ -64,7 +64,7 @@ export function CursorFollower() {
         const pull = 0.15;
         cursorX.set(e.clientX + (centerX - e.clientX) * pull);
         cursorY.set(e.clientY + (centerY - e.clientY) * pull);
-        targetScale.set(1.5);
+        targetScale.set(1.1); // Subtler scale increase
       } else {
         cursorX.set(e.clientX);
         cursorY.set(e.clientY);
