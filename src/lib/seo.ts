@@ -79,6 +79,8 @@ export function breadcrumbList(items: Array<{ name: string; path: string }>) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
+      item: absoluteUrl(item.path),
+    })),
   };
 }
 
