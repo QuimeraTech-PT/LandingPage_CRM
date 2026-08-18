@@ -140,8 +140,8 @@ export function CursorFollower() {
         />
         
         {/* Tech crosshairs */}
-        <div className="absolute h-8 w-[1px] bg-primary/10" />
-        <div className="absolute h-[1px] w-8 bg-primary/10" />
+        <div className="absolute h-8 w-[1px] bg-secondary/20" />
+        <div className="absolute h-[1px] w-8 bg-secondary/20" />
       </motion.div>
     </motion.div>
   );
