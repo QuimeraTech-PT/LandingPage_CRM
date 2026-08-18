@@ -5,29 +5,20 @@ export const Route = createFileRoute('/sitemap/xml')({
     handlers: {
       GET: async () => {
         const baseUrl = 'https://quimeratech.pt';
-        const pages = [
-          { url: '/', lastmod: '2026-08-18', changefreq: 'weekly', priority: 1.0 },
-          { url: '/politica-de-privacidade', lastmod: '2026-08-18', changefreq: 'monthly', priority: 0.5 },
-          { url: '/politica-de-cookies', lastmod: '2026-08-18', changefreq: 'monthly', priority: 0.5 },
-          { url: '/termos-de-servico', lastmod: '2026-08-18', changefreq: 'monthly', priority: 0.5 },
-        ];
+        
+        const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/sitemap-pages.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-legal.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+</sitemapindex>`;
 
-        const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${pages
-    .map(
-      (page) => `
-  <url>
-    <loc>${baseUrl}${page.url}</loc>
-    <lastmod>${page.lastmod}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`
-    )
-    .join('')}
-</urlset>`;
-
-        return new Response(sitemap, {
+        return new Response(sitemapIndex, {
           headers: {
             'Content-Type': 'application/xml',
             'Cache-Control': 'public, max-age=86400, s-maxage=86400',
