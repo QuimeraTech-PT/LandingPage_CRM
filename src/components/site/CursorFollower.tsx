@@ -124,7 +124,7 @@ export function CursorFollower() {
         className="flex items-center justify-center"
       >
         {/* Main core circle */}
-        <div className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
+        <div className="h-2 w-2 rounded-full bg-accent border border-white/20 shadow-premium" />
         
         {/* Outer ring */}
         <motion.div 
