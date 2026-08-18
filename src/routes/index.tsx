@@ -1,6 +1,6 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { Suspense, lazy, useEffect } from "react";
-import { seoMeta, seoLinks, jsonLd } from "@/lib/seo";
+import { seoMeta, seoLinks, jsonLd, faqSchema } from "@/lib/seo";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { HeroSkeleton, AboutSkeleton, SpecialtiesSkeleton, MethodologySkeleton, PillarsSkeleton, ContactSkeleton } from "@/components/site/Skeletons";
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
         "@id": "https://quimeratech.pt/#website",
         url: "https://quimeratech.pt",
         name: "QuimeraTech",
-        description: "Software House de Excelência",
+        description: "Software House de Excelência em Portugal, especializada em CRM personalizado e Cloud Architecture.",
         publisher: { "@id": "https://quimeratech.pt/#organization" },
         inLanguage: "pt-PT",
       }),
@@ -58,11 +58,39 @@ export const Route = createFileRoute("/")({
           width: 512,
           height: 512,
         },
+        description: "Lideramos a transformação digital com software à medida, consultoria estratégica e arquitetura Cloud.",
+        address: {
+          "@type": "PostalAddress",
+          "addressLocality": "Portugal",
+          "addressCountry": "PT"
+        },
+        contactPoint: {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "hello@quimeratech.pt",
+          "availableLanguage": ["Portuguese", "English"]
+        },
         sameAs: [
           "https://www.linkedin.com/company/quimeratech/",
           "https://github.com/quimeratech",
         ],
       }),
+      jsonLd(
+        faqSchema([
+          {
+            q: "Quais os serviços que a QuimeraTech oferece?",
+            a: "A QuimeraTech especializa-se em desenvolvimento de software à medida, consultoria em Cloud Architecture, criação de CRMs personalizados e transformação digital para empresas."
+          },
+          {
+            q: "Onde está localizada a QuimeraTech?",
+            a: "A QuimeraTech opera a partir de Portugal, servindo clientes globalmente com foco na excelência tecnológica e inovação."
+          },
+          {
+            q: "Como posso entrar em contacto para um projeto?",
+            a: "Pode contactar-nos através do e-mail hello@quimeratech.pt ou preencher o formulário na nossa secção de contactos para agendar uma consultoria gratuita."
+          }
+        ])
+      ),
     ],
   }),
   component: Index,

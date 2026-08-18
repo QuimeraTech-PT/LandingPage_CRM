@@ -84,6 +84,24 @@ export function breadcrumbList(items: Array<{ name: string; path: string }>) {
   };
 }
 
+/**
+ * FAQ Schema generator
+ */
+export function faqSchema(questions: Array<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": questions.map((item) => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.a,
+      },
+    })),
+  };
+}
+
 export function jsonLd(data: unknown) {
   return { type: "application/ld+json", children: JSON.stringify(data) };
 }
