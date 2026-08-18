@@ -17,6 +17,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
+import { Route as SitemapPagesXmlRouteImport } from './routes/sitemap-pages.xml'
+import { Route as SitemapLegalXmlRouteImport } from './routes/sitemap-legal.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
@@ -63,6 +65,16 @@ const SitemapXmlRoute = SitemapXmlRouteImport.update({
   path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapPagesXmlRoute = SitemapPagesXmlRouteImport.update({
+  id: '/sitemap-pages/xml',
+  path: '/sitemap-pages/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapLegalXmlRoute = SitemapLegalXmlRouteImport.update({
+  id: '/sitemap-legal/xml',
+  path: '/sitemap-legal/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RobotsTxtRoute = RobotsTxtRouteImport.update({
   id: '/robots/txt',
   path: '/robots/txt',
@@ -101,6 +113,8 @@ export interface FileRoutesByFullPath {
   '/admin/projects': typeof AdminProjectsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
+  '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -115,6 +129,8 @@ export interface FileRoutesByTo {
   '/admin/projects': typeof AdminProjectsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
+  '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -131,6 +147,8 @@ export interface FileRoutesById {
   '/admin/projects': typeof AdminProjectsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
+  '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
+  '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -148,6 +166,8 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/auth/callback'
     | '/robots/txt'
+    | '/sitemap-legal/xml'
+    | '/sitemap-pages/xml'
     | '/sitemap/xml'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -162,6 +182,8 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/auth/callback'
     | '/robots/txt'
+    | '/sitemap-legal/xml'
+    | '/sitemap-pages/xml'
     | '/sitemap/xml'
     | '/admin'
   id:
@@ -177,6 +199,8 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/auth/callback'
     | '/robots/txt'
+    | '/sitemap-legal/xml'
+    | '/sitemap-pages/xml'
     | '/sitemap/xml'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -189,6 +213,8 @@ export interface RootRouteChildren {
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   TermosDeServicoRoute: typeof TermosDeServicoRoute
   RobotsTxtRoute: typeof RobotsTxtRoute
+  SitemapLegalXmlRoute: typeof SitemapLegalXmlRoute
+  SitemapPagesXmlRoute: typeof SitemapPagesXmlRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
 }
 
@@ -248,6 +274,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap/xml'
       fullPath: '/sitemap/xml'
       preLoaderRoute: typeof SitemapXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-pages/xml': {
+      id: '/sitemap-pages/xml'
+      path: '/sitemap-pages/xml'
+      fullPath: '/sitemap-pages/xml'
+      preLoaderRoute: typeof SitemapPagesXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-legal/xml': {
+      id: '/sitemap-legal/xml'
+      path: '/sitemap-legal/xml'
+      fullPath: '/sitemap-legal/xml'
+      preLoaderRoute: typeof SitemapLegalXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots/txt': {
@@ -322,6 +362,8 @@ const rootRouteChildren: RootRouteChildren = {
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   TermosDeServicoRoute: TermosDeServicoRoute,
   RobotsTxtRoute: RobotsTxtRoute,
+  SitemapLegalXmlRoute: SitemapLegalXmlRoute,
+  SitemapPagesXmlRoute: SitemapPagesXmlRoute,
   SitemapXmlRoute: SitemapXmlRoute,
 }
 export const routeTree = rootRouteImport
