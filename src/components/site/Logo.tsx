@@ -19,12 +19,13 @@ export function Logo({ className, size = "md" }: LogoProps) {
   };
 
   const content = (
-    <>
+    <div className="relative flex items-center">
       <img
         src={logoAsset.url}
         alt="Logótipo QuimeraTech"
         className={cn(
-          "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hidden dark:block",
+          "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] transition-opacity duration-300",
+          "hidden dark:block",
           sizeClasses[size],
           className
         )}
@@ -38,7 +39,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
         src={logoLightAsset.url}
         alt="Logótipo QuimeraTech"
         className={cn(
-          "w-auto block dark:hidden opacity-90",
+          "w-auto transition-opacity duration-300",
+          "block dark:hidden opacity-90",
           sizeClasses[size],
           className
         )}
@@ -48,7 +50,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
         loading="eager"
         fetchPriority="high"
       />
-    </>
+    </div>
   );
 
   const commonClasses = "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
