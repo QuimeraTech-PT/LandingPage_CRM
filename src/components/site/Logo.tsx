@@ -13,9 +13,9 @@ export function Logo({ className, size = "md" }: LogoProps) {
   const isHome = router.location.pathname === "/" || router.location.pathname === "";
 
   const sizeClasses = {
-    sm: "h-8 md:h-10",
-    md: "h-10 md:h-12",
-    lg: "h-14 md:h-16",
+    sm: "h-7 md:h-8",
+    md: "h-8 md:h-10",
+    lg: "h-12 md:h-14",
   };
 
   const content = (
@@ -38,12 +38,12 @@ export function Logo({ className, size = "md" }: LogoProps) {
         src={logoLightAsset.url}
         alt="Logótipo QuimeraTech"
         className={cn(
-          "w-auto block dark:hidden",
+          "w-auto block dark:hidden opacity-90",
           sizeClasses[size],
           className
         )}
-        width={1774}
-        height={887}
+        width={1920}
+        height={720}
         decoding="async"
         loading="eager"
         fetchPriority="high"
