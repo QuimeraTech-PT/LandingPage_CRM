@@ -126,7 +126,7 @@ export function Hero() {
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
             Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
-            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            criar uma opçao de user de test normal para aceder ao painel de admin para ver como esta, pois nao me apetece colocar ja o goggle auth"}
+            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            reverte o que acabaste de fazer"}
           </motion.p>
           
 
