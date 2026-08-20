@@ -1,4 +1,4 @@
-import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
+import logoAsset from "@/assets/quimeratech-logo-dark-new.png.asset.json";
 import logoLightAsset from "@/assets/quimeratech-logo-light.png.asset.json";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
