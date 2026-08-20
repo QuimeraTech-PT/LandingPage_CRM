@@ -99,6 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "preload", href: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -221,6 +222,7 @@ function RootComponent() {
           // as gtag('consent', 'default', ...) already reflects the stored choice.
           // Track Web Vitals
           trackWebVitals();
+          initScrollTracking();
         }
       } catch (error) {
         console.error("Failed to load analytics config:", error);

@@ -112,6 +112,15 @@ export function Hero() {
             Sua Visão, Nossa <span className="text-gradient-brand selection:bg-accent selection:text-accent-foreground">Engenharia de Elite.</span>
           </motion.h1>
 
+          <motion.div 
+            variants={itemVariants}
+            className="mt-6 flex flex-wrap justify-center gap-2 text-[10px] font-bold tracking-widest text-primary/60 uppercase"
+          >
+            <span>• Alta Performance</span>
+            <span>• Cloud Native</span>
+            <span>• UX Premium</span>
+          </motion.div>
+
           <motion.p 
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
