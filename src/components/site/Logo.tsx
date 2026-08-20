@@ -28,8 +28,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
           sizeClasses[size],
           className
         )}
-        width={1774}
-        height={887}
+        width={1920}
+        height={720}
         decoding="async"
         loading="eager"
         fetchPriority="high"
