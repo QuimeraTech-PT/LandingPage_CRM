@@ -33,13 +33,12 @@ export function Logo({ className, size = "md" }: LogoProps) {
         decoding="async"
         loading="eager"
         fetchPriority="high"
-        style={{ height: '0.85em', width: 'auto', verticalAlign: 'middle' }}
       />
       <img
         src={logoLightAsset.url}
         alt="Logótipo QuimeraTech"
         className={cn(
-          "w-auto block dark:hidden",
+          "w-auto block dark:hidden opacity-90",
           sizeClasses[size],
           className
         )}
@@ -48,7 +47,6 @@ export function Logo({ className, size = "md" }: LogoProps) {
         decoding="async"
         loading="eager"
         fetchPriority="high"
-        style={{ height: '0.85em', width: 'auto', verticalAlign: 'middle' }}
       />
     </>
   );
