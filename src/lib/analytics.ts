@@ -226,3 +226,35 @@ export const trackWebVitals = async () => {
     console.error("Failed to load web-vitals:", error);
   }
 };
+
+/**
+ * Scroll depth tracking.
+ * Measures user engagement by tracking how far down the page they scroll.
+ */
+export const initScrollTracking = () => {
+  if (typeof window === "undefined") return;
+
+  const thresholds = [25, 50, 75, 100];
+  const reachedThresholds = new Set<number>();
+  
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    const scrollPercent = Math.round((scrollTop + windowHeight) / documentHeight * 100);
+    
+    thresholds.forEach(threshold => {
+      if (scrollPercent >= threshold && !reachedThresholds.has(threshold)) {
+        reachedThresholds.add(threshold);
+        trackEvent("scroll_depth", {
+          percent: threshold,
+          page_path: window.location.pathname
+        });
+      }
+    });
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  return () => window.removeEventListener("scroll", handleScroll);
+};
