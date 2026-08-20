@@ -140,7 +140,7 @@ export function Contact() {
           >
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 backdrop-blur-xl p-7 shadow-premium md:p-9 transition-all duration-500 hover:shadow-premium-hover glass-card-hover"
+              className="rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 backdrop-blur-xl p-7 shadow-premium md:p-9"
             >
             <div className="grid gap-5">
               <div className="grid gap-2">
