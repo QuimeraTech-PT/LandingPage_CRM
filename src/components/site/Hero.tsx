@@ -126,7 +126,7 @@ export function Hero() {
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
             Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
-            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Adicione no ecrã de login a opção para entrar como developer quando o ambiente estiver em Desenvolvimento."}
+            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            Adicionar no ecrã de login (/auth) a opção para entrar como developer apenas quando o ambiente estiver em Desenvolvimento."}
           </motion.p>
           
 
