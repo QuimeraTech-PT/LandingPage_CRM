@@ -1,4 +1,5 @@
 import logoAsset from "@/assets/quimeratech-logo.png.asset.json";
+import logoLightAsset from "@/assets/quimeratech-logo-light.png.asset.json";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
@@ -18,20 +19,36 @@ export function Logo({ className, size = "md" }: LogoProps) {
   };
 
   const content = (
-    <img
-      src={logoAsset.url}
-      alt="Logótipo QuimeraTech"
-      className={cn(
-        "w-auto brightness-110 dark:brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]",
-        sizeClasses[size],
-        className
-      )}
-      width={1774}
-      height={887}
-      decoding="async"
-      loading="eager"
-      fetchPriority="high"
-    />
+    <>
+      <img
+        src={logoAsset.url}
+        alt="Logótipo QuimeraTech"
+        className={cn(
+          "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hidden dark:block",
+          sizeClasses[size],
+          className
+        )}
+        width={1774}
+        height={887}
+        decoding="async"
+        loading="eager"
+        fetchPriority="high"
+      />
+      <img
+        src={logoLightAsset.url}
+        alt="Logótipo QuimeraTech"
+        className={cn(
+          "w-auto block dark:hidden",
+          sizeClasses[size],
+          className
+        )}
+        width={1774}
+        height={887}
+        decoding="async"
+        loading="eager"
+        fetchPriority="high"
+      />
+    </>
   );
 
   const commonClasses = "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
