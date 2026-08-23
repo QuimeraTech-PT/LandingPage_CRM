@@ -214,12 +214,14 @@ export const trackWebVitals = async () => {
   try {
     const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import("web-vitals");
 
-    const sendToGoogleAnalytics = ({ name, delta, id, value }: import("web-vitals").Metric) => {
+    const sendToGoogleAnalytics = ({ name, delta, id, value, rating, navigationType }: import("web-vitals").Metric) => {
       trackEvent(name, {
         value: delta,
         metric_id: id,
         metric_value: value,
         metric_delta: delta,
+        metric_rating: rating,
+        metric_navigation_type: navigationType,
         non_interaction: true,
       });
     };

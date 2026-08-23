@@ -78,7 +78,7 @@ export function Pillars() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {pillars.map(({ icon: Icon, title, description }) => (
+          {pillars.map(({ icon: Icon, title, description }, idx) => (
             <ContentCard
               key={title}
               title={title}
@@ -87,6 +87,11 @@ export function Pillars() {
               variant="default"
               className="p-8"
               showBottomHighlight={true}
+              onClick={() => {
+                import("@/lib/analytics").then(({ trackEvent }) =>
+                  trackEvent("pillar_click", { title, index: idx })
+                );
+              }}
             />
           ))}
         </motion.ul>

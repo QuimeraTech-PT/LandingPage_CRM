@@ -55,6 +55,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       lastActiveElement.current = document.activeElement as HTMLElement;
       setShowDetails(true);
       setIsVisible(true);
+      // Wait for animation then focus
+      setTimeout(() => {
+        const firstFocusable = document.querySelector('[role="region"][aria-label="Gestão de Cookies"] button');
+        if (firstFocusable instanceof HTMLElement) firstFocusable.focus();
+      }, 300);
     },
   }));
 
@@ -63,6 +68,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_saved", { ...preferences });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -73,6 +79,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "all" });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -83,6 +90,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "essential" });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -100,7 +108,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           className="fixed bottom-4 left-4 right-4 z-9999 mx-auto max-w-4xl md:bottom-8"
         >
           <div className="relative overflow-hidden rounded-3xl border border-border dark:border-white/10 bg-card/90 dark:bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6" role="document">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
                   <Cookie className="h-6 w-6" />
@@ -125,9 +133,12 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                 </div>
 
                 <button
-                  onClick={() => setIsVisible(false)}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                  aria-label="Fechar"
+                  onClick={() => {
+                    setIsVisible(false);
+                    if (lastActiveElement.current) lastActiveElement.current.focus();
+                  }}
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  aria-label="Fechar gestor de privacidade"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -136,7 +147,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               {/* Granular Settings Toggle */}
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors w-fit"
+                className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors w-fit focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                aria-expanded={showDetails}
               >
                 {showDetails ? (
                   <ChevronDown className="h-3 w-3" />
@@ -208,15 +220,15 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-border dark:border-white/5 pt-6">
                 {showDetails ? (
-                  <Button variant="secondary" size="sm" onClick={savePreferences}>
+                  <Button variant="secondary" size="sm" onClick={savePreferences} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     Guardar Preferências
                   </Button>
                 ) : (
-                  <Button variant="secondary" size="sm" onClick={acceptEssential}>
+                  <Button variant="secondary" size="sm" onClick={acceptEssential} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     Apenas Essenciais
                   </Button>
                 )}
-                <Button variant="primary" size="sm" onClick={acceptAll}>
+                <Button variant="primary" size="sm" onClick={acceptAll} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                   Aceitar Todos
                 </Button>
               </div>

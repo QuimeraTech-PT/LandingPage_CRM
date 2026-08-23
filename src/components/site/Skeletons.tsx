@@ -5,13 +5,16 @@ function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border p-8 space-y-4 min-h-[280px] sm:min-h-[300px]",
+        "rounded-2xl border border-border p-8 space-y-4 min-h-[280px] sm:min-h-[300px] flex flex-col justify-between",
         className
       )}
     >
-      <Skeleton className="h-12 w-12 rounded-xl" />
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="h-12 w-full" />
+      <div className="space-y-4">
+        <Skeleton className="h-12 w-12 rounded-xl" />
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+      <Skeleton className="h-1 w-1/2 mx-auto mt-4" />
     </div>
   );
 }
@@ -29,10 +32,10 @@ export function LegalSkeleton() {
           <Skeleton className="h-4 w-32" />
           <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-4">
             <div className="flex items-center gap-6">
-              <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
+              <Skeleton className="h-12 w-12 rounded-xl shrink-0 bg-primary/10" />
               <div className="flex-1 space-y-2">
-                <Skeleton className="h-6 w-1/3" />
-                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-6 w-1/3 bg-primary/10" />
+                <Skeleton className="h-4 w-full bg-primary/10" />
               </div>
             </div>
           </div>
@@ -151,19 +154,23 @@ export function MethodologySkeleton() {
             ))}
           </div>
           <div className="lg:col-span-7">
-            <div className="h-full min-h-[500px] lg:min-h-[560px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
+            <div className="h-full min-h-[500px] lg:min-h-[560px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8 flex flex-col">
               <div className="flex items-center gap-4">
-                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-white/5" />
+                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-white/5 shrink-0" />
                 <Skeleton className="h-8 w-1/3 bg-white/5" />
               </div>
               <Skeleton className="h-24 w-full bg-white/5" />
-              <div className="space-y-4">
+              <div className="space-y-4 flex-1">
                 <Skeleton className="h-4 w-24 bg-white/5" />
                 <div className="grid gap-6 sm:grid-cols-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <Skeleton key={i} className="h-12 w-full rounded-xl bg-white/5" />
+                    <Skeleton key={i} className="h-16 w-full rounded-xl bg-white/5" />
                   ))}
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-auto pt-8">
+                <Skeleton className="h-14 w-full rounded-xl bg-white/5" />
+                <Skeleton className="h-14 w-full rounded-xl bg-white/5" />
               </div>
             </div>
           </div>
