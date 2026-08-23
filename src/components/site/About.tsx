@@ -80,23 +80,23 @@ export function About() {
                 absoluto na qualidade do produto e na experiência do utilizador.
               </p>
 
-              <div className="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-3">
                 {stats.map((stat, idx) => (
                   <motion.div
                     key={idx}
                     variants={itemVariants}
-                    className="glass-card glass-card-hover group flex flex-col p-5 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10"
+                    className="glass-card glass-card-hover group flex flex-col p-4 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10 rounded-2xl"
                     onClick={() =>
                       import("@/lib/analytics").then(({ trackEvent }) =>
                         trackEvent("about_card_click", { label: stat.label }),
                       )
                     }
                   >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 text-primary transition-transform group-hover:scale-110">
-                      <stat.icon className="h-6 w-6" aria-hidden="true" />
+                    <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary transition-transform group-hover:scale-110">
+                      <stat.icon className="h-5 w-5" aria-hidden="true" />
                     </div>
-                    <h3 className="text-base font-bold text-surface-foreground">{stat.label}</h3>
-                    <p className="text-sm leading-relaxed text-surface-muted">{stat.value}</p>
+                    <h3 className="text-sm font-bold text-surface-foreground mb-1">{stat.label}</h3>
+                    <p className="text-xs leading-relaxed text-surface-muted">{stat.value}</p>
                   </motion.div>
                 ))}
               </div>
