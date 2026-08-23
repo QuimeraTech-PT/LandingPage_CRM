@@ -89,6 +89,7 @@ export function About() {
                     description={stat.value}
                     icon={stat.icon}
                     className="p-4 rounded-2xl"
+                    showBottomHighlight={true}
                     onClick={() =>
                       import("@/lib/analytics").then(({ trackEvent }) =>
                         trackEvent("about_card_click", { label: stat.label }),
