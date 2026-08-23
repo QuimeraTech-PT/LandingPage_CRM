@@ -125,11 +125,7 @@ export function Hero() {
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                        
-                                            
-                                            
-                                            nao estou a conseguir aceder a pagina de auth
+            Software house focada em transformar ideias complexas em soluções digitais de alto impacto. Especialistas em desenvolvimento Web, Mobile e Cloud para empresas que não aceitam o comum.
           </motion.p>
           
 
