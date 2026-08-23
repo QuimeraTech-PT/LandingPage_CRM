@@ -30,10 +30,10 @@ function AuthPage() {
     };
     checkSession();
 
+    // Use a listener that DOES NOT immediately redirect to allow the form to exist
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth event:", event, !!session);
-      if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
-        // Force a more immediate redirect for better UX
+      if (session && event === 'SIGNED_IN') {
         navigate({ to: search.redirect || '/admin', replace: true });
       }
     });
