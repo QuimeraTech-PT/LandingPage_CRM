@@ -30,9 +30,11 @@ export const syncCookiePreferences = createServerFn({ method: "POST" })
     if (!context?.userId) return { success: false };
 
     const { error } = await context.supabase
-      .from("profiles")
-      .update({
-        cookie_preferences: data as any,
+      .from("profiles" as any)
+      .upsert({
+        id: context.userId,
+        cookie_preferences: data,
+        updated_at: new Date().toISOString(),
       })
       .eq("id", context.userId);
 
@@ -53,12 +55,12 @@ export const getSyncedCookiePreferences = createServerFn({ method: "GET" })
     if (!context?.userId) return null;
 
     const { data, error } = await context.supabase
-      .from("profiles")
+      .from("profiles" as any)
       .select("cookie_preferences")
       .eq("id", context.userId)
-      .single();
+      .maybeSingle();
 
-    if (error || !data?.cookie_preferences) return null;
+    if (error || !data) return null;
 
-    return data.cookie_preferences as { analytics: boolean; marketing: boolean };
+    return data.cookie_preferences as { analytics: boolean; marketing: boolean } | null;
   });
