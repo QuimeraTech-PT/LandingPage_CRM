@@ -12,12 +12,17 @@ function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
       if (error) {
         console.error('Auth callback error:', error);
-        navigate({ to: '/auth' });
-      } else {
-        navigate({ to: '/admin' });
+        navigate({ to: '/auth', replace: true });
+        return;
+      }
+
+      if (session) {
+        // Check for stored redirect path in session or search params if needed
+        navigate({ to: '/admin', replace: true });
       }
     };
 
