@@ -169,35 +169,48 @@ function AdminDashboard() {
           </Card>
         </div>
 
-        <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10">
+        <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10 flex flex-col">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Últimas Leads</CardTitle>
-            <Button variant="ghost" size="sm" asChild className="gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Recentes
+            </CardTitle>
+            <Button variant="ghost" size="sm" asChild className="gap-2 text-xs text-primary">
               <Link to="/admin/leads">
-                Ver todas <ArrowRight className="h-4 w-4" />
+                Ver Leads <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentLeads.map((lead) => (
-                <div
+          <CardContent className="flex-1">
+            <div className="space-y-3">
+              {recentLeads.map((lead, idx) => (
+                <motion.div
                   key={lead.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-white/5"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-white/5 hover:bg-muted/20 hover:border-primary/20 transition-all cursor-default group"
                 >
-                  <div>
-                    <p className="text-sm font-semibold">{lead.name}</p>
-                    <p className="text-xs text-muted-foreground">{lead.company || "Individual"}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{lead.name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate uppercase tracking-tighter">
+                      {lead.company || "Individual"}
+                    </p>
                   </div>
-                  <Badge variant="outline" className="text-[10px]">
-                    {lead.status}
+                  <Badge variant="outline" className={cn(
+                    "text-[9px] px-1.5 py-0 border-white/10",
+                    lead.status === 'new' && "text-blue-400 border-blue-400/20",
+                    lead.status === 'closed_won' && "text-green-400 border-green-400/20",
+                  )}>
+                    {lead.status.replace('_', ' ')}
                   </Badge>
-                </div>
+                </motion.div>
               ))}
               {recentLeads.length === 0 && (
-                <p className="text-sm text-muted-foreground italic text-center py-8">
-                  Nenhuma lead registada.
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground opacity-50">
+                  <Users className="h-8 w-8 mb-2" />
+                  <p className="text-xs italic">Nenhuma lead registada.</p>
+                </div>
               )}
             </div>
           </CardContent>
