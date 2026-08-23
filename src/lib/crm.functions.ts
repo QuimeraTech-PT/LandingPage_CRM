@@ -35,18 +35,8 @@ async function logActivity({
   }
 }
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-
 export const getCRMStats = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async () => {
     const [leads, projects, finances] = await Promise.all([
       supabaseAdmin.from("crm_leads").select("*", { count: "exact" }),
       supabaseAdmin.from("crm_projects").select("*", { count: "exact" }),
@@ -73,15 +63,7 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("crm_leads")
       .select("*")
@@ -92,7 +74,6 @@ export const getLeads = createServerFn({ method: "GET" })
   });
 
 export const createLead = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -108,14 +89,7 @@ export const createLead = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const { error } = await supabaseAdmin.from("crm_leads").insert([data]);
 
     if (error) throw error;
@@ -123,7 +97,6 @@ export const createLead = createServerFn({ method: "POST" })
   });
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -140,14 +113,7 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const { error } = await supabaseAdmin
       .from("crm_leads")
       .update({
@@ -161,7 +127,6 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   });
 
 export const updateLead = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -178,21 +143,13 @@ export const updateLead = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const { id, ...updateData } = data;
     const { error } = await supabaseAdmin.from("crm_leads").update(updateData).eq("id", id);
 
     if (error) throw error;
 
     await logActivity({
-      userId: context.userId,
       action: "update",
       entityType: "lead",
       entityId: id,
@@ -203,7 +160,6 @@ export const updateLead = createServerFn({ method: "POST" })
   });
 
 export const convertLeadToProject = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -213,14 +169,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     // 1. Get lead info
     const { data: lead, error: leadError } = await supabaseAdmin
       .from("crm_leads")
@@ -247,14 +196,13 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     if (projectError) throw projectError;
 
     await logActivity({
-      userId: context.userId,
       action: "convert_lead",
       entityType: "project",
       entityId: project.id,
       details: { leadId: data.leadId },
     });
 
-    // 2.1 Trigger Drive Folder Creation (async, don't wait if not configured)
+    // 2.1 Trigger Drive Folder Creation
     try {
       const { createProjectFolder } = await import("./google-drive.functions");
       await createProjectFolder({
@@ -275,15 +223,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
   });
 
 export const getProjects = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("crm_projects")
       .select("*, crm_leads(name, company), crm_finances(amount, type)")
@@ -292,17 +232,16 @@ export const getProjects = createServerFn({ method: "GET" })
     if (error) throw error;
     return data.map((p) => ({
       ...p,
-      total_income: p.crm_finances
+      total_income: (p.crm_finances as any[])
         .filter((f) => f.type === "income")
         .reduce((acc, f) => acc + Number(f.amount), 0),
-      total_expenses: p.crm_finances
+      total_expenses: (p.crm_finances as any[])
         .filter((f) => f.type === "expense")
         .reduce((acc, f) => acc + Number(f.amount), 0),
     }));
   });
 
 export const updateProject = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -317,21 +256,13 @@ export const updateProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const { id, ...updateData } = data;
     const { error } = await supabaseAdmin.from("crm_projects").update(updateData).eq("id", id);
 
     if (error) throw error;
 
     await logActivity({
-      userId: context.userId,
       action: "update_project",
       entityType: "project",
       entityId: id,
@@ -342,15 +273,7 @@ export const updateProject = createServerFn({ method: "POST" })
   });
 
 export const getTransactions = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("crm_finances")
       .select("*, crm_projects(name)")
@@ -361,7 +284,6 @@ export const getTransactions = createServerFn({ method: "GET" })
   });
 
 export const createTransaction = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -377,20 +299,12 @@ export const createTransaction = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const { error } = await supabaseAdmin.from("crm_finances").insert([data]);
 
     if (error) throw error;
 
     await logActivity({
-      userId: context.userId,
       action: "create_transaction",
       entityType: "finance",
       details: data,
@@ -400,7 +314,6 @@ export const createTransaction = createServerFn({ method: "POST" })
   });
 
 export const getActivityLogs = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -412,14 +325,7 @@ export const getActivityLogs = createServerFn({ method: "GET" })
       })
       .parse(data || {}),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     let query = supabaseAdmin
       .from("crm_activity_logs")
       .select("*")
