@@ -33,10 +33,8 @@ function AuthPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth event:", event, !!session);
       if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
-        // SMALL DELAY to ensure session is fully propagated
-        setTimeout(() => {
-          navigate({ to: search.redirect || '/admin', replace: true });
-        }, 500);
+        // Force a more immediate redirect for better UX
+        navigate({ to: search.redirect || '/admin', replace: true });
       }
     });
 
