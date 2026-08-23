@@ -26,13 +26,16 @@ const getDriveClient = () => {
   }
 };
 
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 export const createProjectFolder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     clientName: z.string(),
     projectName: z.string()
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -95,10 +98,11 @@ export const createProjectFolder = createServerFn({ method: "POST" })
   });
 
 export const listProjectFiles = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     folderId: z.string()
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
@@ -122,6 +126,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
   });
 
 export const uploadFileToProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     folderId: z.string(),
@@ -129,7 +134,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
     fileType: z.string(),
     fileContent: z.string(), // base64
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -176,12 +181,13 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
   });
 
 export const renameDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     fileId: z.string(),
     newName: z.string(),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -215,12 +221,13 @@ export const renameDriveFile = createServerFn({ method: "POST" })
   });
 
 export const deleteDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     fileId: z.string(),
     fileName: z.string(),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -254,6 +261,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
   });
 
 export const moveDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     fileId: z.string(),
@@ -261,7 +269,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
     oldParentId: z.string(),
     newParentId: z.string(),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -296,6 +304,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
   });
 
 export const batchRenameDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     files: z.array(z.object({
@@ -303,7 +312,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
       newName: z.string(),
     })),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -344,6 +353,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     files: z.array(z.object({
@@ -351,7 +361,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
       fileName: z.string(),
     })),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
@@ -392,6 +402,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchMoveDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     projectId: z.string(),
     newParentId: z.string(),
@@ -401,7 +412,7 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
       oldParentId: z.string(),
     })),
   }).parse(data))
-  .handler(async ({ data, context }: { data: any, context: any }) => {
+  .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
