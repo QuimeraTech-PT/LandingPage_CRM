@@ -66,6 +66,7 @@ function LeadsPage() {
   const { data: leads } = useSuspenseQuery({
     queryKey: ["crm-leads"],
     queryFn: () => getLeads(),
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
 
   const createLeadMutation = useMutation({

@@ -38,21 +38,22 @@ async function logActivity({
 export const getCRMStats = createServerFn({ method: "GET" })
   .handler(async () => {
     const [leads, projects, finances] = await Promise.all([
-      supabaseAdmin.from("crm_leads").select("*", { count: "exact" }),
-      supabaseAdmin.from("crm_projects").select("*", { count: "exact" }),
-      supabaseAdmin.from("crm_finances").select("*"),
+      supabaseAdmin.from("crm_leads").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("crm_projects").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("crm_finances").select("amount, type"),
     ]);
 
     const totalLeads = leads.count || 0;
     const activeProjects = projects.count || 0;
 
-    const revenue = (finances.data || [])
-      .filter((f) => f.type === "income")
-      .reduce((acc, f) => acc + Number(f.amount), 0);
+    const financesData = finances.data || [];
+    let revenue = 0;
+    let expenses = 0;
 
-    const expenses = (finances.data || [])
-      .filter((f) => f.type === "expense")
-      .reduce((acc, f) => acc + Number(f.amount), 0);
+    for (const f of financesData) {
+      if (f.type === "income") revenue += Number(f.amount);
+      else expenses += Number(f.amount);
+    }
 
     return {
       totalLeads,
