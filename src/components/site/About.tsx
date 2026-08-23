@@ -17,6 +17,15 @@ export function About() {
     },
   };
 
+  const itemVariants = {
+    hidden: { ...variants.fadeIn.initial, y: 20 },
+    visible: {
+      ...variants.fadeIn.animate,
+      y: 0,
+      transition: transitions.medium,
+    },
+  };
+
   const stats = [
     { icon: Rocket, label: "Missão", value: "Impulsionar a transformação digital com propósito." },
     { icon: Cpu, label: "Visão", value: "Ser referência global em engenharia de software." },
