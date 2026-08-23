@@ -84,7 +84,7 @@ export function Pillars() {
               title={title}
               description={description}
               icon={Icon}
-              variant="accent"
+              variant="default"
               className="p-8"
               showBottomHighlight={true}
             />
