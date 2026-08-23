@@ -73,7 +73,7 @@ export function FloatingActions() {
     setIsOpen(false);
   };
 
-  if (location.pathname.startsWith('/admin')) {
+  if (location.pathname.startsWith('/admin') || location.pathname === '/auth') {
     return null;
   }
 
