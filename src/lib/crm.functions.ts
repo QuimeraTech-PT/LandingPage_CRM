@@ -64,14 +64,33 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { data, error } = await supabaseAdmin
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        cursor: z.string().nullable().optional(),
+        limit: z.number().optional().default(20),
+        status: z.string().nullable().optional(),
+      })
+      .parse(data || {}),
+  )
+  .handler(async ({ data }) => {
+    let query = supabaseAdmin
       .from("crm_leads")
       .select("*")
       .order("created_at", { ascending: false });
 
+    if (data.status) query = query.eq("status", data.status);
+    if (data.cursor) query = query.lt("created_at", data.cursor);
+
+    const { data: leads, error } = await query.limit(data.limit + 1);
+
     if (error) throw error;
-    return data;
+
+    const hasNextPage = leads.length > data.limit;
+    const items = hasNextPage ? leads.slice(0, -1) : leads;
+    const nextCursor = hasNextPage ? items[items.length - 1].created_at : null;
+
+    return { items, nextCursor };
   });
 
 export const createLead = createServerFn({ method: "POST" })
@@ -224,14 +243,32 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
   });
 
 export const getProjects = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { data, error } = await supabaseAdmin
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        cursor: z.string().nullable().optional(),
+        limit: z.number().optional().default(20),
+        status: z.string().nullable().optional(),
+      })
+      .parse(data || {}),
+  )
+  .handler(async ({ data }) => {
+    let query = supabaseAdmin
       .from("crm_projects")
       .select("*, crm_leads(name, company), crm_finances(amount, type)")
       .order("created_at", { ascending: false });
 
+    if (data.status) query = query.eq("status", data.status);
+    if (data.cursor) query = query.lt("created_at", data.cursor);
+
+    const { data: projects, error } = await query.limit(data.limit + 1);
+
     if (error) throw error;
-    return data.map((p) => ({
+
+    const hasNextPage = projects.length > data.limit;
+    const rawItems = hasNextPage ? projects.slice(0, -1) : projects;
+    
+    const items = rawItems.map((p) => ({
       ...p,
       total_income: (p.crm_finances as any[])
         .filter((f) => f.type === "income")
@@ -240,6 +277,10 @@ export const getProjects = createServerFn({ method: "GET" })
         .filter((f) => f.type === "expense")
         .reduce((acc, f) => acc + Number(f.amount), 0),
     }));
+
+    const nextCursor = hasNextPage ? items[items.length - 1].created_at : null;
+
+    return { items, nextCursor };
   });
 
 export const updateProject = createServerFn({ method: "POST" })
