@@ -72,13 +72,13 @@ function ProjectsPage() {
   const { data: projects } = useSuspenseQuery({
     queryKey: ["crm-projects"],
     queryFn: () => getProjects(),
-    staggerTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: transactions } = useSuspenseQuery({
     queryKey: ["crm-transactions"],
     queryFn: () => getTransactions(),
-    staggerTime: 1000 * 60 * 2, // 2 minutes for finances
+    staleTime: 1000 * 60 * 2, // 2 minutes for finances
   });
 
   const updateProjectMutation = useMutation({
