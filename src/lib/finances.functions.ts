@@ -1,20 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { z } from "zod";
-import { getProjects } from "./crm.functions";
-
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const getRevenueForecast = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async () => {
     const [leads, finances] = await Promise.all([
       supabaseAdmin.from("crm_leads").select("status, estimated_value"),
       supabaseAdmin.from("crm_finances").select("amount, type, date"),

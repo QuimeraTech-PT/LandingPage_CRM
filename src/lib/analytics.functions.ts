@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
  * Server function to get GTM/GA4 IDs from environment variables.
@@ -14,10 +13,9 @@ export const getAnalyticsConfig = createServerFn({ method: "GET" }).handler(asyn
 
 /**
  * Persists user cookie preferences to the backend.
- * This is used to maintain choice across devices for authenticated users.
+ * (Sync logic removed temporarily during auth refactor)
  */
 export const syncCookiePreferences = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -26,23 +24,7 @@ export const syncCookiePreferences = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) return { success: false };
-
-    const { error } = await context.supabase
-      .from("profiles" as any)
-      .upsert({
-        id: context.userId,
-        cookie_preferences: data,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", context.userId);
-
-    if (error) {
-      console.error("Error syncing cookie preferences:", error);
-      return { success: false };
-    }
-
+  .handler(async () => {
     return { success: true };
   });
 
@@ -50,18 +32,6 @@ export const syncCookiePreferences = createServerFn({ method: "POST" })
  * Retrieves cookie preferences from the backend.
  */
 export const getSyncedCookiePreferences = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    if (!context?.userId) return null;
-
-    const { data, error } = await context.supabase
-      .from("profiles" as any)
-      .select("cookie_preferences")
-      .eq("id", context.userId)
-      .maybeSingle();
-
-    if (error || !data) return null;
-    
-    const profile = data as unknown as { cookie_preferences: any };
-    return profile.cookie_preferences as { analytics: boolean; marketing: boolean } | null;
+  .handler(async () => {
+    return null;
   });
