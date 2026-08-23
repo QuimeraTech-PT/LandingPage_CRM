@@ -80,7 +80,7 @@ export function About() {
                 absoluto na qualidade do produto e na experiência do utilizador.
               </p>
 
-              <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-8 sm:grid-cols-3">
                 {stats.map((stat, idx) => (
                   <motion.div
                     key={idx}
@@ -96,7 +96,9 @@ export function About() {
                       <stat.icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h3 className="text-sm font-bold text-surface-foreground mb-1">{stat.label}</h3>
-                    <p className="text-xs leading-relaxed text-surface-muted">{stat.value}</p>
+                    <p className="text-[11px] sm:text-xs leading-relaxed text-surface-muted">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 ))}
               </div>
