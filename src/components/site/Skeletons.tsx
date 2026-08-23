@@ -114,8 +114,8 @@ export function SpecialtiesSkeleton() {
           <Skeleton className="mt-5 h-20 w-full" />
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <SkeletonCard key={i} className="bg-card" />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SkeletonCard key={i} className="bg-card min-h-[320px] sm:min-h-[350px]" />
           ))}
         </div>
       </div>
