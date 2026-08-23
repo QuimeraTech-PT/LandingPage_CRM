@@ -58,8 +58,6 @@ function AuthPage() {
 
       // In a real local dev, you'd have seeded this user.
       // For this environment, we'll use a direct supabase action to ensure we get a session
-      // or at least simulate it correctly for the admin gate.
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: 'dev@quimeratech.com',
         password: 'developer-mode-active',
@@ -67,13 +65,28 @@ function AuthPage() {
 
       if (error) {
         console.warn('Developer login error:', error.message);
-        // Fallback for demo: use a temporary session if possible or just navigate
-        // The admin route might have a loader checking session, so navigation alone might not be enough
-        // unless the RLS/Auth is bypassed.
-        navigate({ to: search.redirect || '/admin' });
-      } else {
-        navigate({ to: search.redirect || '/admin' });
+        // If the user doesn't exist yet (SQL didn't run or failed), sign up first
+        if (error.message.includes('Invalid login credentials')) {
+            const { error: signUpError } = await supabase.auth.signUp({
+                email: 'dev@quimeratech.com',
+                password: 'developer-mode-active',
+            });
+            
+            if (signUpError) throw signUpError;
+            
+            // Try sign in again after sign up
+            const { error: secondSignInError } = await supabase.auth.signInWithPassword({
+                email: 'dev@quimeratech.com',
+                password: 'developer-mode-active',
+            });
+            if (secondSignInError) throw secondSignInError;
+        } else {
+            throw error;
+        }
       }
+      
+      toast.success('Login developer bem-sucedido!');
+      navigate({ to: search.redirect || '/admin' });
     } catch (error: any) {
       toast.error('Erro no login developer: ' + error.message);
     } finally {
