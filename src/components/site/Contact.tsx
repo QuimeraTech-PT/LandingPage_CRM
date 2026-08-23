@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -227,9 +228,10 @@ export function Contact() {
                     {...register("mensagem")}
                     rows={5}
                     placeholder="Descreva brevemente o seu projeto..."
-                    className={
-                      errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""
-                    }
+                    className={cn(
+                      errors.mensagem ? "border-destructive focus-visible:ring-destructive" : "",
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    )}
                     aria-invalid={!!errors.mensagem}
                     aria-describedby={errors.mensagem ? "mensagem-error" : "mensagem-description"}
                     required

@@ -220,15 +220,15 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-border dark:border-white/5 pt-6">
                 {showDetails ? (
-                  <Button variant="secondary" size="sm" onClick={savePreferences} className="focus-visible:ring-2 focus-visible:ring-primary">
+                  <Button variant="secondary" size="sm" onClick={savePreferences} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     Guardar Preferências
                   </Button>
                 ) : (
-                  <Button variant="secondary" size="sm" onClick={acceptEssential} className="focus-visible:ring-2 focus-visible:ring-primary">
+                  <Button variant="secondary" size="sm" onClick={acceptEssential} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     Apenas Essenciais
                   </Button>
                 )}
-                <Button variant="primary" size="sm" onClick={acceptAll} className="focus-visible:ring-2 focus-visible:ring-primary">
+                <Button variant="primary" size="sm" onClick={acceptAll} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                   Aceitar Todos
                 </Button>
               </div>
