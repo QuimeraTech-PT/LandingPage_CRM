@@ -4,6 +4,7 @@ import { Cookie, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent, getAnalyticsConsent } from "@/lib/analytics";
+import { syncCookiePreferences, getSyncedCookiePreferences } from "@/lib/analytics.functions";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -27,27 +28,43 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useEffect(() => {
     setMounted(true);
-    const savedConsent = getAnalyticsConsent();
-
-    if (savedConsent) {
-      if (typeof savedConsent === "object") {
+    
+    const initializeConsent = async () => {
+      // 1. Try Local Storage first for speed
+      const savedConsent = getAnalyticsConsent();
+      
+      if (savedConsent) {
         setPreferences({
           essential: true,
-          analytics: savedConsent.analytics ?? false,
-          marketing: savedConsent.marketing ?? false,
+          analytics: !!savedConsent.analytics,
+          marketing: !!savedConsent.marketing,
         });
         updateAnalyticsConsent(savedConsent);
       } else {
-        const isAll = savedConsent === "all";
-        setPreferences({ essential: true, analytics: isAll, marketing: isAll });
-        updateAnalyticsConsent(isAll ? "all" : "essential");
-      }
-    }
+        // 2. If not in local storage, try to get from backend if authenticated
+        try {
+          const synced = await getSyncedCookiePreferences();
+          if (synced) {
+            setPreferences({
+              essential: true,
+              analytics: !!synced.analytics,
+              marketing: !!synced.marketing,
+            });
+            updateAnalyticsConsent(synced);
+            return; // Don't show banner
+          }
+        } catch (e) {
+          console.debug("Not authenticated or failed to fetch synced preferences");
+        }
 
-    if (!savedConsent && location.pathname !== "/politica-de-cookies") {
-      const timer = setTimeout(() => setIsVisible(true), 1500);
-      return () => clearTimeout(timer);
-    }
+        // 3. Show banner if no consent found
+        if (location.pathname !== "/politica-de-cookies") {
+          setIsVisible(true);
+        }
+      }
+    };
+
+    initializeConsent();
   }, [location.pathname]);
 
   useImperativeHandle(ref, () => ({
@@ -63,31 +80,52 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     },
   }));
 
-  const savePreferences = () => {
+  const savePreferences = async () => {
     updateAnalyticsConsent(preferences);
     setIsVisible(false);
+    
+    try {
+      await syncCookiePreferences({ data: { analytics: preferences.analytics, marketing: preferences.marketing } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_saved", { ...preferences });
       if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
-  const acceptAll = () => {
+  const acceptAll = async () => {
     const all = { essential: true, analytics: true, marketing: true };
     setPreferences(all);
     updateAnalyticsConsent("all");
     setIsVisible(false);
+
+    try {
+      await syncCookiePreferences({ data: { analytics: true, marketing: true } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "all" });
       if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
-  const acceptEssential = () => {
+  const acceptEssential = async () => {
     const essential = { essential: true, analytics: false, marketing: false };
     setPreferences(essential);
     updateAnalyticsConsent("essential");
     setIsVisible(false);
+
+    try {
+      await syncCookiePreferences({ data: { analytics: false, marketing: false } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "essential" });
       if (lastActiveElement.current) lastActiveElement.current.focus();

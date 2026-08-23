@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
  * Server function to get GTM/GA4 IDs from environment variables.
- * In a real production app, you might want to fetch these from a database or secure vault.
  */
 export const getAnalyticsConfig = createServerFn({ method: "GET" }).handler(async () => {
   return {
@@ -10,3 +11,57 @@ export const getAnalyticsConfig = createServerFn({ method: "GET" }).handler(asyn
     gaId: process.env.GOOGLE_ANALYTICS_ID || "",
   };
 });
+
+/**
+ * Persists user cookie preferences to the backend.
+ * This is used to maintain choice across devices for authenticated users.
+ */
+export const syncCookiePreferences = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        analytics: z.boolean(),
+        marketing: z.boolean(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    if (!context?.userId) return { success: false };
+
+    const { error } = await context.supabase
+      .from("profiles" as any)
+      .upsert({
+        id: context.userId,
+        cookie_preferences: data,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", context.userId);
+
+    if (error) {
+      console.error("Error syncing cookie preferences:", error);
+      return { success: false };
+    }
+
+    return { success: true };
+  });
+
+/**
+ * Retrieves cookie preferences from the backend.
+ */
+export const getSyncedCookiePreferences = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!context?.userId) return null;
+
+    const { data, error } = await context.supabase
+      .from("profiles" as any)
+      .select("cookie_preferences")
+      .eq("id", context.userId)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    
+    const profile = data as unknown as { cookie_preferences: any };
+    return profile.cookie_preferences as { analytics: boolean; marketing: boolean } | null;
+  });
