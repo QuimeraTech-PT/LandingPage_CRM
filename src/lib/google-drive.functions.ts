@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { google, drive_v3 } from "googleapis";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
 import { z } from "zod";
 
@@ -31,6 +32,7 @@ const getDriveClient = () => {
 };
 
 export const createProjectFolder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -40,7 +42,8 @@ export const createProjectFolder = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
     const logDriveActivity = async (
       action: string,
       details: Json,
@@ -49,6 +52,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
       try {
         await supabaseAdmin.from("crm_activity_logs").insert([
           {
+            user_id: userId,
             action,
             entity_type: "drive",
             entity_id: data.projectId,
@@ -84,7 +88,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
       const folderId = folder.data.id;
 
       if (folderId) {
-        await supabaseAdmin
+        await supabase
           .from("crm_projects")
           .update({ google_drive_folder_id: folderId })
           .eq("id", data.projectId);
@@ -101,6 +105,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
   });
 
 export const listProjectFiles = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -129,6 +134,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
   });
 
 export const uploadFileToProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -140,7 +146,8 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -165,6 +172,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
+          user_id: userId,
           action: "upload_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -181,6 +189,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
   });
 
 export const renameDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -190,7 +199,8 @@ export const renameDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -202,6 +212,7 @@ export const renameDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
+          user_id: userId,
           action: "rename_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -218,6 +229,7 @@ export const renameDriveFile = createServerFn({ method: "POST" })
   });
 
 export const deleteDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -227,7 +239,8 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -239,6 +252,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
+          user_id: userId,
           action: "delete_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -255,6 +269,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
   });
 
 export const moveDriveFile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -266,7 +281,8 @@ export const moveDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -279,6 +295,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
+          user_id: userId,
           action: "move_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -300,6 +317,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
   });
 
 export const batchRenameDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -313,7 +331,8 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -327,6 +346,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
+              user_id: userId,
               action: "rename_file",
               entity_type: "drive",
               entity_id: data.projectId,
@@ -348,6 +368,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -361,7 +382,8 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -375,6 +397,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
+              user_id: userId,
               action: "delete_file",
               entity_type: "drive",
               entity_id: data.projectId,
@@ -396,6 +419,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchMoveDriveFiles = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -411,7 +435,8 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -426,6 +451,7 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
+              user_id: userId,
               action: "move_file",
               entity_type: "drive",
               entity_id: data.projectId,

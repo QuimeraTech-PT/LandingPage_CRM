@@ -1,9 +1,9 @@
 # Limpeza e Otimização do CRM
 
-## 1. Segurança e Autenticação (Próxima Etapa)
-- [ ] Criar nova rota de autenticação robusta (`/auth`).
-- [ ] Implementar middleware `requireSupabaseAuth` em todas as `createServerFn`.
-- [ ] Adicionar guardas de rota no TanStack Router para `/admin`.
+## 1. Segurança e Autenticação (Concluído)
+- [x] Criar nova rota de autenticação robusta (`/auth`) com suporte a Impersonation (DEV) e Google (PROD).
+- [x] Implementar middleware `requireSupabaseAuth` em todas as `createServerFn`.
+- [x] Adicionar guardas de rota no TanStack Router para `/admin`.
 
 ## 2. Performance e Otimização (Otimizado)
 - [x] Otimizar queries de estatísticas (seleção de colunas específicas).
