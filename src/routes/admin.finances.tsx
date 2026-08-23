@@ -50,15 +50,19 @@ function FinancesPage() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const { data: transactions } = useSuspenseQuery({
+  const { data: transactionsData } = useSuspenseQuery({
     queryKey: ["crm-transactions"],
-    queryFn: () => getTransactions(),
+    queryFn: () => getTransactions({ data: {} }),
   });
 
-  const { data: projects } = useSuspenseQuery({
+  const transactions = transactionsData.items;
+
+  const { data: projectsData } = useSuspenseQuery({
     queryKey: ["crm-projects"],
-    queryFn: () => getProjects(),
+    queryFn: () => getProjects({ data: {} }),
   });
+
+  const projects = projectsData.items;
 
   const createMutation = useMutation({
     mutationFn: createTransaction,
@@ -90,8 +94,8 @@ function FinancesPage() {
     });
   };
 
-  const totals = transactions.reduce(
-    (acc, t) => {
+  const totals = (transactions as any[]).reduce(
+    (acc: { income: number; expense: number }, t: any) => {
       if (t.type === "income") acc.income += Number(t.amount);
       else acc.expense += Number(t.amount);
       return acc;
@@ -298,7 +302,7 @@ function FinancesPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {transactions.map((t) => (
+            {(transactions as any[]).map((t: any) => (
               <div
                 key={t.id}
                 className="flex items-center justify-between p-4 rounded-lg bg-muted/20 border border-white/5 hover:bg-muted/30 transition-colors"
@@ -386,7 +390,7 @@ function FinancesPage() {
                 </div>
               </div>
             ))}
-            {transactions.length === 0 && (
+            {(transactions as any[]).length === 0 && (
               <div className="text-center py-10 text-muted-foreground">
                 Nenhuma transação registada.
               </div>

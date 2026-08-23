@@ -63,11 +63,13 @@ function LeadsPage() {
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
 
-  const { data: leads } = useSuspenseQuery({
+  const { data: leadsData } = useSuspenseQuery({
     queryKey: ["crm-leads"],
-    queryFn: () => getLeads(),
+    queryFn: () => getLeads({ data: {} }),
     staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
+
+  const leads = leadsData.items;
 
   const createLeadMutation = useMutation({
     mutationFn: createLead,
