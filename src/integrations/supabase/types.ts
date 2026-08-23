@@ -257,6 +257,24 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          cookie_preferences: Json | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          cookie_preferences?: Json | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          cookie_preferences?: Json | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
