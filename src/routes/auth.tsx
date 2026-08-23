@@ -45,9 +45,6 @@ function AuthPage() {
   const handleDeveloperLogin = async () => {
     try {
       setIsLoading(true);
-      // In development, we can use a test account or skip OAuth if policies allow.
-      // For now, let's sign in with a fixed developer email/password if it exists,
-      // or just simulate a successful login for the UI if we're in dev mode.
       
       const isDev = import.meta.env.DEV;
       if (!isDev) {
@@ -56,33 +53,15 @@ function AuthPage() {
         return;
       }
 
-      // In a real local dev, you'd have seeded this user.
-      // For this environment, we'll use a direct supabase action to ensure we get a session
+      // Let's try to sign in.
       const { data, error } = await supabase.auth.signInWithPassword({
         email: 'dev@quimeratech.com',
         password: 'developer-mode-active',
       });
 
       if (error) {
-        console.warn('Developer login error:', error.message);
-        // If the user doesn't exist yet (SQL didn't run or failed), sign up first
-        if (error.message.includes('Invalid login credentials')) {
-            const { error: signUpError } = await supabase.auth.signUp({
-                email: 'dev@quimeratech.com',
-                password: 'developer-mode-active',
-            });
-            
-            if (signUpError) throw signUpError;
-            
-            // Try sign in again after sign up
-            const { error: secondSignInError } = await supabase.auth.signInWithPassword({
-                email: 'dev@quimeratech.com',
-                password: 'developer-mode-active',
-            });
-            if (secondSignInError) throw secondSignInError;
-        } else {
-            throw error;
-        }
+        console.warn('Developer login failed:', error.message);
+        throw error;
       }
       
       toast.success('Login developer bem-sucedido!');
