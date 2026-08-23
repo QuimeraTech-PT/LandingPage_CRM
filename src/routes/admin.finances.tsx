@@ -50,15 +50,19 @@ function FinancesPage() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const { data: transactions } = useSuspenseQuery({
+  const { data: transactionsData } = useSuspenseQuery({
     queryKey: ["crm-transactions"],
     queryFn: () => getTransactions(),
   });
 
-  const { data: projects } = useSuspenseQuery({
+  const transactions = (transactionsData as any).items || transactionsData;
+
+  const { data: projectsData } = useSuspenseQuery({
     queryKey: ["crm-projects"],
-    queryFn: () => getProjects(),
+    queryFn: () => getProjects({ data: {} }),
   });
+
+  const projects = projectsData.items;
 
   const createMutation = useMutation({
     mutationFn: createTransaction,

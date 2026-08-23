@@ -237,7 +237,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     }
 
     // 3. Update Lead status
-    await supabaseAdmin.from("crm_leads").update({ status: "closed_won" }).eq("id", data.leadId);
+    await supabaseAdmin.from("crm_leads").update({ status: "closed_won" as any }).eq("id", data.leadId);
 
     return { success: true, project };
   });
