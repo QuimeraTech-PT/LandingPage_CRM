@@ -69,11 +69,13 @@ function ProjectsPage() {
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
   const queryClient = useQueryClient();
 
-  const { data: projects } = useSuspenseQuery({
+  const { data: projectsData } = useSuspenseQuery({
     queryKey: ["crm-projects"],
-    queryFn: () => getProjects(),
+    queryFn: () => getProjects({ data: {} }),
     staleTime: 1000 * 60 * 5,
   });
+
+  const projects = projectsData.items;
 
   const { data: transactions } = useSuspenseQuery({
     queryKey: ["crm-transactions"],
