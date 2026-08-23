@@ -5,13 +5,16 @@ function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border p-8 space-y-4 min-h-[280px] sm:min-h-[300px]",
+        "rounded-2xl border border-border p-8 space-y-4 min-h-[280px] sm:min-h-[300px] flex flex-col justify-between",
         className
       )}
     >
-      <Skeleton className="h-12 w-12 rounded-xl" />
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="h-12 w-full" />
+      <div className="space-y-4">
+        <Skeleton className="h-12 w-12 rounded-xl" />
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+      <Skeleton className="h-1 w-1/2 mx-auto mt-4" />
     </div>
   );
 }

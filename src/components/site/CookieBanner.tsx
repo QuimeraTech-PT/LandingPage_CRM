@@ -100,7 +100,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           className="fixed bottom-4 left-4 right-4 z-9999 mx-auto max-w-4xl md:bottom-8"
         >
           <div className="relative overflow-hidden rounded-3xl border border-border dark:border-white/10 bg-card/90 dark:bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6" role="document">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
                   <Cookie className="h-6 w-6" />
@@ -136,7 +136,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               {/* Granular Settings Toggle */}
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors w-fit"
+                className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors w-fit focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                aria-expanded={showDetails}
               >
                 {showDetails ? (
                   <ChevronDown className="h-3 w-3" />

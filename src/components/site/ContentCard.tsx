@@ -50,12 +50,19 @@ export function ContentCard({
     <motion.div
       variants={itemVariants}
       onClick={onClick}
-      className={`glass-card glass-card-hover group relative flex flex-col p-8 border backdrop-blur-xl rounded-2xl overflow-hidden transition-all duration-300 ${bgStyles} ${className} ${onClick ? "cursor-pointer" : ""}`}
+      className={`glass-card glass-card-hover group relative flex flex-col p-8 border backdrop-blur-xl rounded-2xl overflow-hidden transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none ${bgStyles} ${className} ${onClick ? "cursor-pointer" : ""}`}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       <div
-        className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent transition-all duration-300 group-hover:scale-110 ${iconBgStyles} ${iconClassName}`}
+        className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent transition-all duration-300 group-hover:scale-110 aspect-square ${iconBgStyles} ${iconClassName}`}
       >
-        <Icon className="h-6 w-6" />
+        <Icon className="h-6 w-6" aria-hidden="true" />
       </div>
       <h3 className="text-lg leading-[1.3] font-semibold text-foreground">{title}</h3>
       {description && (
