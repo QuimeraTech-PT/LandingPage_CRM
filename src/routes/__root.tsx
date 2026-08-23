@@ -179,11 +179,15 @@ function RootShell({ children }: { children: ReactNode }) {
                   const consent = getConsent();
                   const isGranted = consent === 'all';
                   
+                  const granular = consent && consent.startsWith('{') ? JSON.parse(decodeURIComponent(consent)) : null;
+                  const analyticsGranted = isGranted || (granular && granular.analytics === true);
+                  const marketingGranted = isGranted || (granular && granular.marketing === true);
+                  
                   gtag('consent', 'default', {
-                    'ad_storage': isGranted ? 'granted' : 'denied',
-                    'analytics_storage': isGranted ? 'granted' : 'denied',
-                    'ad_user_data': isGranted ? 'granted' : 'denied',
-                    'ad_personalization': isGranted ? 'granted' : 'denied',
+                    'ad_storage': marketingGranted ? 'granted' : 'denied',
+                    'analytics_storage': analyticsGranted ? 'granted' : 'denied',
+                    'ad_user_data': marketingGranted ? 'granted' : 'denied',
+                    'ad_personalization': marketingGranted ? 'granted' : 'denied',
                     'wait_for_update': 500
                   });
                 } catch (e) {}
