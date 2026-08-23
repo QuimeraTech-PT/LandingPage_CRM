@@ -86,21 +86,48 @@ export function SpecialtiesSkeleton() {
 
 export function MethodologySkeleton() {
   return (
-    <div className="bg-surface py-24 md:py-32">
+    <div className="bg-background py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="max-w-3xl">
-          <Skeleton className="mb-4 h-4 w-32" />
+          <Skeleton className="mb-4 h-4 w-32 rounded-full" />
           <Skeleton className="h-10 w-full max-w-lg md:h-12" />
           <Skeleton className="mt-5 h-16 w-full" />
         </div>
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="rounded-2xl border border-surface-border bg-surface-card p-6">
-              <Skeleton className="h-4 w-8" />
-              <Skeleton className="mt-3 h-6 w-full" />
-              <Skeleton className="mt-3 h-16 w-full" />
+        <div className="mt-16 grid gap-8 lg:grid-cols-12 items-stretch">
+          <div className="lg:col-span-5 flex flex-col gap-4 sm:gap-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="flex h-24 items-center gap-4 rounded-3xl border border-border bg-card/40 p-5 sm:p-6"
+              >
+                <Skeleton className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-3 w-8" />
+                    <Skeleton className="h-4 w-4" />
+                  </div>
+                  <Skeleton className="h-5 w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="lg:col-span-7">
+            <div className="h-full min-h-[500px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-white/5" />
+                <Skeleton className="h-8 w-1/3 bg-white/5" />
+              </div>
+              <Skeleton className="h-24 w-full bg-white/5" />
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-24 bg-white/5" />
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-12 w-full rounded-xl bg-white/5" />
+                  ))}
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>
