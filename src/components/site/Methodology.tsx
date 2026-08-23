@@ -195,7 +195,7 @@ export function Methodology() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <div className="grid grid-rows-5 gap-4 h-full">
+            <div className="flex flex-col gap-6 h-full">
               {phases.map((phase) => {
               const Icon = phase.icon;
               const isActive = activeStep === phase.step;
