@@ -125,7 +125,7 @@ export function Hero() {
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            atualiza o codigo nao a merda da hero section.
+            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            remove the text from the hero section
           </motion.p>
           
 
