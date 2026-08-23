@@ -260,7 +260,7 @@ export function Methodology() {
                       : { opacity: 0, x: -20, filter: "blur(10px)" }
                   }
                   transition={transitions.default}
-                  className="glass-card h-full min-h-[600px] p-8 md:p-12 flex flex-col rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
+                  className="glass-card h-full p-8 md:p-12 flex flex-col rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
                 >
                   {/* Subtle inner glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
