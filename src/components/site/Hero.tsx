@@ -126,7 +126,7 @@ export function Hero() {
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
             Desenvolvemos ecossistemas digitais escaláveis e infraestruturas robustas. Do código à cloud, focamos em performance extrema e segurança intransigente.
-            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            cria um login developer quando nao estamos em ambiente de produçao poder entrar sem ter que fazer login com o google e tudo o que seja Backoffice/CRM retira o floating button"}
+            {"'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            nao entrou como developer e o floating button ainda aparece na pagina de auth"}
           </motion.p>
           
 
