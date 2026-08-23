@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate, Link } from "@tanstack/react-router";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -98,6 +98,12 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-6 pl-6 border-l border-border/50">
           <ThemeToggle />
           <AccessibilityMenu />
+          <Button variant="ghost" size="sm" className="gap-2 font-semibold" asChild>
+            <Link to="/auth">
+              Login
+              <LogIn className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">

@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
 import { z } from "zod";
 
@@ -36,11 +37,13 @@ async function logActivity({
 }
 
 export const getCRMStats = createServerFn({ method: "GET" })
-  .handler(async () => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
     const [leads, projects, finances] = await Promise.all([
-      supabaseAdmin.from("crm_leads").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("crm_projects").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("crm_finances").select("amount, type"),
+      supabase.from("crm_leads").select("id", { count: "exact", head: true }),
+      supabase.from("crm_projects").select("id", { count: "exact", head: true }),
+      supabase.from("crm_finances").select("amount, type"),
     ]);
 
     const totalLeads = leads.count || 0;
@@ -64,6 +67,7 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -73,8 +77,9 @@ export const getLeads = createServerFn({ method: "GET" })
       })
       .parse(data || {}),
   )
-  .handler(async ({ data }) => {
-    let query = supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    let query = supabase
       .from("crm_leads")
       .select("*")
       .order("created_at", { ascending: false });
@@ -94,6 +99,7 @@ export const getLeads = createServerFn({ method: "GET" })
   });
 
 export const createLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -109,14 +115,24 @@ export const createLead = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
-    const { error } = await supabaseAdmin.from("crm_leads").insert([data]);
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase.from("crm_leads").insert([data]);
 
     if (error) throw error;
+
+    await logActivity({
+      userId,
+      action: "create",
+      entityType: "lead",
+      details: data,
+    });
+
     return { success: true };
   });
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -133,8 +149,9 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
-    const { error } = await supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
       .from("crm_leads")
       .update({
         status: data.status,
@@ -143,10 +160,20 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       .eq("id", data.id);
 
     if (error) throw error;
+
+    await logActivity({
+      userId,
+      action: "update_status",
+      entityType: "lead",
+      entityId: data.id,
+      details: { status: data.status },
+    });
+
     return { success: true };
   });
 
 export const updateLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -163,13 +190,15 @@ export const updateLead = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabaseAdmin.from("crm_leads").update(updateData).eq("id", id);
+    const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
 
     if (error) throw error;
 
     await logActivity({
+      userId,
       action: "update",
       entityType: "lead",
       entityId: id,
@@ -180,6 +209,7 @@ export const updateLead = createServerFn({ method: "POST" })
   });
 
 export const convertLeadToProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -189,9 +219,10 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
     // 1. Get lead info
-    const { data: lead, error: leadError } = await supabaseAdmin
+    const { data: lead, error: leadError } = await supabase
       .from("crm_leads")
       .select("*")
       .eq("id", data.leadId)
@@ -200,7 +231,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     if (leadError || !lead) throw new Error("Lead não encontrada");
 
     // 2. Create Project
-    const { data: project, error: projectError } = await supabaseAdmin
+    const { data: project, error: projectError } = await supabase
       .from("crm_projects")
       .insert([
         {
@@ -216,6 +247,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     if (projectError) throw projectError;
 
     await logActivity({
+      userId,
       action: "convert_lead",
       entityType: "project",
       entityId: project.id,
@@ -237,12 +269,13 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     }
 
     // 3. Update Lead status
-    await supabaseAdmin.from("crm_leads").update({ status: "closed_won" as any }).eq("id", data.leadId);
+    await supabase.from("crm_leads").update({ status: "closed_won" as any }).eq("id", data.leadId);
 
     return { success: true, project };
   });
 
 export const getProjects = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -252,8 +285,9 @@ export const getProjects = createServerFn({ method: "GET" })
       })
       .parse(data || {}),
   )
-  .handler(async ({ data }) => {
-    let query = supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    let query = supabase
       .from("crm_projects")
       .select("*, crm_leads(name, company), crm_finances(amount, type)")
       .order("created_at", { ascending: false });
@@ -284,6 +318,7 @@ export const getProjects = createServerFn({ method: "GET" })
   });
 
 export const updateProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -298,13 +333,15 @@ export const updateProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabaseAdmin.from("crm_projects").update(updateData).eq("id", id);
+    const { error } = await supabase.from("crm_projects").update(updateData).eq("id", id);
 
     if (error) throw error;
 
     await logActivity({
+      userId,
       action: "update_project",
       entityType: "project",
       entityId: id,
@@ -315,6 +352,7 @@ export const updateProject = createServerFn({ method: "POST" })
   });
 
 export const getTransactions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -324,8 +362,9 @@ export const getTransactions = createServerFn({ method: "GET" })
       })
       .parse(data || {}),
   )
-  .handler(async ({ data }) => {
-    let query = supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    let query = supabase
       .from("crm_finances")
       .select("*, crm_projects(name)")
       .order("date", { ascending: false })
@@ -346,6 +385,7 @@ export const getTransactions = createServerFn({ method: "GET" })
   });
 
 export const createTransaction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -361,12 +401,14 @@ export const createTransaction = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
-    const { error } = await supabaseAdmin.from("crm_finances").insert([data]);
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase.from("crm_finances").insert([data]);
 
     if (error) throw error;
 
     await logActivity({
+      userId,
       action: "create_transaction",
       entityType: "finance",
       details: data,
@@ -376,6 +418,7 @@ export const createTransaction = createServerFn({ method: "POST" })
   });
 
 export const getActivityLogs = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -387,8 +430,9 @@ export const getActivityLogs = createServerFn({ method: "GET" })
       })
       .parse(data || {}),
   )
-  .handler(async ({ data }) => {
-    let query = supabaseAdmin
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    let query = supabase
       .from("crm_activity_logs")
       .select("*")
       .order("created_at", { ascending: false });

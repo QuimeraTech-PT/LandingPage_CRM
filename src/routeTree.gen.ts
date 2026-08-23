@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosDeServicoRouteImport } from './routes/termos-de-servico'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as PoliticaDeCookiesRouteImport } from './routes/politica-de-cookies'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -19,6 +20,7 @@ import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as SitemapPagesXmlRouteImport } from './routes/sitemap-pages.xml'
 import { Route as SitemapLegalXmlRouteImport } from './routes/sitemap-legal.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminFinancesRouteImport } from './routes/admin.finances'
@@ -36,6 +38,11 @@ const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
 const PoliticaDeCookiesRoute = PoliticaDeCookiesRouteImport.update({
   id: '/politica-de-cookies',
   path: '/politica-de-cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -73,6 +80,11 @@ const RobotsTxtRoute = RobotsTxtRouteImport.update({
   path: '/robots/txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -92,12 +104,14 @@ const AdminFinancesRoute = AdminFinancesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -106,12 +120,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -122,12 +138,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -139,12 +157,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -153,12 +173,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -168,12 +190,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -184,6 +208,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
   PoliticaDeCookiesRoute: typeof PoliticaDeCookiesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   TermosDeServicoRoute: typeof TermosDeServicoRoute
@@ -214,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/politica-de-cookies'
       fullPath: '/politica-de-cookies'
       preLoaderRoute: typeof PoliticaDeCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -265,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/projects'
@@ -305,9 +344,20 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
   PoliticaDeCookiesRoute: PoliticaDeCookiesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   TermosDeServicoRoute: TermosDeServicoRoute,
