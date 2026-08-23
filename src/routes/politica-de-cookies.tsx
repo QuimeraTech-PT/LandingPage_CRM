@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Suspense } from "react";
+import { LegalSkeleton } from "@/components/site/Skeletons";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft, Cookie, ShieldCheck, Settings2, Trash2 } from "lucide-react";
