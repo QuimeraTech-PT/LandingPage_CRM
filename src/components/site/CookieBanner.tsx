@@ -80,31 +80,52 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     },
   }));
 
-  const savePreferences = () => {
+  const savePreferences = async () => {
     updateAnalyticsConsent(preferences);
     setIsVisible(false);
+    
+    try {
+      await syncCookiePreferences({ data: { analytics: preferences.analytics, marketing: preferences.marketing } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_saved", { ...preferences });
       if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
-  const acceptAll = () => {
+  const acceptAll = async () => {
     const all = { essential: true, analytics: true, marketing: true };
     setPreferences(all);
     updateAnalyticsConsent("all");
     setIsVisible(false);
+
+    try {
+      await syncCookiePreferences({ data: { analytics: true, marketing: true } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "all" });
       if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
-  const acceptEssential = () => {
+  const acceptEssential = async () => {
     const essential = { essential: true, analytics: false, marketing: false };
     setPreferences(essential);
     updateAnalyticsConsent("essential");
     setIsVisible(false);
+
+    try {
+      await syncCookiePreferences({ data: { analytics: false, marketing: false } });
+    } catch (e) {
+      // Silent fail
+    }
+
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "essential" });
       if (lastActiveElement.current) lastActiveElement.current.focus();
