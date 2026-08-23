@@ -96,6 +96,7 @@ export function Specialties() {
               title={title}
               description={description}
               icon={Icon}
+              showBottomHighlight={true}
               onClick={() =>
                 import("@/lib/analytics").then(({ trackEvent }) =>
                   trackEvent("specialty_click", { title, type: "secondary_cta" }),
