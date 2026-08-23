@@ -129,7 +129,7 @@ export function Hero() {
                                         
                                             
                                             
-                                            Implemente um guard na rota do CRM para garantir que só utilizadores autenticados acedem ao `/admin`.
+                                            Crie um botão ou redirecionamento automático para o CRM logo após eu terminar o login.
           </motion.p>
           
 
