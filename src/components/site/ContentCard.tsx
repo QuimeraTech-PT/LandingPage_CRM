@@ -53,7 +53,7 @@ export function ContentCard({
       className={`glass-card glass-card-hover group relative flex flex-col p-8 border backdrop-blur-xl rounded-2xl overflow-hidden transition-all duration-300 ${bgStyles} ${className} ${onClick ? "cursor-pointer" : ""}`}
     >
       <div
-        className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent transition-transform group-hover:scale-110 duration-300 ${iconBgStyles} ${iconClassName}`}
+        className={`mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent transition-all duration-300 group-hover:scale-110 ${iconBgStyles} ${iconClassName}`}
       >
         <Icon className="h-6 w-6" />
       </div>

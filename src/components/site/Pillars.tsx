@@ -86,6 +86,7 @@ export function Pillars() {
               icon={Icon}
               variant="accent"
               className="p-8"
+              showBottomHighlight={true}
             />
           ))}
         </motion.ul>

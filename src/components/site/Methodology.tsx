@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
+import { MethodologySkeleton } from "./Skeletons";
 import {
   CheckCircle2,
   ChevronRight,
@@ -132,7 +133,7 @@ const principles = [
   },
 ];
 
-export function Methodology() {
+function MethodologyContent() {
   const [activeStep, setActiveStep] = useState<string | null>("01");
   const shouldReduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -396,5 +397,13 @@ export function Methodology() {
         </div>
       </div>
     </section>
+  );
+}
+
+export function Methodology() {
+  return (
+    <Suspense fallback={<MethodologySkeleton />}>
+      <MethodologyContent />
+    </Suspense>
   );
 }
