@@ -34,8 +34,11 @@ async function logActivity({
   }
 }
 
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 export const getCRMStats = createServerFn({ method: "GET" })
-  .handler(async ({ context }: { context: any }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
@@ -66,7 +69,8 @@ export const getCRMStats = createServerFn({ method: "GET" })
   });
 
 export const getLeads = createServerFn({ method: "GET" })
-  .handler(async ({ context }: { context: any }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
@@ -81,6 +85,7 @@ export const getLeads = createServerFn({ method: "GET" })
   });
 
 export const createLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     name: z.string(),
     email: z.string().nullable().optional(),
@@ -104,6 +109,7 @@ export const createLead = createServerFn({ method: "POST" })
   });
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     id: z.string().uuid(),
     status: z.enum(['new', 'contacted', 'proposal', 'negotiation', 'closed_won', 'closed_lost']),
@@ -127,6 +133,7 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   });
 
 export const updateLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     id: z.string().uuid(),
     name: z.string().optional(),
@@ -162,6 +169,7 @@ export const updateLead = createServerFn({ method: "POST" })
   });
 
 export const convertLeadToProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     leadId: z.string().uuid(),
     projectName: z.string(),
@@ -228,7 +236,8 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
 
 export const getProjects = createServerFn({ method: "GET" })
-  .handler(async ({ context }: { context: any }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
@@ -247,6 +256,7 @@ export const getProjects = createServerFn({ method: "GET" })
   });
 
 export const updateProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     id: z.string().uuid(),
     name: z.string().optional(),
@@ -282,7 +292,8 @@ export const updateProject = createServerFn({ method: "POST" })
   });
 
 export const getTransactions = createServerFn({ method: "GET" })
-  .handler(async ({ context }: { context: any }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
@@ -297,6 +308,7 @@ export const getTransactions = createServerFn({ method: "GET" })
   });
 
 export const createTransaction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     description: z.string(),
     amount: z.number(),
@@ -330,6 +342,7 @@ export const createTransaction = createServerFn({ method: "POST" })
   });
 
 export const getActivityLogs = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: any) => z.object({
     limit: z.number().optional().default(50),
     entityType: z.string().nullable().optional(),
