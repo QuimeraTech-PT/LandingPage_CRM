@@ -50,7 +50,11 @@ export const Route = createFileRoute("/politica-de-cookies")({
       }),
     ],
   }),
-  component: CookiesPolicy,
+  component: () => (
+    <Suspense fallback={<LegalSkeleton />}>
+      <CookiesPolicy />
+    </Suspense>
+  ),
 });
 
 function CookiesPolicy() {

@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Suspense } from "react";
+import { LegalSkeleton } from "@/components/site/Skeletons";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft, Gavel, Scale, FileCheck, AlertCircle, Bookmark } from "lucide-react";
@@ -47,7 +49,11 @@ export const Route = createFileRoute("/termos-de-servico")({
       }),
     ],
   }),
-  component: TermsOfService,
+  component: () => (
+    <Suspense fallback={<LegalSkeleton />}>
+      <TermsOfService />
+    </Suspense>
+  ),
 });
 
 function TermsOfService() {

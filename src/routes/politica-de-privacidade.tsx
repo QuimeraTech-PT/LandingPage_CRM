@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Suspense } from "react";
+import { LegalSkeleton } from "@/components/site/Skeletons";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ChevronLeft, Shield, Lock, Eye, FileText, Scale } from "lucide-react";
@@ -46,7 +48,11 @@ export const Route = createFileRoute("/politica-de-privacidade")({
       }),
     ],
   }),
-  component: PrivacyPolicy,
+  component: () => (
+    <Suspense fallback={<LegalSkeleton />}>
+      <PrivacyPolicy />
+    </Suspense>
+  ),
 });
 
 function PrivacyPolicy() {
