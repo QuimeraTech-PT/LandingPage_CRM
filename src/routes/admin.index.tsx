@@ -95,13 +95,15 @@ function AdminDashboard() {
     : {};
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          <LayoutDashboard className="h-8 w-8 text-primary" />
-          CRM QuimeraTech
+    <div className="p-8 space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+          Dashboard Executivo
         </h1>
-      </div>
+        <p className="text-sm text-muted-foreground font-medium">
+          Bem-vindo ao centro de operações da QuimeraTech.
+        </p>
+      </header>
 
       <CRMStats stats={stats} />
 
