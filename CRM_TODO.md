@@ -5,10 +5,11 @@
 - [ ] Implementar middleware `requireSupabaseAuth` em todas as `createServerFn`.
 - [ ] Adicionar guardas de rota no TanStack Router para `/admin`.
 
-## 2. Performance e Otimização (Em Progresso)
+## 2. Performance e Otimização (Otimizado)
 - [x] Otimizar queries de estatísticas (seleção de colunas específicas).
-- [ ] Implementar paginação e filtros de servidor na listagem de leads e projetos.
-- [ ] Configurar `staleTime` e `gcTime` globais no `QueryClient`.
+- [x] Implementar paginação por cursor e filtros de servidor na listagem de leads e projetos.
+- [x] Aplicar índices adequados no banco para as queries do CRM.
+- [x] Configurar `staleTime` e `gcTime` globais no `QueryClient`.
 - [ ] Implementar prefetching nos loaders das rotas admin.
 
 ## 3. Limpeza Técnica
