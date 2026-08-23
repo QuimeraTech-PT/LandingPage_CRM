@@ -152,25 +152,6 @@ export function FloatingActions() {
                     </div>
                   </motion.a>
 
-                  <motion.div
-                    role="menuitem"
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.05, x: -4 }}
-                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-                  >
-                    <Link
-                      to="/auth"
-                      className="flex min-h-12 items-center gap-3 rounded-full bg-secondary px-5 py-2.5 text-secondary-foreground shadow-lg transition-all hover:bg-secondary/90 hover:shadow-xl focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 active:brightness-95 sm:px-4 sm:py-2"
-                      onClick={() => {
-                        trackClick("auth_menu");
-                        setIsOpen(false);
-                      }}
-                    >
-                      <span className="text-sm font-semibold tracking-wide">Login CRM</span>
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 sm:h-8 sm:w-8">
-                        <LogIn className="h-5 w-5 sm:h-4 sm:w-4" />
-                      </div>
-                    </Link>
-                  </motion.div>
 
                   <motion.button
                     onClick={scrollToTop}
