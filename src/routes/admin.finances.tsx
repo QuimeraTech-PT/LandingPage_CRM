@@ -104,24 +104,36 @@ function FinancesPage() {
   );
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+    <div className="p-8 space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
           <Wallet className="h-8 w-8 text-primary" />
           Gestão Financeira
         </h1>
+        <p className="text-sm text-muted-foreground font-medium">Monitorização de cash flow, receitas e despesas operacionais.</p>
+      </header>
+
+      <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Input
+              placeholder="Pesquisar transações..."
+              className="pl-10 w-64 bg-muted/20 border-white/5 h-10"
+            />
+          </div>
+        </div>
 
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Nova Transação
+            <Button className="gap-2 h-10 px-6 shadow-lg shadow-primary/20">
+              <Plus className="h-4 w-4" /> Nova Transação
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-106.25 bg-card border-white/10 text-foreground">
-            <form onSubmit={handleCreate}>
+          <DialogContent className="bg-card border-white/10 sm:max-w-[500px]">
+            <form onSubmit={handleCreate} className="space-y-4 py-4">
               <DialogHeader>
-                <DialogTitle>Registar Transação</DialogTitle>
+                <DialogTitle className="text-xl font-bold">Registar Transação</DialogTitle>
                 <DialogDescription>Adicione uma nova entrada ou saída de caixa.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -132,7 +144,7 @@ function FinancesPage() {
                     name="description"
                     placeholder="Ex: Pagamento Projeto X"
                     required
-                    className="bg-muted/50 border-white/10"
+                    className="bg-muted/20 border-white/5"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -145,16 +157,16 @@ function FinancesPage() {
                       step="0.01"
                       placeholder="1000.00"
                       required
-                      className="bg-muted/50 border-white/10"
+                      className="bg-muted/20 border-white/5"
                     />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="type">Tipo</Label>
                     <Select name="type" defaultValue="income">
-                      <SelectTrigger className="bg-muted/50 border-white/10">
+                      <SelectTrigger className="bg-muted/20 border-white/5">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-card border-white/10 text-foreground">
+                      <SelectContent className="bg-card border-white/10">
                         <SelectItem value="income">Receita (Entrada)</SelectItem>
                         <SelectItem value="expense">Despesa (Saída)</SelectItem>
                       </SelectContent>
@@ -170,7 +182,7 @@ function FinancesPage() {
                       type="date"
                       defaultValue={new Date().toISOString().split("T")[0]}
                       required
-                      className="bg-muted/50 border-white/10"
+                      className="bg-muted/20 border-white/5"
                     />
                   </div>
                   <div className="grid gap-2">
@@ -179,7 +191,7 @@ function FinancesPage() {
                       id="due_date"
                       name="due_date"
                       type="date"
-                      className="bg-muted/50 border-white/10"
+                      className="bg-muted/20 border-white/5"
                     />
                   </div>
                 </div>
@@ -187,10 +199,10 @@ function FinancesPage() {
                   <div className="grid gap-2">
                     <Label htmlFor="status">Estado</Label>
                     <Select name="status" defaultValue="pending">
-                      <SelectTrigger className="bg-muted/50 border-white/10">
+                      <SelectTrigger className="bg-muted/20 border-white/5">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-card border-white/10 text-foreground">
+                      <SelectContent className="bg-card border-white/10">
                         <SelectItem value="pending">Pendente</SelectItem>
                         <SelectItem value="paid">Pago</SelectItem>
                         <SelectItem value="overdue">Em Atraso</SelectItem>
@@ -203,26 +215,26 @@ function FinancesPage() {
                       id="category"
                       name="category"
                       placeholder="Ex: Software, Hardware"
-                      className="bg-muted/50 border-white/10"
+                      className="bg-muted/20 border-white/5"
                     />
                   </div>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="invoice_url">Link da Fatura / Comprovativo</Label>
+                  <Label htmlFor="invoice_url">Link da Fatura</Label>
                   <Input
                     id="invoice_url"
                     name="invoice_url"
                     placeholder="https://..."
-                    className="bg-muted/50 border-white/10"
+                    className="bg-muted/20 border-white/5"
                   />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="project_id">Projeto Associado</Label>
                   <Select name="project_id" defaultValue="none">
-                    <SelectTrigger className="bg-muted/50 border-white/10">
+                    <SelectTrigger className="bg-muted/20 border-white/5">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10 text-foreground">
+                    <SelectContent className="bg-card border-white/10">
                       <SelectItem value="none">Sem projeto (Geral)</SelectItem>
                       {projects?.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
@@ -234,8 +246,8 @@ function FinancesPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit" disabled={createMutation.isPending}>
-                  {createMutation.isPending ? "A guardar..." : "Registar"}
+                <Button type="submit" disabled={createMutation.isPending} className="w-full">
+                  {createMutation.isPending ? "A registar..." : "Confirmar Transação"}
                 </Button>
               </DialogFooter>
             </form>

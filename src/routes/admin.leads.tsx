@@ -43,7 +43,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -165,115 +165,85 @@ function LeadsPage() {
   };
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <Users className="h-8 w-8 text-primary" />
-            Gestão de Leads
-          </h1>
+    <div className="p-8 space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+          <Users className="h-8 w-8 text-primary" />
+          Gestão de Leads
+        </h1>
+        <p className="text-sm text-muted-foreground font-medium">Controlo centralizado de oportunidades e pipeline comercial.</p>
+      </header>
 
-          <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
-            <Button
-              variant={viewMode === "list" ? "secondary" : "ghost"}
-              size="sm"
-              className="h-8 gap-2"
-              onClick={() => setViewMode("list")}
-            >
-              <LayoutList className="h-4 w-4" />
-              Lista
-            </Button>
-            <Button
-              variant={viewMode === "kanban" ? "secondary" : "ghost"}
-              size="sm"
-              className="h-8 gap-2"
-              onClick={() => setViewMode("kanban")}
-            >
-              <KanbanIcon className="h-4 w-4" />
-              Kanban
-            </Button>
-          </div>
+      <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
+        <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
+          <Button
+            variant={viewMode === "list" ? "secondary" : "ghost"}
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => setViewMode("list")}
+          >
+            <LayoutList className="h-4 w-4" />
+            Lista
+          </Button>
+          <Button
+            variant={viewMode === "kanban" ? "secondary" : "ghost"}
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => setViewMode("kanban")}
+          >
+            <KanbanIcon className="h-4 w-4" />
+            Kanban
+          </Button>
         </div>
 
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Nova Lead
+            <Button className="gap-2 h-10 px-6 shadow-lg shadow-primary/20">
+              <Plus className="h-4 w-4" /> Nova Lead
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-106.25 bg-card border-white/10 text-foreground">
-            <form onSubmit={handleCreateLead}>
+          <DialogContent className="bg-card border-white/10 sm:max-w-[500px]">
+            <form onSubmit={handleCreateLead} className="space-y-4 py-4">
               <DialogHeader>
-                <DialogTitle>Adicionar Nova Lead</DialogTitle>
-                <DialogDescription>
-                  Preencha os dados da lead para registar no CRM.
-                </DialogDescription>
+                <DialogTitle className="text-xl font-bold">Adicionar Oportunidade</DialogTitle>
+                <DialogDescription>Preencha os dados da nova lead para o pipeline.</DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Nome Completo</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="Ex: João Silva"
-                    required
-                    className="bg-muted/50 border-white/10"
-                  />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome do Contacto</Label>
+                  <Input id="name" name="name" placeholder="Ex: João Silva" required className="bg-muted/20 border-white/5" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="joao@empresa.com"
-                      className="bg-muted/50 border-white/10"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="phone">Telefone</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      placeholder="+351 9xx..."
-                      className="bg-muted/50 border-white/10"
-                    />
-                  </div>
-                </div>
-                <div className="grid gap-2">
+                <div className="space-y-2">
                   <Label htmlFor="company">Empresa</Label>
-                  <Input
-                    id="company"
-                    name="company"
-                    placeholder="Nome da empresa"
-                    className="bg-muted/50 border-white/10"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="estimated_value">Valor Estimado (€)</Label>
-                  <Input
-                    id="estimated_value"
-                    name="estimated_value"
-                    type="number"
-                    placeholder="5000"
-                    className="bg-muted/50 border-white/10"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="notes">Notas</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    placeholder="Detalhes sobre o pedido..."
-                    className="bg-muted/50 border-white/10 min-h-25"
-                  />
+                  <Input id="company" name="company" placeholder="Ex: Tech Corp" className="bg-muted/20 border-white/5" />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit" disabled={createLeadMutation.isPending}>
-                  {createLeadMutation.isPending ? "A guardar..." : "Criar Lead"}
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" name="email" type="email" placeholder="joao@empresa.com" required className="bg-muted/20 border-white/5" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Telefone</Label>
+                  <Input id="phone" name="phone" placeholder="+351 9xx..." className="bg-muted/20 border-white/5" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="estimated_value">Valor Estimado (€)</Label>
+                <Input id="estimated_value" name="estimated_value" type="number" placeholder="5000" className="bg-muted/20 border-white/5" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Notas / Contexto</Label>
+                <Textarea id="notes" name="notes" placeholder="Detalhes da oportunidade..." className="bg-muted/20 border-white/5 min-h-[100px]" />
+              </div>
+
+              <DialogFooter className="pt-4">
+                <Button type="submit" disabled={createLeadMutation.isPending} className="w-full">
+                  {createLeadMutation.isPending ? "A criar..." : "Confirmar Lead"}
                 </Button>
               </DialogFooter>
             </form>

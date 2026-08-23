@@ -15,8 +15,11 @@ import {
   Search,
   Filter,
   AlertTriangle,
+  Target,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { RevenueForecast } from "@/components/crm/RevenueForecast";
+import { CRMStats } from "@/components/crm/CRMStats";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,12 +69,14 @@ function AdminDashboard() {
     queryFn: () => getActivityLogs({ data: { limit: 100 } }),
   });
 
-  const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];
+  const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
   const filteredLogs = useMemo(() => {
-    if (!Array.isArray(logs)) return [];
-    return logs
-      .filter((log) => {
+    const rawLogs = logs as any;
+    const logsItems = Array.isArray(rawLogs.items) ? rawLogs.items : (Array.isArray(rawLogs) ? rawLogs : []);
+    
+    return logsItems
+      .filter((log: any) => {
         const matchesType = logFilter.type === "all" || log.entity_type === logFilter.type;
         const searchStr = logFilter.search.toLowerCase();
         const matchesSearch =
@@ -84,112 +89,83 @@ function AdminDashboard() {
       .slice(0, 8);
   }, [logs, logFilter]);
 
-  const funnelData = Array.isArray(leads)
-    ? leads.reduce<Record<string, number>>((acc, lead) => {
+  const funnelData = Array.isArray(leads.items)
+    ? leads.items.reduce<Record<string, number>>((acc, lead) => {
         acc[lead.status] = (acc[lead.status] || 0) + 1;
         return acc;
       }, {})
     : {};
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          <LayoutDashboard className="h-8 w-8 text-primary" />
-          CRM QuimeraTech
+    <div className="p-8 space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+          Dashboard Executivo
         </h1>
-      </div>
+        <p className="text-sm text-muted-foreground font-medium">
+          Bem-vindo ao centro de operações da QuimeraTech.
+        </p>
+      </header>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
-            <Users className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalLeads}</div>
-            <p className="text-xs text-muted-foreground">Novos contactos do site</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Projetos Ativos</CardTitle>
-            <Briefcase className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeProjects}</div>
-            <p className="text-xs text-muted-foreground">Em desenvolvimento</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
-                stats.revenue,
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground">Faturado até ao momento</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-white/10">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Lucro Líquido</CardTitle>
-            <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
-              €
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
-                stats.profit,
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground">Após despesas</p>
-          </CardContent>
-        </Card>
-      </div>
+      <CRMStats stats={stats} />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 space-y-4">
           <RevenueForecast />
-          <Card className="bg-card/50 backdrop-blur-sm border-white/10">
+          <Card className="bg-card/50 backdrop-blur-sm border-white/10 overflow-hidden relative group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <TrendingUp className="h-24 w-24 text-primary" />
+            </div>
             <CardHeader>
-              <CardTitle>Pipeline de Vendas</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Pipeline de Vendas
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status) => {
+              <div className="space-y-6">
+                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status, idx) => {
                   const count = funnelData[status] || 0;
-                  const total = Array.isArray(leads) ? leads.length : 1;
-                  const percentage = (count / total) * 100;
+                  const total = Array.isArray(leads.items) ? leads.items.length : 1;
+                  const percentage = (count / Math.max(total, 1)) * 100;
                   const labels: Record<string, string> = {
-                    new: "Novas",
-                    contacted: "Contactadas",
-                    proposal: "Proposta",
-                    negotiation: "Negociação",
-                    closed_won: "Ganhas",
+                    new: "Novas Oportunidades",
+                    contacted: "Qualificação",
+                    proposal: "Proposta Enviada",
+                    negotiation: "Em Negociação",
+                    closed_won: "Fecho Ganho",
                   };
+                  const colors = [
+                    "bg-blue-500/40",
+                    "bg-blue-500/60",
+                    "bg-cyan-500/80",
+                    "bg-primary",
+                    "bg-green-500",
+                  ];
 
                   return (
-                    <div key={status} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>{labels[status]}</span>
-                        <span className="font-bold">{count}</span>
+                    <motion.div 
+                      key={status} 
+                      className="space-y-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                    >
+                      <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        <span className="flex items-center gap-2">
+                          <div className={cn("h-2 w-2 rounded-full", colors[idx])} />
+                          {labels[status]}
+                        </span>
+                        <span className="text-foreground">{count}</span>
                       </div>
-                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all duration-500"
-                          style={{ width: `${Math.max(percentage, 2)}%` }}
+                      <div className="h-2.5 w-full bg-muted/30 rounded-full overflow-hidden border border-white/5">
+                        <motion.div
+                          className={cn("h-full transition-all duration-1000 ease-out", colors[idx])}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${Math.max(percentage, 2)}%` }}
                         />
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -197,35 +173,48 @@ function AdminDashboard() {
           </Card>
         </div>
 
-        <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10">
+        <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10 flex flex-col">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Últimas Leads</CardTitle>
-            <Button variant="ghost" size="sm" asChild className="gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Recentes
+            </CardTitle>
+            <Button variant="ghost" size="sm" asChild className="gap-2 text-xs text-primary">
               <Link to="/admin/leads">
-                Ver todas <ArrowRight className="h-4 w-4" />
+                Ver Leads <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentLeads.map((lead) => (
-                <div
+          <CardContent className="flex-1">
+            <div className="space-y-3">
+              {recentLeads.map((lead, idx) => (
+                <motion.div
                   key={lead.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-white/5"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-white/5 hover:bg-muted/20 hover:border-primary/20 transition-all cursor-default group"
                 >
-                  <div>
-                    <p className="text-sm font-semibold">{lead.name}</p>
-                    <p className="text-xs text-muted-foreground">{lead.company || "Individual"}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{lead.name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate uppercase tracking-tighter">
+                      {lead.company || "Individual"}
+                    </p>
                   </div>
-                  <Badge variant="outline" className="text-[10px]">
-                    {lead.status}
+                  <Badge variant="outline" className={cn(
+                    "text-[9px] px-1.5 py-0 border-white/10",
+                    lead.status === 'new' && "text-blue-400 border-blue-400/20",
+                    lead.status === 'closed_won' && "text-green-400 border-green-400/20",
+                  )}>
+                    {lead.status.replace('_', ' ')}
                   </Badge>
-                </div>
+                </motion.div>
               ))}
               {recentLeads.length === 0 && (
-                <p className="text-sm text-muted-foreground italic text-center py-8">
-                  Nenhuma lead registada.
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground opacity-50">
+                  <Users className="h-8 w-8 mb-2" />
+                  <p className="text-xs italic">Nenhuma lead registada.</p>
+                </div>
               )}
             </div>
           </CardContent>
@@ -233,18 +222,19 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="col-span-1 bg-card/50 backdrop-blur-sm border-white/10">
+        <Card className="col-span-1 bg-card/40 backdrop-blur-md border-white/5 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 pointer-events-none" />
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-bold">
               <History className="h-5 w-5 text-primary" />
-              Logs de Atividade
+              Monitorização
             </CardTitle>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="flex flex-col gap-2 mt-4 relative z-10">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
                 <Input
-                  placeholder="Pesquisar logs..."
-                  className="pl-8 h-8 text-xs bg-muted/50 border-white/10"
+                  placeholder="Filtrar eventos..."
+                  className="pl-8 h-8 text-[11px] bg-muted/20 border-white/5 focus:border-primary/50 transition-all"
                   value={logFilter.search}
                   onChange={(e) => setLogFilter((prev) => ({ ...prev, search: e.target.value }))}
                 />
@@ -253,31 +243,35 @@ function AdminDashboard() {
                 value={logFilter.type}
                 onValueChange={(val) => setLogFilter((prev) => ({ ...prev, type: val }))}
               >
-                <SelectTrigger className="h-8 text-xs bg-muted/50 border-white/10">
+                <SelectTrigger className="h-8 text-[11px] bg-muted/20 border-white/5 focus:border-primary/50 transition-all">
                   <div className="flex items-center gap-2">
-                    <Filter className="h-3 w-3" />
-                    <SelectValue placeholder="Filtrar por tipo" />
+                    <Filter className="h-3 w-3 text-primary" />
+                    <SelectValue placeholder="Tipo" />
                   </div>
                 </SelectTrigger>
                 <SelectContent className="bg-card border-white/10">
-                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="all">Todos os Eventos</SelectItem>
                   <SelectItem value="lead">Leads</SelectItem>
                   <SelectItem value="project">Projetos</SelectItem>
-                  <SelectItem value="drive">Drive</SelectItem>
+                  <SelectItem value="finance">Finanças</SelectItem>
+                  <SelectItem value="drive">Documentos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 mt-2">
-              {filteredLogs.map((log: ActivityLog) => (
-                <div
+            <div className="space-y-4 mt-2 relative z-10">
+              {filteredLogs.map((log: ActivityLog, idx: number) => (
+                <motion.div
                   key={log.id}
-                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0 group"
                 >
                   <div
                     className={cn(
-                      "mt-0.5 rounded-full p-1 h-fit",
+                      "mt-0.5 rounded-full p-1.5 h-fit shadow-inner transition-transform group-hover:scale-110",
                       log.status === "success"
                         ? "bg-green-500/10 text-green-500"
                         : log.status === "warning"
@@ -293,63 +287,71 @@ function AdminDashboard() {
                       <AlertCircle className="h-3 w-3" />
                     )}
                   </div>
-                  <div className="space-y-1 min-w-0">
-                    <p className="font-medium text-foreground truncate capitalize">
+                  <div className="space-y-0.5 min-w-0">
+                    <p className="font-bold text-[11px] uppercase tracking-wider text-foreground truncate group-hover:text-primary transition-colors">
                       {log.action.replace(/_/g, " ")}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      <span className="opacity-60">{log.entity_type}:</span>{" "}
+                    <p className="text-[10px] text-muted-foreground truncate opacity-80">
+                      <span className="font-medium text-primary/70">{log.entity_type}:</span>{" "}
                       {getLogDetail(log.details, "fileName") ||
                         getLogDetail(log.details, "projectName") ||
                         getLogDetail(log.details, "newName") ||
                         log.action}
                     </p>
-                    <p className="text-[10px] text-muted-foreground opacity-60">
-                      {new Date(log.created_at).toLocaleString("pt-PT")}
+                    <p className="text-[9px] text-muted-foreground opacity-50 flex items-center gap-1">
+                      <Clock className="h-2 w-2" />
+                      {new Date(log.created_at).toLocaleTimeString("pt-PT", { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
               {filteredLogs.length === 0 && (
-                <p className="text-xs text-muted-foreground italic py-4 text-center">
-                  Nenhum log encontrado.
-                </p>
+                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground opacity-30">
+                  <History className="h-6 w-6 mb-2" />
+                  <p className="text-[10px] italic">Sem registos.</p>
+                </div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <div className="col-span-2 grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-2 grid gap-6">
+          <div className="grid grid-cols-2 gap-6">
             <Button
               variant="outline"
-              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              className="h-40 flex-col gap-4 text-xl font-bold border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
               asChild
             >
               <Link to="/admin/leads">
-                <Users className="h-8 w-8 text-primary" />
-                Gerir Leads
+                <div className="p-4 rounded-2xl bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
+                  <Users className="h-10 w-10 text-blue-500" />
+                </div>
+                Gestão Comercial
               </Link>
             </Button>
             <Button
               variant="outline"
-              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              className="h-40 flex-col gap-4 text-xl font-bold border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
               asChild
             >
               <Link to="/admin/projects">
-                <Briefcase className="h-8 w-8 text-primary" />
-                Gerir Projetos
+                <div className="p-4 rounded-2xl bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-colors">
+                  <Briefcase className="h-10 w-10 text-cyan-500" />
+                </div>
+                Gestão de Projetos
               </Link>
             </Button>
           </div>
           <Button
             variant="outline"
-            className="h-32 gap-4 text-xl border-primary/20 bg-primary/5 hover:bg-primary/10"
+            className="h-40 gap-6 text-2xl font-black border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
             asChild
           >
             <Link to="/admin/finances">
-              <Wallet className="h-8 w-8 text-primary" />
-              Gerir Finanças e Cash Flow
+              <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <Wallet className="h-12 w-12 text-primary" />
+              </div>
+              Controlo Financeiro & Cash Flow
             </Link>
           </Button>
         </div>

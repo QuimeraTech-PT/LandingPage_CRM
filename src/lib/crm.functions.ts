@@ -41,28 +41,55 @@ export const getCRMStats = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase } = context;
     const [leads, projects, finances] = await Promise.all([
-      supabase.from("crm_leads").select("id", { count: "exact", head: true }),
-      supabase.from("crm_projects").select("id", { count: "exact", head: true }),
-      supabase.from("crm_finances").select("amount, type"),
+      supabase.from("crm_leads").select("id, status, created_at"),
+      supabase.from("crm_projects").select("id, status, budget, end_date"),
+      supabase.from("crm_finances").select("amount, type, status"),
     ]);
 
-    const totalLeads = leads.count || 0;
-    const activeProjects = projects.count || 0;
-
+    const leadsData = leads.data || [];
+    const projectsData = projects.data || [];
     const financesData = finances.data || [];
+
+    const totalLeads = leadsData.length;
+    const activeProjects = projectsData.filter(p => p.status === 'active' || p.status === 'planning').length;
+    
+    const wonLeads = leadsData.filter(l => l.status === 'closed_won').length;
+    const conversionRate = totalLeads > 0 ? (wonLeads / totalLeads) * 100 : 0;
+
     let revenue = 0;
     let expenses = 0;
+    let pendingPayments = 0;
 
     for (const f of financesData) {
-      if (f.type === "income") revenue += Number(f.amount);
-      else expenses += Number(f.amount);
+      const amount = Number(f.amount);
+      if (f.type === "income") {
+        if (f.status === 'paid') revenue += amount;
+        else pendingPayments += amount;
+      } else {
+        expenses += amount;
+      }
     }
+
+    const avgBudget = projectsData.length > 0 
+      ? projectsData.reduce((acc, p) => acc + Number(p.budget || 0), 0) / projectsData.length 
+      : 0;
+
+    const upcomingDeadlines = projectsData.filter(p => 
+      p.end_date && 
+      p.status !== 'completed' && 
+      p.status !== 'cancelled' &&
+      new Date(p.end_date) > new Date()
+    ).length;
 
     return {
       totalLeads,
       activeProjects,
       revenue,
       profit: revenue - expenses,
+      conversionRate,
+      avgBudget,
+      pendingPayments,
+      upcomingDeadlines
     };
   });
 

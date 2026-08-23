@@ -140,38 +140,39 @@ function ProjectsPage() {
   const projectList = Array.isArray(projects) ? projects : [];
 
   return (
-    <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <Briefcase className="h-8 w-8 text-primary" />
-            Gestão de Projetos
-          </h1>
+    <div className="p-8 space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+          <Briefcase className="h-8 w-8 text-primary" />
+          Gestão de Projetos
+        </h1>
+        <p className="text-sm text-muted-foreground font-medium">Controlo operacional, cronogramas e entregas.</p>
+      </header>
 
-          <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
-            <Button
-              variant={viewMode === "list" ? "secondary" : "ghost"}
-              size="sm"
-              className="h-8 gap-2"
-              onClick={() => setViewMode("list")}
-            >
-              <LayoutList className="h-4 w-4" />
-              Lista
-            </Button>
-            <Button
-              variant={viewMode === "kanban" ? "secondary" : "ghost"}
-              size="sm"
-              className="h-8 gap-2"
-              onClick={() => setViewMode("kanban")}
-            >
-              <KanbanIcon className="h-4 w-4" />
-              Kanban
-            </Button>
-          </div>
+      <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
+        <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
+          <Button
+            variant={viewMode === "list" ? "secondary" : "ghost"}
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => setViewMode("list")}
+          >
+            <LayoutList className="h-4 w-4" />
+            Lista
+          </Button>
+          <Button
+            variant={viewMode === "kanban" ? "secondary" : "ghost"}
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => setViewMode("kanban")}
+          >
+            <KanbanIcon className="h-4 w-4" />
+            Kanban
+          </Button>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Novo Projeto
+        
+        <Button className="gap-2 h-10 px-6 shadow-lg shadow-primary/20">
+          <Plus className="h-4 w-4" /> Novo Projeto
         </Button>
       </div>
 
