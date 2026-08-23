@@ -79,7 +79,7 @@ export const getLeads = createServerFn({ method: "GET" })
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (data.status) query = query.eq("status", data.status);
+    if (data.status) query = query.eq("status", data.status as any);
     if (data.cursor) query = query.lt("created_at", data.cursor);
 
     const { data: leads, error } = await query.limit(data.limit + 1);
@@ -258,7 +258,7 @@ export const getProjects = createServerFn({ method: "GET" })
       .select("*, crm_leads(name, company), crm_finances(amount, type)")
       .order("created_at", { ascending: false });
 
-    if (data.status) query = query.eq("status", data.status);
+    if (data.status) query = query.eq("status", data.status as any);
     if (data.cursor) query = query.lt("created_at", data.cursor);
 
     const { data: projects, error } = await query.limit(data.limit + 1);
