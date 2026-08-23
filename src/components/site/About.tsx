@@ -122,7 +122,7 @@ export function About() {
                   },
                 },
               }}
-              className="relative h-full min-h-100 lg:min-h-0"
+              className="relative h-full"
             >
               {/* Moldura Glassmorphism com efeito de código */}
               <div
