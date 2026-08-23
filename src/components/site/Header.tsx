@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
@@ -16,7 +15,7 @@ const links = [
   { href: "#contactos", label: "Contactos" },
 ];
 
-import { transitions, variants } from "@/lib/animations";
+import { transitions } from "@/lib/animations";
 import { useReducedMotion } from "framer-motion";
 import { motion } from "framer-motion";
 import { scrollToSection as performScroll } from "@/utils/scroll";
@@ -28,24 +27,7 @@ export function Header() {
   const isHome = location.pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) {
-        const { data } = await supabase.rpc("has_role", {
-          _user_id: session.user.id,
-          _role: "admin",
-        });
-        setIsAdmin(!!data);
-      }
-    };
-    checkAdmin();
-  }, []);
 
   const toggleMenu = () => {
     const newState = !open;
