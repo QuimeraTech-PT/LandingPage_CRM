@@ -120,7 +120,7 @@ export const updateAnalyticsConsent = (
   // If consent was granted and GTM wasn't loaded yet, load it now
   const hasConsent = typeof consent === "string" ? (consent === "all") : (consent.analytics || consent.marketing);
   if (hasConsent && !document.querySelector(`script[src*="googletagmanager.com/gtm.js"]`)) {
-    getAnalyticsConfig().then(config => {
+    getAnalyticsConfig().then((config: { gtmId: string; gaId: string }) => {
       if (config.gtmId) {
         const script = document.createElement("script");
         script.async = true;
