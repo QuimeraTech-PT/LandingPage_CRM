@@ -30,10 +30,7 @@ const getDriveClient = () => {
   }
 };
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-
 export const createProjectFolder = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -43,15 +40,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     const logDriveActivity = async (
       action: string,
       details: Json,
@@ -60,7 +49,6 @@ export const createProjectFolder = createServerFn({ method: "POST" })
       try {
         await supabaseAdmin.from("crm_activity_logs").insert([
           {
-            user_id: userId,
             action,
             entity_type: "drive",
             entity_id: data.projectId,
@@ -113,7 +101,6 @@ export const createProjectFolder = createServerFn({ method: "POST" })
   });
 
 export const listProjectFiles = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -121,14 +108,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) {
@@ -149,7 +129,6 @@ export const listProjectFiles = createServerFn({ method: "GET" })
   });
 
 export const uploadFileToProject = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -161,15 +140,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -194,7 +165,6 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
-          user_id: userId,
           action: "upload_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -211,7 +181,6 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
   });
 
 export const renameDriveFile = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -221,15 +190,7 @@ export const renameDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -241,7 +202,6 @@ export const renameDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
-          user_id: userId,
           action: "rename_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -258,7 +218,6 @@ export const renameDriveFile = createServerFn({ method: "POST" })
   });
 
 export const deleteDriveFile = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -268,15 +227,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -288,7 +239,6 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
-          user_id: userId,
           action: "delete_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -305,7 +255,6 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
   });
 
 export const moveDriveFile = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -317,15 +266,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -338,7 +279,6 @@ export const moveDriveFile = createServerFn({ method: "POST" })
 
       await supabaseAdmin.from("crm_activity_logs").insert([
         {
-          user_id: userId,
           action: "move_file",
           entity_type: "drive",
           entity_id: data.projectId,
@@ -360,7 +300,6 @@ export const moveDriveFile = createServerFn({ method: "POST" })
   });
 
 export const batchRenameDriveFiles = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -374,15 +313,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -396,7 +327,6 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
-              user_id: userId,
               action: "rename_file",
               entity_type: "drive",
               entity_id: data.projectId,
@@ -418,7 +348,6 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -432,15 +361,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -454,7 +375,6 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
-              user_id: userId,
               action: "delete_file",
               entity_type: "drive",
               entity_id: data.projectId,
@@ -476,7 +396,6 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   });
 
 export const batchMoveDriveFiles = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -492,15 +411,7 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data, context }) => {
-    const userId = context?.userId;
-    if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
-
+  .handler(async ({ data }) => {
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
@@ -515,7 +426,6 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
           });
           await supabaseAdmin.from("crm_activity_logs").insert([
             {
-              user_id: userId,
               action: "move_file",
               entity_type: "drive",
               entity_id: data.projectId,
@@ -528,20 +438,9 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
               status: "success",
             },
           ]);
-          results.push({
-            fileId: file.fileId,
-            fileName: file.fileName,
-            oldParentId: file.oldParentId,
-            success: true,
-          });
+          results.push({ fileId: file.fileId, success: true });
         } catch (error: unknown) {
-          results.push({
-            fileId: file.fileId,
-            fileName: file.fileName,
-            oldParentId: file.oldParentId,
-            success: false,
-            error: getErrorMessage(error),
-          });
+          results.push({ fileId: file.fileId, success: false, error: getErrorMessage(error) });
         }
       }
 

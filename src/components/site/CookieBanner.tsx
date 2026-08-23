@@ -43,7 +43,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       } else {
         // 2. If not in local storage, try to get from backend if authenticated
         try {
-          const synced = await getSyncedCookiePreferences();
+          const synced = await getSyncedCookiePreferences() as { analytics: boolean; marketing: boolean } | null;
           if (synced) {
             setPreferences({
               essential: true,
