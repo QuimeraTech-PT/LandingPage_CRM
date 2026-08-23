@@ -61,6 +61,7 @@ export const getSyncedCookiePreferences = createServerFn({ method: "GET" })
       .maybeSingle();
 
     if (error || !data) return null;
-
-    return data.cookie_preferences as { analytics: boolean; marketing: boolean } | null;
+    
+    const profile = data as unknown as { cookie_preferences: any };
+    return profile.cookie_preferences as { analytics: boolean; marketing: boolean } | null;
   });
