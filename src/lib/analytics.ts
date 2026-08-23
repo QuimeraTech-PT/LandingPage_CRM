@@ -116,9 +116,17 @@ export const getAnalyticsConsent = () => {
   if (!local) return null;
 
   try {
-    return JSON.parse(local) as Record<string, boolean>;
+    // Standardize to object format
+    const parsed = JSON.parse(local);
+    if (typeof parsed === "object" && parsed !== null) {
+      return parsed as Record<string, boolean>;
+    }
+    // Fallback for string-based legacy values
+    const isAll = parsed === "all";
+    return { essential: true, analytics: isAll, marketing: isAll };
   } catch {
-    return local as "all" | "essential" | "none";
+    const isAll = local === "all";
+    return { essential: true, analytics: isAll, marketing: isAll };
   }
 };
 

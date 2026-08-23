@@ -30,23 +30,19 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     const savedConsent = getAnalyticsConsent();
 
     if (savedConsent) {
-      if (typeof savedConsent === "object") {
-        setPreferences({
-          essential: true,
-          analytics: savedConsent.analytics ?? false,
-          marketing: savedConsent.marketing ?? false,
-        });
-        updateAnalyticsConsent(savedConsent);
-      } else {
-        const isAll = savedConsent === "all";
-        setPreferences({ essential: true, analytics: isAll, marketing: isAll });
-        updateAnalyticsConsent(isAll ? "all" : "essential");
+      // The updated getAnalyticsConsent already handles conversion to object
+      setPreferences({
+        essential: true,
+        analytics: !!savedConsent.analytics,
+        marketing: !!savedConsent.marketing,
+      });
+      updateAnalyticsConsent(savedConsent);
+    } else {
+      // If no consent and not on cookie policy page, show banner
+      if (location.pathname !== "/politica-de-cookies") {
+        const timer = setTimeout(() => setIsVisible(true), 1500);
+        return () => clearTimeout(timer);
       }
-    }
-
-    if (!savedConsent && location.pathname !== "/politica-de-cookies") {
-      const timer = setTimeout(() => setIsVisible(true), 1500);
-      return () => clearTimeout(timer);
     }
   }, [location.pathname]);
 
