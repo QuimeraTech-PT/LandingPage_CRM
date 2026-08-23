@@ -3,10 +3,49 @@ import { cn } from "@/lib/utils";
 
 function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn("rounded-2xl border border-border p-8 space-y-4", className)}>
+    <div
+      className={cn(
+        "rounded-2xl border border-border p-8 space-y-4 min-h-[280px] sm:min-h-[300px]",
+        className
+      )}
+    >
       <Skeleton className="h-12 w-12 rounded-xl" />
       <Skeleton className="h-6 w-3/4" />
       <Skeleton className="h-12 w-full" />
+    </div>
+  );
+}
+
+export function LegalSkeleton() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-4xl px-5 py-24 lg:px-8 lg:py-32">
+        <Skeleton className="mb-8 h-4 w-48" />
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-12 w-12 rounded-xl" />
+            <Skeleton className="h-12 w-2/3" />
+          </div>
+          <Skeleton className="h-4 w-32" />
+          <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-4">
+            <div className="flex items-center gap-6">
+              <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-12 space-y-12">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -57,7 +96,7 @@ export function PillarsSkeleton() {
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <SkeletonCard key={i} />
+            <SkeletonCard key={i} className="min-h-[200px]" />
           ))}
         </div>
       </div>
@@ -75,8 +114,8 @@ export function SpecialtiesSkeleton() {
           <Skeleton className="mt-5 h-20 w-full" />
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <SkeletonCard key={i} className="bg-card" />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SkeletonCard key={i} className="bg-card min-h-[320px] sm:min-h-[350px]" />
           ))}
         </div>
       </div>
@@ -112,7 +151,7 @@ export function MethodologySkeleton() {
             ))}
           </div>
           <div className="lg:col-span-7">
-            <div className="h-full min-h-[500px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
+            <div className="h-full min-h-[500px] lg:min-h-[560px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
               <div className="flex items-center gap-4">
                 <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-white/5" />
                 <Skeleton className="h-8 w-1/3 bg-white/5" />
