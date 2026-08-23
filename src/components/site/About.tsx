@@ -151,16 +151,16 @@ export function About() {
                 </div>
 
                 <div
-                  className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm"
+                  className="grow overflow-hidden p-6 font-mono text-xs leading-[1.8] md:text-sm"
                   aria-hidden="true"
                 >
-                  <div className="flex space-x-4">
-                    <div className="select-none text-black/20 dark:text-white/30">
-                      {Array.from({ length: 14 }).map((_, i) => (
+                  <div className="flex space-x-4 h-full">
+                    <div className="select-none text-black/20 dark:text-white/30 hidden sm:block">
+                      {Array.from({ length: 22 }).map((_, i) => (
                         <div key={i}>{String(i + 1).padStart(2, "0")}</div>
                       ))}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 py-1">
                       <div className="text-[#a626a4] dark:text-[#c678dd]">
                         class{" "}
                         <span className="text-[#4078f2] dark:text-[#61afef]">SoftwareHouse</span>{" "}
@@ -175,7 +175,7 @@ export function About() {
                         private <span className="text-[#383a42] dark:text-[#abb2bf]">mission</span>{" "}
                         = <span className="text-[#50a14f] dark:text-[#98c379]">"Innovation"</span>;
                       </div>
-                      <div className="h-4" />
+                      <div className="h-2" />
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">
                         async{" "}
                         <span className="text-[#e45649] dark:text-[#e06c75]">buildFuture</span>(){" "}
@@ -197,8 +197,18 @@ export function About() {
                       </div>
                       <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">{"})"};</div>
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
+                      <div className="h-2" />
+                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">
+                        <span className="text-[#e45649] dark:text-[#e06c75]">optimize</span>(){" "}
+                        {"{"}
+                      </div>
+                      <div className="pl-8 text-[#4078f2] dark:text-[#61afef]">
+                        return <span className="text-[#383a42] dark:text-[#abb2bf]">this</span>.
+                        <span className="text-[#986801] dark:text-[#d19a66]">refactor</span>();
+                      </div>
+                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                       <div className="h-4" />
-                      <div className="pl-4 text-black/30 dark:text-white/20">
+                      <div className="pl-4 text-black/30 dark:text-white/20 italic">
                         // Continuous improvement...
                       </div>
                       <div className="text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
