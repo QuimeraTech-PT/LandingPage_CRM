@@ -85,7 +85,7 @@ export function About() {
                   <motion.div
                     key={idx}
                     variants={itemVariants}
-                    className="glass-card glass-card-hover group flex flex-col p-4 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10 rounded-2xl"
+                    className="glass-card glass-card-hover group relative flex flex-col p-4 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10 rounded-2xl overflow-hidden"
                     onClick={() =>
                       import("@/lib/analytics").then(({ trackEvent }) =>
                         trackEvent("about_card_click", { label: stat.label }),
@@ -99,6 +99,10 @@ export function About() {
                     <p className="text-[11px] sm:text-xs leading-relaxed text-surface-muted">
                       {stat.value}
                     </p>
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-8 bottom-0 h-px bg-linear-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    />
                   </motion.div>
                 ))}
               </div>
