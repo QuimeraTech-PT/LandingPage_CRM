@@ -315,14 +315,34 @@ export const updateProject = createServerFn({ method: "POST" })
   });
 
 export const getTransactions = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { data, error } = await supabaseAdmin
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        cursor: z.string().nullable().optional(),
+        limit: z.number().optional().default(20),
+        type: z.enum(["income", "expense"]).nullable().optional(),
+      })
+      .parse(data || {}),
+  )
+  .handler(async ({ data }) => {
+    let query = supabaseAdmin
       .from("crm_finances")
       .select("*, crm_projects(name)")
-      .order("date", { ascending: false });
+      .order("date", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (data.type) query = query.eq("type", data.type);
+    if (data.cursor) query = query.lt("created_at", data.cursor);
+
+    const { data: items, error } = await query.limit(data.limit + 1);
 
     if (error) throw error;
-    return data;
+
+    const hasNextPage = items.length > data.limit;
+    const finalItems = hasNextPage ? items.slice(0, -1) : items;
+    const nextCursor = hasNextPage ? finalItems[finalItems.length - 1].created_at : null;
+
+    return { items: finalItems, nextCursor };
   });
 
 export const createTransaction = createServerFn({ method: "POST" })
