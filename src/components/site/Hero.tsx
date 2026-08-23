@@ -125,7 +125,7 @@ export function Hero() {
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
           >
-            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            continua a acontecer a mesma merda eu entro e salto fora. Pff apaga tudo o que tens de autenticaçao e retira o guard de todo o CRM e backoffice para eu poder testar.
+            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            atualiza o codigo nao a merda da hero section.
           </motion.p>
           
 
