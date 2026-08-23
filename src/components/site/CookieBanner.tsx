@@ -4,6 +4,7 @@ import { Cookie, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent, getAnalyticsConsent } from "@/lib/analytics";
+import { syncCookiePreferences, getSyncedCookiePreferences } from "@/lib/analytics.functions";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -27,23 +28,43 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useEffect(() => {
     setMounted(true);
-    const savedConsent = getAnalyticsConsent();
+    
+    const initializeConsent = async () => {
+      // 1. Try Local Storage first for speed
+      const savedConsent = getAnalyticsConsent();
+      
+      if (savedConsent) {
+        setPreferences({
+          essential: true,
+          analytics: !!savedConsent.analytics,
+          marketing: !!savedConsent.marketing,
+        });
+        updateAnalyticsConsent(savedConsent);
+      } else {
+        // 2. If not in local storage, try to get from backend if authenticated
+        try {
+          const synced = await getSyncedCookiePreferences();
+          if (synced) {
+            setPreferences({
+              essential: true,
+              analytics: !!synced.analytics,
+              marketing: !!synced.marketing,
+            });
+            updateAnalyticsConsent(synced);
+            return; // Don't show banner
+          }
+        } catch (e) {
+          console.debug("Not authenticated or failed to fetch synced preferences");
+        }
 
-    if (savedConsent) {
-      // The updated getAnalyticsConsent already handles conversion to object
-      setPreferences({
-        essential: true,
-        analytics: !!savedConsent.analytics,
-        marketing: !!savedConsent.marketing,
-      });
-      updateAnalyticsConsent(savedConsent);
-    } else {
-      // If no consent and not on cookie policy page, show banner
-      if (location.pathname !== "/politica-de-cookies") {
-        const timer = setTimeout(() => setIsVisible(true), 1500);
-        return () => clearTimeout(timer);
+        // 3. Show banner if no consent found
+        if (location.pathname !== "/politica-de-cookies") {
+          setIsVisible(true);
+        }
       }
-    }
+    };
+
+    initializeConsent();
   }, [location.pathname]);
 
   useImperativeHandle(ref, () => ({
