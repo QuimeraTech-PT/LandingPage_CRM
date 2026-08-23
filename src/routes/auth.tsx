@@ -60,16 +60,15 @@ function AuthPage() {
       });
 
       if (error) {
-        // If user doesn't exist, try to sign up then sign in
+        // If sign in fails (likely user doesn't exist), try to sign up
         const { error: signUpError } = await supabase.auth.signUp({
           email: testEmail,
           password: testPass,
         });
         
         if (signUpError) throw signUpError;
-        toast.success("Utilizador de teste criado com sucesso!");
         
-        // Retry sign in
+        // With auto-confirm enabled, sign up returns a session
         const { error: retryError } = await supabase.auth.signInWithPassword({
           email: testEmail,
           password: testPass,
