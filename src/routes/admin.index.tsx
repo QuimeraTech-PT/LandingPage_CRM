@@ -218,18 +218,19 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="col-span-1 bg-card/50 backdrop-blur-sm border-white/10">
+        <Card className="col-span-1 bg-card/40 backdrop-blur-md border-white/5 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 pointer-events-none" />
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg font-bold">
               <History className="h-5 w-5 text-primary" />
-              Logs de Atividade
+              Monitorização
             </CardTitle>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="flex flex-col gap-2 mt-4 relative z-10">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
                 <Input
-                  placeholder="Pesquisar logs..."
-                  className="pl-8 h-8 text-xs bg-muted/50 border-white/10"
+                  placeholder="Filtrar eventos..."
+                  className="pl-8 h-8 text-[11px] bg-muted/20 border-white/5 focus:border-primary/50 transition-all"
                   value={logFilter.search}
                   onChange={(e) => setLogFilter((prev) => ({ ...prev, search: e.target.value }))}
                 />
@@ -238,31 +239,35 @@ function AdminDashboard() {
                 value={logFilter.type}
                 onValueChange={(val) => setLogFilter((prev) => ({ ...prev, type: val }))}
               >
-                <SelectTrigger className="h-8 text-xs bg-muted/50 border-white/10">
+                <SelectTrigger className="h-8 text-[11px] bg-muted/20 border-white/5 focus:border-primary/50 transition-all">
                   <div className="flex items-center gap-2">
-                    <Filter className="h-3 w-3" />
-                    <SelectValue placeholder="Filtrar por tipo" />
+                    <Filter className="h-3 w-3 text-primary" />
+                    <SelectValue placeholder="Tipo" />
                   </div>
                 </SelectTrigger>
                 <SelectContent className="bg-card border-white/10">
-                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="all">Todos os Eventos</SelectItem>
                   <SelectItem value="lead">Leads</SelectItem>
                   <SelectItem value="project">Projetos</SelectItem>
-                  <SelectItem value="drive">Drive</SelectItem>
+                  <SelectItem value="finance">Finanças</SelectItem>
+                  <SelectItem value="drive">Documentos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 mt-2">
-              {filteredLogs.map((log: ActivityLog) => (
-                <div
+            <div className="space-y-4 mt-2 relative z-10">
+              {filteredLogs.map((log: ActivityLog, idx) => (
+                <motion.div
                   key={log.id}
-                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0 group"
                 >
                   <div
                     className={cn(
-                      "mt-0.5 rounded-full p-1 h-fit",
+                      "mt-0.5 rounded-full p-1.5 h-fit shadow-inner transition-transform group-hover:scale-110",
                       log.status === "success"
                         ? "bg-green-500/10 text-green-500"
                         : log.status === "warning"
@@ -278,63 +283,71 @@ function AdminDashboard() {
                       <AlertCircle className="h-3 w-3" />
                     )}
                   </div>
-                  <div className="space-y-1 min-w-0">
-                    <p className="font-medium text-foreground truncate capitalize">
+                  <div className="space-y-0.5 min-w-0">
+                    <p className="font-bold text-[11px] uppercase tracking-wider text-foreground truncate group-hover:text-primary transition-colors">
                       {log.action.replace(/_/g, " ")}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      <span className="opacity-60">{log.entity_type}:</span>{" "}
+                    <p className="text-[10px] text-muted-foreground truncate opacity-80">
+                      <span className="font-medium text-primary/70">{log.entity_type}:</span>{" "}
                       {getLogDetail(log.details, "fileName") ||
                         getLogDetail(log.details, "projectName") ||
                         getLogDetail(log.details, "newName") ||
                         log.action}
                     </p>
-                    <p className="text-[10px] text-muted-foreground opacity-60">
-                      {new Date(log.created_at).toLocaleString("pt-PT")}
+                    <p className="text-[9px] text-muted-foreground opacity-50 flex items-center gap-1">
+                      <Clock className="h-2 w-2" />
+                      {new Date(log.created_at).toLocaleTimeString("pt-PT", { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
               {filteredLogs.length === 0 && (
-                <p className="text-xs text-muted-foreground italic py-4 text-center">
-                  Nenhum log encontrado.
-                </p>
+                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground opacity-30">
+                  <History className="h-6 w-6 mb-2" />
+                  <p className="text-[10px] italic">Sem registos.</p>
+                </div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <div className="col-span-2 grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-2 grid gap-6">
+          <div className="grid grid-cols-2 gap-6">
             <Button
               variant="outline"
-              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              className="h-40 flex-col gap-4 text-xl font-bold border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
               asChild
             >
               <Link to="/admin/leads">
-                <Users className="h-8 w-8 text-primary" />
-                Gerir Leads
+                <div className="p-4 rounded-2xl bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
+                  <Users className="h-10 w-10 text-blue-500" />
+                </div>
+                Gestão Comercial
               </Link>
             </Button>
             <Button
               variant="outline"
-              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              className="h-40 flex-col gap-4 text-xl font-bold border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
               asChild
             >
               <Link to="/admin/projects">
-                <Briefcase className="h-8 w-8 text-primary" />
-                Gerir Projetos
+                <div className="p-4 rounded-2xl bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-colors">
+                  <Briefcase className="h-10 w-10 text-cyan-500" />
+                </div>
+                Gestão de Projetos
               </Link>
             </Button>
           </div>
           <Button
             variant="outline"
-            className="h-32 gap-4 text-xl border-primary/20 bg-primary/5 hover:bg-primary/10"
+            className="h-40 gap-6 text-2xl font-black border-white/5 bg-card/40 backdrop-blur-md hover:border-primary/40 hover:bg-primary/5 group transition-all"
             asChild
           >
             <Link to="/admin/finances">
-              <Wallet className="h-8 w-8 text-primary" />
-              Gerir Finanças e Cash Flow
+              <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <Wallet className="h-12 w-12 text-primary" />
+              </div>
+              Controlo Financeiro & Cash Flow
             </Link>
           </Button>
         </div>
