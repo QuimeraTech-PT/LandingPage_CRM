@@ -243,7 +243,7 @@ export function Methodology() {
           </motion.div>
 
           {/* Step Details Panel */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 h-full">
             <AnimatePresence mode="wait">
               {activeStep ? (
                 <motion.div
