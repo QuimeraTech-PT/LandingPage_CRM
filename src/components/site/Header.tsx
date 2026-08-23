@@ -96,16 +96,6 @@ export function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-6 pl-6 border-l border-border/50">
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors mr-4"
-              title="Aceder ao CRM"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              <span>Dashboard</span>
-            </Link>
-          )}
           <ThemeToggle />
           <AccessibilityMenu />
         </div>
