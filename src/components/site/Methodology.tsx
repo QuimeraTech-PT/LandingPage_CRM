@@ -238,7 +238,8 @@ export function Methodology() {
                   </div>
                 </motion.button>
               );
-            })}
+              })}
+            </div>
           </motion.div>
 
           {/* Step Details Panel */}
