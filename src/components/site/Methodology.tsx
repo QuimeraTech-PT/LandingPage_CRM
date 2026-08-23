@@ -258,62 +258,72 @@ export function Methodology() {
                       : { opacity: 0, x: -20, filter: "blur(10px)" }
                   }
                   transition={transitions.default}
-                  className="glass-card h-full min-h-100 p-8 md:p-10 flex flex-col rounded-3xl"
+                  className="glass-card h-full min-h-100 p-8 md:p-12 flex flex-col rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-4xl font-black text-accent/20">{activeStep}</span>
-                    <h4 className="text-2xl font-bold tracking-tight">
-                      {phases.find((p) => p.step === activeStep)?.title}
-                    </h4>
-                  </div>
+                  {/* Subtle inner glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
 
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                    {phases.find((p) => p.step === activeStep)?.description}
-                  </p>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <span className="text-5xl font-black text-accent/10 tabular-nums leading-none">
+                        {activeStep}
+                      </span>
+                      <h4 className="text-3xl font-bold tracking-tight text-white">
+                        {phases.find((p) => p.step === activeStep)?.title}
+                      </h4>
+                    </div>
 
-                  <div className="mb-8">
-                    <span className="text-xs font-bold tracking-widest uppercase text-accent mb-4 block">
-                      O que fazemos
-                    </span>
+                    <p className="text-lg text-slate-400 leading-relaxed mb-10 max-w-2xl">
+                      {phases.find((p) => p.step === activeStep)?.description}
+                    </p>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="mb-10">
+                      <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent mb-6 block">
+                        O que fazemos
+                      </span>
+
+                      <div className="grid gap-x-12 gap-y-6 sm:grid-cols-2">
+                        {phases
+                          .find((p) => p.step === activeStep)
+                          ?.details?.map((detail, idx) => (
+                            <motion.div
+                              key={detail}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.15 + idx * 0.06 }}
+                              className="flex gap-4 items-baseline"
+                            >
+                              <span className="text-sm font-bold text-accent tabular-nums shrink-0">
+                                {String(idx + 1).padStart(2, "0")}
+                              </span>
+                              <h5 className="text-[15px] font-medium text-slate-300 leading-snug">
+                                {detail}
+                              </h5>
+                            </motion.div>
+                          ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       {phases
                         .find((p) => p.step === activeStep)
-                        ?.details?.map((detail, idx) => (
+                        ?.checklist.map((checkitem, idx) => (
                           <motion.div
-                            key={detail}
+                            key={checkitem}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.15 + idx * 0.06 }}
-                            className="flex gap-3"
+                            transition={{ delay: 0.1 + idx * 0.05 }}
+                            className="flex items-center gap-4 p-5 rounded-[1.25rem] bg-white/5 border border-white/10 hover:border-accent/30 transition-colors group"
                           >
-                            <span className="text-sm font-bold text-accent/60 tabular-nums">
-                              {String(idx + 1).padStart(2, "0")}
-                            </span>
-
-                            <div>
-                              <h5 className="text-sm font-semibold">{detail}</h5>
+                            <div className="h-6 w-6 rounded-full border border-accent/30 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
                             </div>
+                            <span className="text-sm font-medium text-slate-200">
+                              {checkitem}
+                            </span>
                           </motion.div>
                         ))}
                     </div>
-                  </div>
-
-                  <div className="mt-auto grid gap-4 sm:grid-cols-2">
-                    {phases
-                      .find((p) => p.step === activeStep)
-                      ?.checklist.map((checkitem, idx) => (
-                        <motion.div
-                          key={checkitem}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 + idx * 0.05 }}
-                          className="flex items-center gap-3 p-3 rounded-xl bg-card/50 dark:bg-white/5 border border-border dark:border-white/5 shadow-sm dark:shadow-none"
-                        >
-                          <CheckCircle2 className="h-5 w-5 text-accent shrink-0" />
-                          <span className="text-sm font-medium">{checkitem}</span>
-                        </motion.div>
-                      ))}
                   </div>
                 </motion.div>
               ) : (
