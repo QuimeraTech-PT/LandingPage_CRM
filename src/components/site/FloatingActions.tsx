@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ArrowUp, MessageCircle, ChevronUp } from "lucide-react";
+import { ArrowUp, MessageCircle, ChevronUp, LogIn } from "lucide-react";
 import { transitions } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 import { updateAnalyticsConsent } from "@/lib/analytics"; // We'll use gtag directly if available or dataLayer
-import { useLocation } from "@tanstack/react-router";
+import { useLocation, Link } from "@tanstack/react-router";
 
 export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
@@ -130,6 +130,26 @@ export function FloatingActions() {
                       <MessageCircle className="h-5 w-5 fill-current sm:h-4 sm:w-4" />
                     </div>
                   </motion.a>
+
+                  <motion.div
+                    role="menuitem"
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.05, x: -4 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+                  >
+                    <Link
+                      to="/auth"
+                      className="flex min-h-[48px] items-center gap-3 rounded-full bg-secondary px-5 py-2.5 text-secondary-foreground shadow-lg transition-all hover:bg-secondary/90 hover:shadow-xl focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 active:brightness-95 sm:px-4 sm:py-2"
+                      onClick={() => {
+                        trackClick('auth_menu');
+                        setIsOpen(false);
+                      }}
+                    >
+                      <span className="text-sm font-semibold tracking-wide">Login CRM</span>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 sm:h-8 sm:w-8">
+                        <LogIn className="h-5 w-5 sm:h-4 sm:w-4" />
+                      </div>
+                    </Link>
+                  </motion.div>
 
                   <motion.button
                     onClick={scrollToTop}
