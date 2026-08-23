@@ -2,9 +2,11 @@ import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Chrome, Loader2 } from 'lucide-react';
+import { Chrome, Loader2, Mail, Lock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const Route = createFileRoute('/auth')({
   component: AuthPage,
@@ -12,6 +14,8 @@ export const Route = createFileRoute('/auth')({
 
 function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const search = useSearch({ from: '/auth' }) as { redirect?: string };
 
@@ -41,33 +45,27 @@ function AuthPage() {
       setIsLoading(false);
     }
   };
-  
-  const handleDeveloperLogin = async () => {
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error('Por favor, preencha todos os campos.');
+      return;
+    }
+
     try {
       setIsLoading(true);
-      
-      const isDev = import.meta.env.DEV;
-      if (!isDev) {
-        toast.error('Acesso de developer apenas disponível em ambiente de desenvolvimento.');
-        setIsLoading(false);
-        return;
-      }
-
-      // Let's try to sign in.
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: 'dev@quimeratech.com',
-        password: 'developer-mode-active',
+        email,
+        password,
       });
 
-      if (error) {
-        console.warn('Developer login failed:', error.message);
-        throw error;
-      }
+      if (error) throw error;
       
-      toast.success('Login developer bem-sucedido!');
+      toast.success('Sessão iniciada com sucesso!');
       navigate({ to: search.redirect || '/admin' });
     } catch (error: any) {
-      toast.error('Erro no login developer: ' + error.message);
+      toast.error('Erro no login: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +80,7 @@ function AuthPage() {
             Inicie sessão para aceder ao painel de administração.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-6">
           <Button 
             variant="outline" 
             className="w-full h-12 gap-2 text-base" 
@@ -97,28 +95,59 @@ function AuthPage() {
             Entrar com Google
           </Button>
 
-          {import.meta.env.DEV && (
-            <Button 
-              variant="secondary" 
-              className="w-full h-12 gap-2 text-base border-dashed border-primary/50" 
-              onClick={handleDeveloperLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                  </span>
-                  Entrar como Developer
-                </div>
-              )}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-white/10"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Ou com e-mail</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="admin@quimeratech.com" 
+                  className="pl-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Palavra-passe</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  className="pl-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required 
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Entrar'}
             </Button>
-          )}
+          </form>
           
-          <p className="text-xs text-center text-muted-foreground mt-4">
+          <div className="rounded-lg bg-primary/5 p-3 border border-primary/20">
+            <p className="text-[10px] text-primary/70 font-mono">
+              CREDENCIAIS DE TESTE:<br/>
+              User: admin@quimeratech.com<br/>
+              Pass: quimera123
+            </p>
+          </div>
+
+          <p className="text-xs text-center text-muted-foreground">
             Apenas utilizadores autorizados têm acesso a esta área.
           </p>
         </CardContent>
