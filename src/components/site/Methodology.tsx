@@ -186,7 +186,7 @@ export function Methodology() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-12" ref={containerRef}>
+        <div className="mt-16 grid gap-8 lg:grid-cols-12 items-stretch" ref={containerRef}>
           {/* Steps Navigation */}
           <motion.div
             className="lg:col-span-5"
