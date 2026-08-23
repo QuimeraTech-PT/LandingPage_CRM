@@ -20,13 +20,13 @@ function AuthPage() {
   const search = useSearch({ from: '/auth' }) as { redirect?: string };
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate({ to: search.redirect || '/admin' });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && event === 'SIGNED_IN') {
+        navigate({ to: search.redirect || '/admin', replace: true });
       }
-    };
-    checkSession();
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate, search.redirect]);
 
   const handleGoogleLogin = async () => {
