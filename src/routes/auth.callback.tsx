@@ -1,9 +1,9 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
-export const Route = createFileRoute('/auth/callback')({
+export const Route = createFileRoute("/auth/callback")({
   component: AuthCallback,
 });
 
@@ -12,17 +12,20 @@ function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
       if (error) {
-        console.error('Auth callback error:', error);
-        navigate({ to: '/auth', replace: true });
+        console.error("Auth callback error:", error);
+        navigate({ to: "/auth", replace: true });
         return;
       }
 
       if (session) {
         // Check for stored redirect path in session or search params if needed
-        navigate({ to: '/admin', replace: true });
+        navigate({ to: "/admin", replace: true });
       }
     };
 

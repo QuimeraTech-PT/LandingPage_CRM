@@ -1,25 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
-import { 
-  listProjectFiles, 
-  renameDriveFile, 
-  deleteDriveFile, 
+import { useQuery } from "@tanstack/react-query";
+import {
+  listProjectFiles,
+  renameDriveFile,
+  deleteDriveFile,
   uploadFileToProject,
   moveDriveFile,
   batchRenameDriveFiles,
   batchDeleteDriveFiles,
-  batchMoveDriveFiles
-} from '@/lib/google-drive.functions';
-import { 
-  File, 
-  FileText, 
-  Image as ImageIcon, 
-  ExternalLink, 
-  Loader2, 
-  AlertCircle, 
-  FolderOpen, 
-  Upload, 
-  Trash2, 
-  Edit2, 
+  batchMoveDriveFiles,
+} from "@/lib/google-drive.functions";
+import {
+  File,
+  FileText,
+  Image as ImageIcon,
+  ExternalLink,
+  Loader2,
+  AlertCircle,
+  FolderOpen,
+  Upload,
+  Trash2,
+  Edit2,
   MoreVertical,
   CheckSquare,
   Square,
@@ -34,14 +34,14 @@ import {
   Presentation,
   Table as TableIcon,
   FileCode,
-  Clock
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
+  Clock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
@@ -56,7 +56,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -65,29 +65,81 @@ interface ProjectFilesProps {
   projectId: string;
 }
 
+interface BatchMoveResult {
+  success: boolean;
+  fileId?: string;
+  fileName?: string;
+  oldParentId?: string;
+  error?: string;
+}
+
+interface DriveFile {
+  id: string;
+  name: string;
+  mimeType: string;
+  webViewLink: string;
+  thumbnailLink?: string;
+  size?: string;
+}
+
+interface ProjectFilesResponse {
+  status: "pending_config" | "success" | "error";
+  files: DriveFile[];
+  error?: string;
+}
+
+interface BatchMoveResponse {
+  success: boolean;
+  results?: BatchMoveResult[];
+  error?: string;
+}
+
+interface BatchMoveVariables {
+  data: {
+    projectId: string;
+    newParentId: string;
+    files: Array<{
+      fileId: string;
+      fileName: string;
+      oldParentId: string;
+    }>;
+  };
+}
+
+interface PreviewFile {
+  name: string;
+  mimeType: string;
+  webViewLink: string;
+  size?: string;
+}
+
 export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [renamingFile, setRenamingFile] = useState<{ id: string, name: string } | null>(null);
-  const [deletingFile, setDeletingFile] = useState<{ id: string, name: string } | null>(null);
+  const [renamingFile, setRenamingFile] = useState<{ id: string; name: string } | null>(null);
+  const [deletingFile, setDeletingFile] = useState<{ id: string; name: string } | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
-  const [movingFile, setMovingFile] = useState<{ id: string, name: string, oldParentId: string } | null>(null);
+  const [movingFile, setMovingFile] = useState<{
+    id: string;
+    name: string;
+    oldParentId: string;
+  } | null>(null);
   const [batchRenaming, setBatchRenaming] = useState<boolean>(false);
   const [batchDeleting, setBatchDeleting] = useState<boolean>(false);
   const [batchRenameValues, setBatchRenameValues] = useState<Record<string, string>>({});
   const [batchMoving, setBatchMoving] = useState<boolean>(false);
-  const [batchMoveProgress, setBatchMoveProgress] = useState<{ 
-    current: number, 
-    total: number, 
-    results: any[],
-    newParentId?: string 
+  const [batchMoveProgress, setBatchMoveProgress] = useState<{
+    current: number;
+    total: number;
+    results: BatchMoveResult[];
+    newParentId?: string;
   } | null>(null);
-  const [previewingFile, setPreviewingFile] = useState<any | null>(null);
+  const [previewingFile, setPreviewingFile] = useState<PreviewFile | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['drive-files', folderId],
+    queryKey: ["drive-files", folderId],
     queryFn: () => listProjectFiles({ data: { folderId: folderId! } }),
     enabled: !!folderId,
     refetchInterval: 60000,
@@ -97,8 +149,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     mutationFn: uploadFileToProject,
     onSuccess: (res) => {
       if (res.success) {
-        toast.success('Ficheiro enviado com sucesso!');
-        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        toast.success("Ficheiro enviado com sucesso!");
+        queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
       } else {
         toast.error(`Erro no upload: ${res.error}`);
       }
@@ -110,8 +162,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     mutationFn: renameDriveFile,
     onSuccess: (res) => {
       if (res.success) {
-        toast.success('Ficheiro renomeado!');
-        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        toast.success("Ficheiro renomeado!");
+        queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
         setRenamingFile(null);
       } else {
         toast.error(`Erro ao renomear: ${res.error}`);
@@ -123,8 +175,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     mutationFn: deleteDriveFile,
     onSuccess: (res) => {
       if (res.success) {
-        toast.success('Ficheiro eliminado!');
-        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        toast.success("Ficheiro eliminado!");
+        queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
         setDeletingFile(null);
       } else {
         toast.error(`Erro ao eliminar: ${res.error}`);
@@ -136,8 +188,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     mutationFn: moveDriveFile,
     onSuccess: (res) => {
       if (res.success) {
-        toast.success('Ficheiro movido!');
-        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        toast.success("Ficheiro movido!");
+        queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
         setMovingFile(null);
       } else {
         toast.error(`Erro ao mover: ${res.error}`);
@@ -148,8 +200,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const batchRenameMutation = useMutation({
     mutationFn: batchRenameDriveFiles,
     onSuccess: () => {
-      toast.success('Ficheiros renomeados!');
-      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      toast.success("Ficheiros renomeados!");
+      queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
       setSelectedFiles(new Set());
     },
   });
@@ -157,23 +209,23 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   const batchDeleteMutation = useMutation({
     mutationFn: batchDeleteDriveFiles,
     onSuccess: () => {
-      toast.success('Ficheiros eliminados!');
-      queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+      toast.success("Ficheiros eliminados!");
+      queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
       setSelectedFiles(new Set());
     },
   });
 
   const batchMoveMutation = useMutation({
     mutationFn: batchMoveDriveFiles,
-    onSuccess: (res: any, variables: any) => {
+    onSuccess: (res: BatchMoveResponse, variables: BatchMoveVariables) => {
       if (res.success) {
-        setBatchMoveProgress({ 
-          current: selectedFiles.size || variables.data.files.length, 
-          total: selectedFiles.size || variables.data.files.length, 
-          results: res.results,
-          newParentId: variables.data.newParentId
+        setBatchMoveProgress({
+          current: selectedFiles.size || variables.data.files.length,
+          total: selectedFiles.size || variables.data.files.length,
+          results: res.results ?? [],
+          newParentId: variables.data.newParentId,
         });
-        queryClient.invalidateQueries({ queryKey: ['drive-files', folderId] });
+        queryClient.invalidateQueries({ queryKey: ["drive-files", folderId] });
         setSelectedFiles(new Set());
       } else {
         toast.error(`Erro ao mover ficheiros: ${res.error}`);
@@ -189,15 +241,15 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     setIsUploading(true);
     const reader = new FileReader();
     reader.onload = async () => {
-      const base64 = (reader.result as string).split(',')[1];
+      const base64 = (reader.result as string).split(",")[1];
       uploadMutation.mutate({
         data: {
           projectId,
           folderId,
           fileName: file.name,
           fileType: file.type,
-          fileContent: base64
-        }
+          fileContent: base64,
+        },
       });
     };
     reader.readAsDataURL(file);
@@ -215,71 +267,73 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     setIsDraggingOver(false);
   }, []);
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingOver(false);
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(false);
 
-    const file = e.dataTransfer.files?.[0];
-    if (!file || !folderId) return;
+      const file = e.dataTransfer.files?.[0];
+      if (!file || !folderId) return;
 
-    setIsUploading(true);
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = (reader.result as string).split(',')[1];
-      uploadMutation.mutate({
-        data: {
-          projectId,
-          folderId,
-          fileName: file.name,
-          fileType: file.type,
-          fileContent: base64
-        }
-      });
-    };
-    reader.readAsDataURL(file);
-  }, [folderId, projectId, uploadMutation]);
+      setIsUploading(true);
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = (reader.result as string).split(",")[1];
+        uploadMutation.mutate({
+          data: {
+            projectId,
+            folderId,
+            fileName: file.name,
+            fileType: file.type,
+            fileContent: base64,
+          },
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+    [folderId, projectId, uploadMutation],
+  );
 
-
-  const handleBatchRename = (currentFiles: any[]) => {
-    const updates = Array.from(selectedFiles).map(id => ({
+  const handleBatchRename = (currentFiles: DriveFile[]) => {
+    const updates = Array.from(selectedFiles).map((id) => ({
       fileId: id,
-      newName: batchRenameValues[id] || currentFiles.find((f: any) => f.id === id)?.name || ''
+      newName: batchRenameValues[id] || currentFiles.find((file) => file.id === id)?.name || "",
     }));
     batchRenameMutation.mutate({ data: { projectId, files: updates } });
     setBatchRenaming(false);
   };
 
-  const handleBatchDelete = (currentFiles: any[]) => {
-    const targets = Array.from(selectedFiles).map(id => ({
+  const handleBatchDelete = (currentFiles: DriveFile[]) => {
+    const targets = Array.from(selectedFiles).map((id) => ({
       fileId: id,
-      fileName: currentFiles.find((f: any) => f.id === id)?.name || ''
+      fileName: currentFiles.find((file) => file.id === id)?.name || "",
     }));
     batchDeleteMutation.mutate({ data: { projectId, files: targets } });
     setBatchDeleting(false);
   };
 
-  const handleBatchMove = (newParentId: string, currentFiles: any[]) => {
-    const targets = Array.from(selectedFiles).map(id => ({
+  const handleBatchMove = (newParentId: string, currentFiles: DriveFile[]) => {
+    const targets = Array.from(selectedFiles).map((id) => ({
       fileId: id,
-      fileName: currentFiles.find((f: any) => f.id === id)?.name || '',
-      oldParentId: folderId!
+      fileName: currentFiles.find((file) => file.id === id)?.name || "",
+      oldParentId: folderId!,
     }));
     setBatchMoveProgress({ current: 0, total: targets.length, results: [] });
-    batchMoveMutation.mutate({ 
-      data: { 
-        projectId, 
-        newParentId, 
-        files: targets 
-      } 
+    batchMoveMutation.mutate({
+      data: {
+        projectId,
+        newParentId,
+        files: targets,
+      },
     });
   };
 
-  const selectAll = (allFiles: any[]) => {
+  const selectAll = (allFiles: DriveFile[]) => {
     if (selectedFiles.size === allFiles.length) {
       setSelectedFiles(new Set());
     } else {
-      setSelectedFiles(new Set(allFiles.map((f: any) => f.id)));
+      setSelectedFiles(new Set(allFiles.map((file) => file.id)));
     }
   };
 
@@ -301,14 +355,14 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
     );
   }
 
-  const result = data as any;
+  const result = data as ProjectFilesResponse | undefined;
 
   if (result?.status === "pending_config") {
     return (
       <div className="flex flex-col items-center justify-center p-6 border border-yellow-500/20 rounded-lg text-center bg-yellow-500/5">
         <AlertCircle className="h-8 w-8 text-yellow-500 mb-2" />
         <p className="text-sm font-medium text-yellow-500">Google Drive não configurado</p>
-        <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
+        <p className="text-xs text-muted-foreground mt-1 max-w-50">
           Falta configurar o Service Account nos segredos do backend.
         </p>
       </div>
@@ -316,7 +370,7 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   }
 
   const files = result?.files || [];
-  const subfolders = files.filter((f: any) => f.mimeType === 'application/vnd.google-apps.folder');
+  const subfolders = files.filter((file) => file.mimeType === "application/vnd.google-apps.folder");
 
   const toggleSelection = (fileId: string) => {
     const next = new Set(selectedFiles);
@@ -329,18 +383,22 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   };
 
   const getFileIcon = (mimeType: string) => {
-    if (mimeType.includes('image')) return <ImageIcon className="h-8 w-8 text-blue-400 p-1" />;
-    if (mimeType.includes('pdf')) return <FileText className="h-8 w-8 text-red-400 p-1" />;
-    if (mimeType.includes('folder')) return <FolderOpen className="h-8 w-8 text-yellow-400 p-1" />;
-    if (mimeType.includes('presentation')) return <Presentation className="h-8 w-8 text-orange-400 p-1" />;
-    if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return <TableIcon className="h-8 w-8 text-green-400 p-1" />;
-    if (mimeType.includes('document') || mimeType.includes('word')) return <FileText className="h-8 w-8 text-blue-500 p-1" />;
-    if (mimeType.includes('script') || mimeType.includes('json')) return <FileCode className="h-8 w-8 text-purple-400 p-1" />;
+    if (mimeType.includes("image")) return <ImageIcon className="h-8 w-8 text-blue-400 p-1" />;
+    if (mimeType.includes("pdf")) return <FileText className="h-8 w-8 text-red-400 p-1" />;
+    if (mimeType.includes("folder")) return <FolderOpen className="h-8 w-8 text-yellow-400 p-1" />;
+    if (mimeType.includes("presentation"))
+      return <Presentation className="h-8 w-8 text-orange-400 p-1" />;
+    if (mimeType.includes("spreadsheet") || mimeType.includes("excel"))
+      return <TableIcon className="h-8 w-8 text-green-400 p-1" />;
+    if (mimeType.includes("document") || mimeType.includes("word"))
+      return <FileText className="h-8 w-8 text-blue-500 p-1" />;
+    if (mimeType.includes("script") || mimeType.includes("json"))
+      return <FileCode className="h-8 w-8 text-purple-400 p-1" />;
     return <File className="h-8 w-8 text-muted-foreground p-1" />;
   };
 
   const formatFileSize = (bytes?: string) => {
-    if (!bytes) return '--';
+    if (!bytes) return "--";
     const num = parseInt(bytes);
     if (num < 1024) return `${num} B`;
     if (num < 1024 * 1024) return `${(num / 1024).toFixed(1)} KB`;
@@ -348,10 +406,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "space-y-3 p-1 rounded-lg transition-colors border-2 border-transparent",
-        isDraggingOver && "border-primary border-dashed bg-primary/5"
+        isDraggingOver && "border-primary border-dashed bg-primary/5",
       )}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -361,25 +419,45 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       {selectedFiles.size > 0 && (
         <div className="flex items-center justify-between p-2 rounded-md bg-primary/10 border border-primary/20 animate-in fade-in slide-in-from-top-1 duration-200">
           <div className="flex items-center gap-2">
-            <Checkbox 
-              checked={selectedFiles.size === files.length} 
+            <Checkbox
+              checked={selectedFiles.size === files.length}
               onCheckedChange={() => selectAll(files)}
             />
             <span className="text-xs font-medium text-primary">
-              {selectedFiles.size} selecionado{selectedFiles.size > 1 ? 's' : ''}
+              {selectedFiles.size} selecionado{selectedFiles.size > 1 ? "s" : ""}
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchRenaming(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-primary"
+              onClick={() => setBatchRenaming(true)}
+            >
               <Edit2 className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={() => setBatchMoving(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-primary"
+              onClick={() => setBatchMoving(true)}
+            >
               <Move className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setBatchDeleting(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-destructive"
+              onClick={() => setBatchDeleting(true)}
+            >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => setSelectedFiles(new Set())}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-muted-foreground"
+              onClick={() => setSelectedFiles(new Set())}
+            >
               <XCircle className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -389,46 +467,47 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
       <div className="flex items-center justify-between text-xs font-medium text-muted-foreground mb-2">
         <div className="flex items-center gap-2">
           {files.length > 0 && (
-            <Checkbox 
-              checked={selectedFiles.size === files.length && files.length > 0} 
+            <Checkbox
+              checked={selectedFiles.size === files.length && files.length > 0}
               onCheckedChange={() => selectAll(files)}
             />
           )}
           <span>FICHEIROS NO DRIVE</span>
         </div>
         <div className="flex items-center gap-2">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-6 w-6" 
+          <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
             disabled={isUploading}
             onClick={() => fileInputRef.current?.click()}
           >
-            {isUploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+            {isUploading ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Upload className="h-3 w-3" />
+            )}
           </Button>
-          <Badge variant="outline" className="text-[10px] py-0">{files.length}</Badge>
+          <Badge variant="outline" className="text-[10px] py-0">
+            {files.length}
+          </Badge>
         </div>
       </div>
-      
+
       <div className="grid gap-2">
-        {files.map((file: any) => (
-          <div 
-            key={file.id} 
-            className={`flex items-center justify-between p-3 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-all group ${selectedFiles.has(file.id) ? 'border-primary/50 bg-primary/5' : ''}`}
+        {files.map((file) => (
+          <div
+            key={file.id}
+            className={`flex items-center justify-between p-3 rounded-md bg-muted/30 border border-white/5 hover:bg-muted/50 transition-all group ${selectedFiles.has(file.id) ? "border-primary/50 bg-primary/5" : ""}`}
           >
             <div className="flex items-center gap-3 min-w-0 flex-1">
-              <Checkbox 
-                checked={selectedFiles.has(file.id)} 
+              <Checkbox
+                checked={selectedFiles.has(file.id)}
                 onCheckedChange={() => toggleSelection(file.id)}
                 className="opacity-0 group-hover:opacity-100 data-[state=checked]:opacity-100 transition-opacity"
               />
-              <div className="h-10 w-10 flex items-center justify-center bg-background/50 rounded border border-white/5 overflow-hidden flex-shrink-0">
+              <div className="h-10 w-10 flex items-center justify-center bg-background/50 rounded border border-white/5 overflow-hidden shrink-0">
                 {file.thumbnailLink ? (
                   <img src={file.thumbnailLink} alt="" className="h-full w-full object-cover" />
                 ) : (
@@ -440,18 +519,20 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                   {file.name}
                 </span>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                  <span className="uppercase">{file.mimeType.split('/').pop()?.split('.').pop()}</span>
+                  <span className="uppercase">
+                    {file.mimeType.split("/").pop()?.split(".").pop()}
+                  </span>
                   <span>•</span>
                   <span>{formatFileSize(file.size)}</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-1 ml-2">
-              {!file.mimeType.includes('folder') && (
+              {!file.mimeType.includes("folder") && (
                 <div className="flex items-center gap-1">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => setPreviewingFile(file)}
                     title="Pré-visualizar"
@@ -459,9 +540,9 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                   >
                     <Eye className="h-3.5 w-3.5" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                     asChild
                     title="Transferir / Abrir original"
@@ -474,26 +555,46 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
                     <MoreVertical className="h-3.5 w-3.5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-card border-white/10">
                   <DropdownMenuItem asChild>
-                    <a href={file.webViewLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 cursor-pointer text-foreground">
+                    <a
+                      href={file.webViewLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 cursor-pointer text-foreground"
+                    >
                       <ExternalLink className="h-3.5 w-3.5" />
                       Abrir no Drive
                     </a>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setRenamingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-foreground">
+                  <DropdownMenuItem
+                    onClick={() => setRenamingFile({ id: file.id, name: file.name })}
+                    className="flex items-center gap-2 cursor-pointer text-foreground"
+                  >
                     <Edit2 className="h-3.5 w-3.5" />
                     Renomear
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setMovingFile({ id: file.id, name: file.name, oldParentId: folderId })} className="flex items-center gap-2 cursor-pointer text-foreground">
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setMovingFile({ id: file.id, name: file.name, oldParentId: folderId })
+                    }
+                    className="flex items-center gap-2 cursor-pointer text-foreground"
+                  >
                     <Move className="h-3.5 w-3.5" />
                     Mover
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDeletingFile({ id: file.id, name: file.name })} className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
+                  <DropdownMenuItem
+                    onClick={() => setDeletingFile({ id: file.id, name: file.name })}
+                    className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                     Eliminar
                   </DropdownMenuItem>
@@ -517,16 +618,16 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <DialogTitle>Renomear Ficheiro</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <Input 
-              defaultValue={renamingFile?.name} 
+            <Input
+              defaultValue={renamingFile?.name}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   renameMutation.mutate({
                     data: {
                       projectId,
                       fileId: renamingFile!.id,
-                      newName: e.currentTarget.value
-                    }
+                      newName: e.currentTarget.value,
+                    },
                   });
                 }
               }}
@@ -535,19 +636,25 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             />
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setRenamingFile(null)}>Cancelar</Button>
-            <Button onClick={(e) => {
-              const input = e.currentTarget.parentElement?.previousElementSibling?.querySelector('input');
-              if (input) {
-                renameMutation.mutate({
-                  data: {
-                    projectId,
-                    fileId: renamingFile!.id,
-                    newName: input.value
-                  }
-                });
-              }
-            }} disabled={renameMutation.isPending}>
+            <Button variant="ghost" onClick={() => setRenamingFile(null)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={(e) => {
+                const input =
+                  e.currentTarget.parentElement?.previousElementSibling?.querySelector("input");
+                if (input) {
+                  renameMutation.mutate({
+                    data: {
+                      projectId,
+                      fileId: renamingFile!.id,
+                      newName: input.value,
+                    },
+                  });
+                }
+              }}
+              disabled={renameMutation.isPending}
+            >
               {renameMutation.isPending ? "A processar..." : "Renomear"}
             </Button>
           </DialogFooter>
@@ -561,19 +668,28 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <DialogTitle>Confirmar Eliminação</DialogTitle>
           </DialogHeader>
           <div className="py-4 text-sm text-muted-foreground">
-            Tem a certeza que deseja mover <span className="text-foreground font-medium">{deletingFile?.name}</span> para a reciclagem?
+            Tem a certeza que deseja mover{" "}
+            <span className="text-foreground font-medium">{deletingFile?.name}</span> para a
+            reciclagem?
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeletingFile(null)}>Cancelar</Button>
-            <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => {
-              deleteMutation.mutate({
-                data: {
-                  projectId,
-                  fileId: deletingFile!.id,
-                  fileName: deletingFile!.name
-                }
-              });
-            }} disabled={deleteMutation.isPending}>
+            <Button variant="ghost" onClick={() => setDeletingFile(null)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="outline"
+              className="text-destructive border-destructive/20 hover:bg-destructive/10"
+              onClick={() => {
+                deleteMutation.mutate({
+                  data: {
+                    projectId,
+                    fileId: deletingFile!.id,
+                    fileName: deletingFile!.name,
+                  },
+                });
+              }}
+              disabled={deleteMutation.isPending}
+            >
               {deleteMutation.isPending ? "A eliminar..." : "Eliminar"}
             </Button>
           </DialogFooter>
@@ -587,13 +703,14 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Selecione a pasta de destino para <span className="text-foreground font-medium">{movingFile?.name}</span>:
+              Selecione a pasta de destino para{" "}
+              <span className="text-foreground font-medium">{movingFile?.name}</span>:
             </p>
-            <ScrollArea className="h-[200px] rounded-md border border-white/10 p-2">
+            <ScrollArea className="h-50 rounded-md border border-white/10 p-2">
               <div className="space-y-1">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start gap-2 h-9 text-sm" 
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2 h-9 text-sm"
                   disabled={movingFile?.oldParentId === folderId}
                   onClick={() => {
                     moveMutation.mutate({
@@ -602,19 +719,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                         fileId: movingFile!.id,
                         fileName: movingFile!.name,
                         oldParentId: movingFile!.oldParentId,
-                        newParentId: folderId!
-                      }
+                        newParentId: folderId!,
+                      },
                     });
                   }}
                 >
                   <FolderTree className="h-4 w-4 text-primary" />
                   Pasta Principal (Projeto)
                 </Button>
-                {subfolders.map((folder: any) => (
-                  <Button 
+                {subfolders.map((folder) => (
+                  <Button
                     key={folder.id}
-                    variant="ghost" 
-                    className="w-full justify-start gap-2 h-9 text-sm pl-6" 
+                    variant="ghost"
+                    className="w-full justify-start gap-2 h-9 text-sm pl-6"
                     disabled={movingFile?.oldParentId === folder.id}
                     onClick={() => {
                       moveMutation.mutate({
@@ -623,8 +740,8 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                           fileId: movingFile!.id,
                           fileName: movingFile!.name,
                           oldParentId: movingFile!.oldParentId,
-                          newParentId: folder.id
-                        }
+                          newParentId: folder.id,
+                        },
                       });
                     }}
                   >
@@ -637,7 +754,9 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             </ScrollArea>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setMovingFile(null)}>Cancelar</Button>
+            <Button variant="ghost" onClick={() => setMovingFile(null)}>
+              Cancelar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -648,17 +767,21 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           <DialogHeader>
             <DialogTitle>Renomear em Lote ({selectedFiles.size})</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[300px] pr-4">
+          <ScrollArea className="max-h-75 pr-4">
             <div className="space-y-4 py-4">
-              {Array.from(selectedFiles).map(id => {
-                const file = files.find((f: any) => f.id === id);
+              {Array.from(selectedFiles).map((id) => {
+                const file = files.find((currentFile) => currentFile.id === id);
                 return (
                   <div key={id} className="space-y-1.5">
-                    <label className="text-xs text-muted-foreground block truncate">{file?.name}</label>
-                    <Input 
-                      placeholder="Novo nome..." 
+                    <label className="text-xs text-muted-foreground block truncate">
+                      {file?.name}
+                    </label>
+                    <Input
+                      placeholder="Novo nome..."
                       defaultValue={file?.name}
-                      onChange={(e) => setBatchRenameValues(prev => ({ ...prev, [id]: e.target.value }))}
+                      onChange={(e) =>
+                        setBatchRenameValues((prev) => ({ ...prev, [id]: e.target.value }))
+                      }
                       className="bg-muted/50 border-white/10"
                     />
                   </div>
@@ -667,8 +790,13 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             </div>
           </ScrollArea>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setBatchRenaming(false)}>Cancelar</Button>
-            <Button onClick={() => handleBatchRename(files)} disabled={batchRenameMutation.isPending}>
+            <Button variant="ghost" onClick={() => setBatchRenaming(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => handleBatchRename(files)}
+              disabled={batchRenameMutation.isPending}
+            >
               {batchRenameMutation.isPending ? "A processar..." : "Renomear Todos"}
             </Button>
           </DialogFooter>
@@ -682,11 +810,20 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             <DialogTitle>Confirmar Eliminação em Lote</DialogTitle>
           </DialogHeader>
           <div className="py-4 text-sm text-muted-foreground">
-            Tem a certeza que deseja mover <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span> para a reciclagem?
+            Tem a certeza que deseja mover{" "}
+            <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span> para
+            a reciclagem?
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setBatchDeleting(false)}>Cancelar</Button>
-            <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10" onClick={() => handleBatchDelete(files)} disabled={batchDeleteMutation.isPending}>
+            <Button variant="ghost" onClick={() => setBatchDeleting(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="outline"
+              className="text-destructive border-destructive/20 hover:bg-destructive/10"
+              onClick={() => handleBatchDelete(files)}
+              disabled={batchDeleteMutation.isPending}
+            >
               {batchDeleteMutation.isPending ? "A eliminar..." : "Eliminar Todos"}
             </Button>
           </DialogFooter>
@@ -700,23 +837,24 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Selecione a pasta de destino para os <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span>:
+              Selecione a pasta de destino para os{" "}
+              <span className="text-foreground font-medium">{selectedFiles.size} ficheiros</span>:
             </p>
-            <ScrollArea className="h-[200px] rounded-md border border-white/10 p-2">
+            <ScrollArea className="h-50 rounded-md border border-white/10 p-2">
               <div className="space-y-1">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start gap-2 h-9 text-sm" 
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2 h-9 text-sm"
                   onClick={() => handleBatchMove(folderId!, files)}
                 >
                   <FolderTree className="h-4 w-4 text-primary" />
                   Pasta Principal (Projeto)
                 </Button>
-                {subfolders.map((folder: any) => (
-                  <Button 
+                {subfolders.map((folder) => (
+                  <Button
                     key={folder.id}
-                    variant="ghost" 
-                    className="w-full justify-start gap-2 h-9 text-sm pl-6" 
+                    variant="ghost"
+                    className="w-full justify-start gap-2 h-9 text-sm pl-6"
                     onClick={() => handleBatchMove(folder.id, files)}
                   >
                     <ChevronRight className="h-3 w-3 text-muted-foreground" />
@@ -728,58 +866,76 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             </ScrollArea>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setBatchMoving(false)}>Cancelar</Button>
+            <Button variant="ghost" onClick={() => setBatchMoving(false)}>
+              Cancelar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Batch Move Progress/Results */}
-      <Dialog open={!!batchMoveProgress} onOpenChange={(open) => !open && !batchMoveMutation.isPending && setBatchMoveProgress(null)}>
+      <Dialog
+        open={!!batchMoveProgress}
+        onOpenChange={(open) => !open && !batchMoveMutation.isPending && setBatchMoveProgress(null)}
+      >
         <DialogContent className="bg-card border-white/10 text-foreground">
           <DialogHeader>
             <DialogTitle id="batch-move-title">Estado da Movimentação</DialogTitle>
           </DialogHeader>
           {batchMoveProgress && (
-            <div className="py-4 space-y-4" aria-live="polite" aria-busy={batchMoveMutation.isPending}>
+            <div
+              className="py-4 space-y-4"
+              aria-live="polite"
+              aria-busy={batchMoveMutation.isPending}
+            >
               <div className="space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     {batchMoveMutation.isPending ? (
                       <>
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        A processar...
+                        <Loader2 className="h-3 w-3 animate-spin" />A processar...
                       </>
                     ) : batchMoveProgress.current === batchMoveProgress.total ? (
-                      'Concluído'
+                      "Concluído"
                     ) : (
-                      'Em espera'
+                      "Em espera"
                     )}
                   </span>
-                  <span>{batchMoveProgress.current} de {batchMoveProgress.total}</span>
+                  <span>
+                    {batchMoveProgress.current} de {batchMoveProgress.total}
+                  </span>
                 </div>
-                <Progress value={(batchMoveProgress.current / batchMoveProgress.total) * 100} className="h-2" />
+                <Progress
+                  value={(batchMoveProgress.current / batchMoveProgress.total) * 100}
+                  className="h-2"
+                />
               </div>
-              
-              <ScrollArea className="h-[200px] border border-white/5 rounded-md p-2">
+
+              <ScrollArea className="h-50 border border-white/5 rounded-md p-2">
                 <div className="space-y-2">
                   {batchMoveProgress.results.length === 0 && batchMoveMutation.isPending && (
                     <div className="flex flex-col items-center justify-center h-full py-8 text-muted-foreground italic text-xs">
                       A iniciar operações em lote...
                     </div>
                   )}
-                  {batchMoveProgress.results.map((res: any, idx: number) => {
+                  {batchMoveProgress.results.map((res, idx) => {
                     return (
-                      <div key={idx} className={`flex items-center justify-between text-xs p-1.5 rounded ${res.success ? 'bg-green-500/10' : 'bg-destructive/10'}`}>
+                      <div
+                        key={idx}
+                        className={`flex items-center justify-between text-xs p-1.5 rounded ${res.success ? "bg-green-500/10" : "bg-destructive/10"}`}
+                      >
                         <div className="flex items-center gap-2 min-w-0 pr-2">
                           {res.success ? (
                             <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
                           ) : (
                             <XCircle className="h-3.5 w-3.5 text-destructive shrink-0" />
                           )}
-                          <span className="truncate">{res.fileName || 'Ficheiro'}</span>
+                          <span className="truncate">{res.fileName || "Ficheiro"}</span>
                         </div>
                         {!res.success && res.error && (
-                          <span className="text-[10px] text-destructive/80 italic shrink-0">Erro</span>
+                          <span className="text-[10px] text-destructive/80 italic shrink-0">
+                            Erro
+                          </span>
                         )}
                       </div>
                     );
@@ -787,41 +943,59 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                 </div>
               </ScrollArea>
 
-              {batchMoveProgress.results.some(r => !r.success) && !batchMoveMutation.isPending && (
-                <div className="flex items-center justify-between p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
-                  <span className="text-[10px] text-yellow-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Alguns ficheiros falharam.
-                  </span>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="h-7 text-[10px] gap-1.5"
-                    onClick={() => {
-                      const failed = batchMoveProgress.results.filter(r => !r.success).map(r => ({
-                        fileId: r.fileId,
-                        fileName: r.fileName,
-                        oldParentId: r.oldParentId
-                      }));
-                      setBatchMoveProgress({ ...batchMoveProgress, current: 0, total: failed.length, results: [] });
-                      batchMoveMutation.mutate({
-                        data: {
-                          projectId,
-                          newParentId: batchMoveProgress.newParentId!,
-                          files: failed
-                        }
-                      });
-                    }}
-                  >
-                    <RefreshCcw className="h-3 w-3" />
-                    Retentar Falhados
-                  </Button>
-                </div>
-              )}
+              {batchMoveProgress.results.some((r) => !r.success) &&
+                !batchMoveMutation.isPending && (
+                  <div className="flex items-center justify-between p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
+                    <span className="text-[10px] text-yellow-500 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      Alguns ficheiros falharam.
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-[10px] gap-1.5"
+                      onClick={() => {
+                        const failed = batchMoveProgress.results
+                          .filter(
+                            (
+                              result,
+                            ): result is BatchMoveResult & {
+                              fileId: string;
+                              fileName: string;
+                              oldParentId: string;
+                            } =>
+                              !result.success &&
+                              Boolean(result.fileId && result.fileName && result.oldParentId),
+                          )
+                          .map((r) => ({
+                            fileId: r.fileId,
+                            fileName: r.fileName,
+                            oldParentId: r.oldParentId,
+                          }));
+                        setBatchMoveProgress({
+                          ...batchMoveProgress,
+                          current: 0,
+                          total: failed.length,
+                          results: [],
+                        });
+                        batchMoveMutation.mutate({
+                          data: {
+                            projectId,
+                            newParentId: batchMoveProgress.newParentId!,
+                            files: failed,
+                          },
+                        });
+                      }}
+                    >
+                      <RefreshCcw className="h-3 w-3" />
+                      Retentar Falhados
+                    </Button>
+                  </div>
+                )}
             </div>
           )}
           <DialogFooter>
-            <Button 
+            <Button
               variant="ghost"
               onClick={() => {
                 setBatchMoveProgress(null);
@@ -843,7 +1017,12 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
               <DialogTitle className="truncate">{previewingFile?.name}</DialogTitle>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" asChild>
-                  <a href={previewingFile?.webViewLink} target="_blank" rel="noopener noreferrer" className="gap-2">
+                  <a
+                    href={previewingFile?.webViewLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gap-2"
+                  >
                     <ExternalLink className="h-4 w-4" />
                     Abrir em Nova Aba
                   </a>
@@ -852,15 +1031,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             </div>
           </DialogHeader>
           <div className="flex-1 overflow-hidden bg-black/40 relative">
-            {previewingFile?.mimeType.includes('image') ? (
+            {previewingFile?.mimeType.includes("image") ? (
               <div className="w-full h-full flex items-center justify-center p-4">
-                <img 
-                  src={previewingFile.webViewLink.replace('/view', '/thumbnail').replace(/\?usp=drivesdk$/, '') + '&sz=w2000'} 
+                <img
+                  src={
+                    previewingFile.webViewLink
+                      .replace("/view", "/thumbnail")
+                      .replace(/\?usp=drivesdk$/, "") + "&sz=w2000"
+                  }
                   alt={previewingFile.name}
                   className="max-w-full max-h-full object-contain shadow-2xl"
                   onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.nextElementSibling?.classList.remove("hidden");
                   }}
                 />
                 <div className="hidden flex-col items-center gap-2 text-muted-foreground">
@@ -868,9 +1051,10 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
                   <p>Não foi possível pré-visualizar esta imagem.</p>
                 </div>
               </div>
-            ) : (previewingFile?.mimeType.includes('pdf') || previewingFile?.mimeType.startsWith('application/vnd.google-apps.')) ? (
-              <iframe 
-                src={`${previewingFile.webViewLink.replace('/view', '/preview').replace('/edit', '/preview')}`}
+            ) : previewingFile?.mimeType.includes("pdf") ||
+              previewingFile?.mimeType.startsWith("application/vnd.google-apps.") ? (
+              <iframe
+                src={`${previewingFile.webViewLink.replace("/view", "/preview").replace("/edit", "/preview")}`}
                 className="w-full h-full border-none bg-white"
                 title={previewingFile.name}
                 allow="autoplay"
@@ -878,11 +1062,19 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-muted-foreground p-8 text-center">
                 <div className="h-20 w-20 flex items-center justify-center bg-white/5 rounded-full mb-2">
-                  {getFileIcon(previewingFile?.mimeType)}
+                  {getFileIcon(previewingFile?.mimeType ?? "")}
                 </div>
-                <p className="max-w-[280px]">Pré-visualização direta não disponível para este formato ({previewingFile?.mimeType.split('/').pop()}).</p>
+                <p className="max-w-70">
+                  Pré-visualização direta não disponível para este formato (
+                  {previewingFile?.mimeType.split("/").pop()}).
+                </p>
                 <Button variant="outline" asChild>
-                  <a href={previewingFile?.webViewLink} target="_blank" rel="noopener noreferrer" className="gap-2">
+                  <a
+                    href={previewingFile?.webViewLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gap-2"
+                  >
                     <ExternalLink className="h-4 w-4" />
                     Abrir no Google Drive
                   </a>
@@ -895,7 +1087,9 @@ export function ProjectFiles({ folderId, projectId }: ProjectFilesProps) {
               <div className="text-xs text-muted-foreground">
                 Tipo: {previewingFile?.mimeType} • Tamanho: {formatFileSize(previewingFile?.size)}
               </div>
-              <Button variant="ghost" onClick={() => setPreviewingFile(null)}>Fechar</Button>
+              <Button variant="ghost" onClick={() => setPreviewingFile(null)}>
+                Fechar
+              </Button>
             </div>
           </DialogFooter>
         </DialogContent>

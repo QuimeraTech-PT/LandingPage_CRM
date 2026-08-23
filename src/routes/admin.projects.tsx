@@ -1,14 +1,28 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { Briefcase, Plus, Folder, ExternalLink, Calendar, Users as UsersIcon, TrendingUp, Edit2, History, LayoutList, Kanban as KanbanIcon, AlertTriangle, FileDown } from 'lucide-react';
-import { KanbanBoard } from '@/components/crm/KanbanBoard';
-import { ProjectReport } from '@/components/crm/ProjectReport';
-import { getTransactions } from '@/lib/crm.functions';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { getProjects, updateProject } from '@/lib/crm.functions';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  Briefcase,
+  Plus,
+  Folder,
+  ExternalLink,
+  Calendar,
+  Users as UsersIcon,
+  TrendingUp,
+  Edit2,
+  History,
+  LayoutList,
+  Kanban as KanbanIcon,
+  AlertTriangle,
+  FileDown,
+} from "lucide-react";
+import { KanbanBoard } from "@/components/crm/KanbanBoard";
+import { ProjectReport } from "@/components/crm/ProjectReport";
+import { getTransactions } from "@/lib/crm.functions";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { getProjects, updateProject } from "@/lib/crm.functions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -17,52 +31,66 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { ProjectFiles } from '@/components/crm/ProjectFiles';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { ProjectFiles } from "@/components/crm/ProjectFiles";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import type { Database } from "@/integrations/supabase/types";
 
-export const Route = createFileRoute('/admin/projects')({
+type Project = Database["public"]["Tables"]["crm_projects"]["Row"] & {
+  crm_leads: { name: string | null; company: string | null } | null;
+  crm_finances: Array<{ amount: number; type: string }>;
+  total_income: number;
+  total_expenses: number;
+};
+type ProjectStatus = "planning" | "active" | "on_hold" | "completed" | "cancelled";
+
+const isProjectStatus = (value: string): value is ProjectStatus =>
+  ["planning", "active", "on_hold", "completed", "cancelled"].includes(value);
+
+export const Route = createFileRoute("/admin/projects")({
   component: ProjectsPage,
 });
 
 function ProjectsPage() {
   const [openFiles, setOpenFiles] = useState<Record<string, boolean>>({});
-  const [editingProject, setEditingProject] = useState<any>(null);
-  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
   const queryClient = useQueryClient();
-  
+
   const { data: projects } = useSuspenseQuery({
-    queryKey: ['crm-projects'],
+    queryKey: ["crm-projects"],
     queryFn: () => getProjects(),
   });
 
   const { data: transactions } = useSuspenseQuery({
-    queryKey: ['crm-transactions'],
+    queryKey: ["crm-transactions"],
     queryFn: () => getTransactions(),
   });
 
   const updateProjectMutation = useMutation({
     mutationFn: updateProject,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['crm-projects'] });
+      queryClient.invalidateQueries({ queryKey: ["crm-projects"] });
       setEditingProject(null);
-      toast.success('Projeto atualizado!');
+      toast.success("Projeto atualizado!");
     },
-    onError: () => toast.error('Erro ao atualizar projeto.')
+    onError: () => toast.error("Erro ao atualizar projeto."),
   });
 
   const toggleFiles = (id: string) => {
-    setOpenFiles(prev => ({ ...prev, [id]: !prev[id] }));
+    setOpenFiles((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleUpdateProject = (e: React.FormEvent<HTMLFormElement>) => {
@@ -72,12 +100,14 @@ function ProjectsPage() {
     updateProjectMutation.mutate({
       data: {
         id: editingProject.id,
-        name: formData.get('name') as string,
-        status: formData.get('status') as any,
-        google_drive_folder_id: formData.get('folder_id') as string,
-        start_date: formData.get('start_date') as string,
-        budget: Number(formData.get('budget')),
-      }
+        name: formData.get("name") as string,
+        status: isProjectStatus(formData.get("status") as string)
+          ? (formData.get("status") as ProjectStatus)
+          : undefined,
+        google_drive_folder_id: formData.get("folder_id") as string,
+        start_date: formData.get("start_date") as string,
+        budget: Number(formData.get("budget")),
+      },
     });
   };
 
@@ -87,22 +117,18 @@ function ProjectsPage() {
       active: "default",
       on_hold: "secondary",
       completed: "outline",
-      cancelled: "destructive"
+      cancelled: "destructive",
     };
-    
+
     const labels: Record<string, string> = {
       planning: "Planeamento",
       active: "Ativo",
       on_hold: "Em Pausa",
       completed: "Concluído",
-      cancelled: "Cancelado"
+      cancelled: "Cancelado",
     };
 
-    return (
-      <Badge variant={variants[status] || "default"}>
-        {labels[status] || status}
-      </Badge>
-    );
+    return <Badge variant={variants[status] || "default"}>{labels[status] || status}</Badge>;
   };
 
   const projectList = Array.isArray(projects) ? projects : [];
@@ -115,22 +141,22 @@ function ProjectsPage() {
             <Briefcase className="h-8 w-8 text-primary" />
             Gestão de Projetos
           </h1>
-          
+
           <div className="flex items-center bg-muted/30 rounded-lg p-1 border border-white/5">
-            <Button 
-              variant={viewMode === 'list' ? 'secondary' : 'ghost'} 
-              size="sm" 
+            <Button
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              size="sm"
               className="h-8 gap-2"
-              onClick={() => setViewMode('list')}
+              onClick={() => setViewMode("list")}
             >
               <LayoutList className="h-4 w-4" />
               Lista
             </Button>
-            <Button 
-              variant={viewMode === 'kanban' ? 'secondary' : 'ghost'} 
-              size="sm" 
+            <Button
+              variant={viewMode === "kanban" ? "secondary" : "ghost"}
+              size="sm"
               className="h-8 gap-2"
-              onClick={() => setViewMode('kanban')}
+              onClick={() => setViewMode("kanban")}
             >
               <KanbanIcon className="h-4 w-4" />
               Kanban
@@ -143,25 +169,37 @@ function ProjectsPage() {
         </Button>
       </div>
 
-      {viewMode === 'list' ? (
+      {viewMode === "list" ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projectList.map((project: any) => (
-            <Card key={project.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors flex flex-col">
+          {projectList.map((project) => (
+            <Card
+              key={project.id}
+              className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-colors flex flex-col"
+            >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start mb-2">
                   {getStatusBadge(project.status)}
                   <div className="flex items-center gap-1">
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="h-8 w-8 text-muted-foreground hover:text-primary"
                       onClick={() => setEditingProject(project)}
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
                     {project.google_drive_folder_id && (
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
-                        <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary"
+                        asChild
+                      >
+                        <a
+                          href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <Folder className="h-4 w-4" />
                         </a>
                       </Button>
@@ -174,12 +212,14 @@ function ProjectsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <UsersIcon className="h-4 w-4" />
-                    <span>{project.crm_leads?.name || 'Cliente Genérico'}</span>
+                    <span>{project.crm_leads?.name || "Cliente Genérico"}</span>
                   </div>
                   {project.start_date && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4" />
-                      <span>Início: {new Date(project.start_date).toLocaleDateString('pt-PT')}</span>
+                      <span>
+                        Início: {new Date(project.start_date).toLocaleDateString("pt-PT")}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -188,24 +228,41 @@ function ProjectsPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
                       <span className="text-muted-foreground">Consumo do Orçamento:</span>
-                      <span className={cn(
-                        "font-medium",
-                        project.total_expenses > project.budget ? "text-red-500" : "text-muted-foreground"
-                      )}>
-                        {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_expenses)} / {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.budget || 0)}
+                      <span
+                        className={cn(
+                          "font-medium",
+                          project.total_expenses > (project.budget ?? 0)
+                            ? "text-red-500"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        {new Intl.NumberFormat("pt-PT", {
+                          style: "currency",
+                          currency: "EUR",
+                        }).format(project.total_expenses)}{" "}
+                        /{" "}
+                        {new Intl.NumberFormat("pt-PT", {
+                          style: "currency",
+                          currency: "EUR",
+                        }).format(project.budget || 0)}
                       </span>
                     </div>
                     <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className={cn(
                           "h-full transition-all",
-                          project.total_expenses > project.budget ? "bg-red-500" : 
-                          project.total_expenses > (project.budget * 0.8) ? "bg-yellow-500" : "bg-primary"
+                          project.total_expenses > (project.budget ?? 0)
+                            ? "bg-red-500"
+                            : project.total_expenses > (project.budget ?? 0) * 0.8
+                              ? "bg-yellow-500"
+                              : "bg-primary",
                         )}
-                        style={{ width: `${Math.min((project.total_expenses / (project.budget || 1)) * 100, 100)}%` }}
+                        style={{
+                          width: `${Math.min((project.total_expenses / (project.budget || 1)) * 100, 100)}%`,
+                        }}
                       />
                     </div>
-                    {project.total_expenses > project.budget && (
+                    {project.total_expenses > (project.budget ?? 0) && (
                       <div className="flex items-center gap-1 text-[10px] text-red-500 font-bold animate-pulse">
                         <AlertTriangle className="h-3 w-3" />
                         ORÇAMENTO ULTRAPASSADO
@@ -215,35 +272,53 @@ function ProjectsPage() {
 
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Margem Atual:</span>
-                    <span className={cn(
-                      "font-bold",
-                      (project.total_income - project.total_expenses) >= 0 ? "text-green-500" : "text-red-500"
-                    )}>
-                      {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
+                    <span
+                      className={cn(
+                        "font-bold",
+                        project.total_income - project.total_expenses >= 0
+                          ? "text-green-500"
+                          : "text-red-500",
+                      )}
+                    >
+                      {new Intl.NumberFormat("pt-PT", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(project.total_income - project.total_expenses)}
                     </span>
                   </div>
 
-                  <Collapsible 
-                    open={openFiles[project.id]} 
+                  <Collapsible
+                    open={openFiles[project.id]}
                     onOpenChange={() => toggleFiles(project.id)}
                     className="w-full"
                   >
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="w-full justify-between px-2 text-xs hover:bg-white/5">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-between px-2 text-xs hover:bg-white/5"
+                      >
                         <div className="flex items-center gap-2">
                           <Folder className="h-3 w-3 text-primary" />
                           <span>Documentos e Ficheiros</span>
                         </div>
-                        {openFiles[project.id] ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        {openFiles[project.id] ? (
+                          <ChevronUp className="h-3 w-3" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3" />
+                        )}
                       </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-3">
-                      <ProjectFiles folderId={project.google_drive_folder_id} projectId={project.id} />
+                      <ProjectFiles
+                        folderId={project.google_drive_folder_id}
+                        projectId={project.id}
+                      />
                     </CollapsibleContent>
                   </Collapsible>
-                  
+
                   <div className="flex gap-2 flex-wrap">
-                    <Button variant="outline" size="sm" className="flex-1 min-w-[100px] gap-2" asChild>
+                    <Button variant="outline" size="sm" className="flex-1 min-w-25 gap-2" asChild>
                       <Link to="/admin/finances">
                         Finanças
                         <TrendingUp className="h-3 w-3" />
@@ -251,8 +326,12 @@ function ProjectsPage() {
                     </Button>
                     <ProjectReport project={project} transactions={transactions || []} />
                     {project.google_drive_folder_id && (
-                      <Button variant="outline" size="sm" className="flex-1 min-w-[100px] gap-2" asChild>
-                        <a href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="flex-1 min-w-25 gap-2" asChild>
+                        <a
+                          href={`https://drive.google.com/drive/folders/${project.google_drive_folder_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           Drive
                           <ExternalLink className="h-3 w-3" />
                         </a>
@@ -272,19 +351,78 @@ function ProjectsPage() {
           )}
         </div>
       ) : (
-        <KanbanBoard 
+        <KanbanBoard
           columns={[
-            { id: 'planning', title: 'Planeamento', items: projectList.filter(p => p.status === 'planning').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
-            { id: 'active', title: 'Ativo', items: projectList.filter(p => p.status === 'active').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
-            { id: 'on_hold', title: 'Em Pausa', items: projectList.filter(p => p.status === 'on_hold').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
-            { id: 'completed', title: 'Concluído', items: projectList.filter(p => p.status === 'completed').map(p => ({ id: p.id, title: p.name, status: p.status, data: p })) || [], renderItem: (item) => <ProjectKanbanCard project={item.data} onEdit={() => setEditingProject(item.data)} transactions={transactions || []} /> },
+            {
+              id: "planning",
+              title: "Planeamento",
+              items:
+                projectList
+                  .filter((p) => p.status === "planning")
+                  .map((p) => ({ id: p.id, title: p.name, status: p.status, data: p })) || [],
+              renderItem: (item) => (
+                <ProjectKanbanCard
+                  project={item.data as Project}
+                  onEdit={() => setEditingProject(item.data as Project)}
+                  transactions={transactions || []}
+                />
+              ),
+            },
+            {
+              id: "active",
+              title: "Ativo",
+              items:
+                projectList
+                  .filter((p) => p.status === "active")
+                  .map((p) => ({ id: p.id, title: p.name, status: p.status, data: p })) || [],
+              renderItem: (item) => (
+                <ProjectKanbanCard
+                  project={item.data as Project}
+                  onEdit={() => setEditingProject(item.data as Project)}
+                  transactions={transactions || []}
+                />
+              ),
+            },
+            {
+              id: "on_hold",
+              title: "Em Pausa",
+              items:
+                projectList
+                  .filter((p) => p.status === "on_hold")
+                  .map((p) => ({ id: p.id, title: p.name, status: p.status, data: p })) || [],
+              renderItem: (item) => (
+                <ProjectKanbanCard
+                  project={item.data as Project}
+                  onEdit={() => setEditingProject(item.data as Project)}
+                  transactions={transactions || []}
+                />
+              ),
+            },
+            {
+              id: "completed",
+              title: "Concluído",
+              items:
+                projectList
+                  .filter((p) => p.status === "completed")
+                  .map((p) => ({ id: p.id, title: p.name, status: p.status, data: p })) || [],
+              renderItem: (item) => (
+                <ProjectKanbanCard
+                  project={item.data as Project}
+                  onEdit={() => setEditingProject(item.data as Project)}
+                  transactions={transactions || []}
+                />
+              ),
+            },
           ]}
-          onDragEnd={(projectId, newStatus) => updateProjectMutation.mutate({ data: { id: projectId, status: newStatus as any } })}
+          onDragEnd={(projectId, newStatus) =>
+            isProjectStatus(newStatus) &&
+            updateProjectMutation.mutate({ data: { id: projectId, status: newStatus } })
+          }
         />
       )}
 
       <Dialog open={!!editingProject} onOpenChange={(open) => !open && setEditingProject(null)}>
-        <DialogContent className="sm:max-w-[425px] bg-card border-white/10 text-foreground">
+        <DialogContent className="sm:max-w-106.25 bg-card border-white/10 text-foreground">
           {editingProject && (
             <form onSubmit={handleUpdateProject}>
               <DialogHeader>
@@ -296,7 +434,13 @@ function ProjectsPage() {
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <Label htmlFor="edit-name">Nome do Projeto</Label>
-                  <Input id="edit-name" name="name" defaultValue={editingProject.name} required className="bg-muted/50 border-white/10" />
+                  <Input
+                    id="edit-name"
+                    name="name"
+                    defaultValue={editingProject.name}
+                    required
+                    className="bg-muted/50 border-white/10"
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-status">Estado</Label>
@@ -315,19 +459,41 @@ function ProjectsPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-folder">ID da Pasta Google Drive</Label>
-                  <Input id="edit-folder" name="folder_id" defaultValue={editingProject.google_drive_folder_id} className="bg-muted/50 border-white/10" placeholder="ID da pasta no URL do Drive" />
+                  <Input
+                    id="edit-folder"
+                    name="folder_id"
+                    defaultValue={editingProject.google_drive_folder_id ?? ""}
+                    className="bg-muted/50 border-white/10"
+                    placeholder="ID da pasta no URL do Drive"
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-start">Data de Início</Label>
-                  <Input id="edit-start" name="start_date" type="date" defaultValue={editingProject.start_date} className="bg-muted/50 border-white/10" />
+                  <Input
+                    id="edit-start"
+                    name="start_date"
+                    type="date"
+                    defaultValue={editingProject.start_date ?? ""}
+                    className="bg-muted/50 border-white/10"
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-budget">Orçamento Previsto (€)</Label>
-                  <Input id="edit-budget" name="budget" type="number" step="0.01" defaultValue={editingProject.budget} className="bg-muted/50 border-white/10" placeholder="0.00" />
+                  <Input
+                    id="edit-budget"
+                    name="budget"
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingProject.budget ?? ""}
+                    className="bg-muted/50 border-white/10"
+                    placeholder="0.00"
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="ghost" type="button" onClick={() => setEditingProject(null)}>Cancelar</Button>
+                <Button variant="ghost" type="button" onClick={() => setEditingProject(null)}>
+                  Cancelar
+                </Button>
                 <Button type="submit" disabled={updateProjectMutation.isPending}>
                   {updateProjectMutation.isPending ? "A guardar..." : "Guardar Alterações"}
                 </Button>
@@ -340,27 +506,49 @@ function ProjectsPage() {
   );
 }
 
-function ProjectKanbanCard({ project, onEdit, transactions }: { project: any, onEdit: () => void, transactions: any[] }) {
+function ProjectKanbanCard({
+  project,
+  onEdit,
+  transactions,
+}: {
+  project: Project;
+  onEdit: () => void;
+  transactions: Array<Database["public"]["Tables"]["crm_finances"]["Row"]>;
+}) {
   return (
     <Card className="bg-card border-white/10 hover:border-primary/50 transition-colors shadow-sm select-none">
       <CardContent className="p-4 space-y-3">
         <div className="flex justify-between items-start">
           <h4 className="font-semibold text-sm line-clamp-1">{project.name}</h4>
-          <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-muted-foreground"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+          >
             <Edit2 className="h-3 w-3" />
           </Button>
         </div>
-        
+
         <div className="space-y-1">
           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
             <UsersIcon className="h-3 w-3" />
-            {project.crm_leads?.name || 'Cliente'}
+            {project.crm_leads?.name || "Cliente"}
           </p>
-          <p className={cn(
-            "text-xs font-bold",
-            (project.total_income - project.total_expenses) >= 0 ? "text-green-500" : "text-red-500"
-          )}>
-            {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(project.total_income - project.total_expenses)}
+          <p
+            className={cn(
+              "text-xs font-bold",
+              project.total_income - project.total_expenses >= 0
+                ? "text-green-500"
+                : "text-red-500",
+            )}
+          >
+            {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+              project.total_income - project.total_expenses,
+            )}
           </p>
         </div>
         <div className="pt-2 border-t border-white/5">

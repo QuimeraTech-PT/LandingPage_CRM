@@ -3,10 +3,12 @@
  * This script handles the integration with the CookieBanner preference.
  */
 
+type DataLayerItem = Record<string, unknown> | unknown[];
+
 declare global {
   interface Window {
-    dataLayer: any[];
-    gtag?: (...args: any[]) => void;
+    dataLayer: DataLayerItem[];
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
@@ -21,8 +23,8 @@ export const initAnalytics = (gtmId: string) => {
   // but we ensure window.gtag is available just in case.
   if (!window.gtag) {
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function () {
-      window.dataLayer.push(arguments);
+    window.gtag = function (...args: unknown[]) {
+      window.dataLayer.push(args);
     };
   }
 
@@ -48,11 +50,15 @@ export const initAnalytics = (gtmId: string) => {
  * Update consent based on user preference.
  * Called when user interacts with the CookieBanner.
  */
-export const updateAnalyticsConsent = (consent: "all" | "essential" | "none" | Record<string, boolean>) => {
+export const updateAnalyticsConsent = (
+  consent: "all" | "essential" | "none" | Record<string, boolean>,
+) => {
   if (typeof window === "undefined") return;
 
   const cookieName = "cookie-consent";
-  const domain = window.location.hostname.includes('.') ? `.${window.location.hostname.split('.').slice(-2).join('.')}` : window.location.hostname;
+  const domain = window.location.hostname.includes(".")
+    ? `.${window.location.hostname.split(".").slice(-2).join(".")}`
+    : window.location.hostname;
   const expires = new Date();
   expires.setFullYear(expires.getFullYear() + 1);
 
@@ -86,14 +92,13 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none" | R
   // Ensure gtag is available
   if (!window.gtag) {
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function() {
-      // @ts-ignore
-      window.dataLayer.push(arguments);
+    window.gtag = function (...args: unknown[]) {
+      window.dataLayer.push(args);
     };
   }
 
   window.gtag("consent", "update", consentConfig);
-  
+
   // Update dataLayer
   window.dataLayer.push({
     ...consentConfig,
@@ -107,9 +112,9 @@ export const updateAnalyticsConsent = (consent: "all" | "essential" | "none" | R
  */
 export const getAnalyticsConsent = () => {
   if (typeof window === "undefined") return null;
-  const local = localStorage.getItem('cookie-consent');
+  const local = localStorage.getItem("cookie-consent");
   if (!local) return null;
-  
+
   try {
     return JSON.parse(local) as Record<string, boolean>;
   } catch {
@@ -121,32 +126,34 @@ export const getAnalyticsConsent = () => {
  * Track a custom event to dataLayer.
  * Events are only tracked if consent is granted or if they are non-PII technical events.
  */
-export const trackEvent = (eventName: string, params?: Record<string, any>) => {
+export const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
   if (typeof window === "undefined") return;
-  
-  const localConsent = localStorage.getItem('cookie-consent');
-  let isGranted = localConsent === 'all';
-  
-  if (localConsent && localConsent.startsWith('{')) {
+
+  const localConsent = localStorage.getItem("cookie-consent");
+  let isGranted = localConsent === "all";
+
+  if (localConsent && localConsent.startsWith("{")) {
     try {
       const granular = JSON.parse(localConsent);
       // Logic: analytics event tracking requires analytics consent
       // If it's a marketing event, it would require marketing consent, but we'll use a general approach
       isGranted = granular.analytics === true;
-    } catch {}
+    } catch (error) {
+      console.debug("[Analytics] Failed to parse consent:", error);
+    }
   }
 
   // Only track GA events if consent is granted
   if (isGranted) {
     if (window.gtag) {
       window.gtag("event", eventName, params);
-    } 
-    
+    }
+
     // Always push to dataLayer for GTM consistency
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: eventName,
-      ...params
+      ...params,
     });
   } else {
     // Optional: Log to console in development when tracking is blocked by consent
@@ -161,21 +168,21 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
  */
 export const trackOutboundClick = (url: string) => {
   if (typeof window === "undefined") return;
-  
+
   try {
-    const isMailto = url.startsWith('mailto:');
-    const isTel = url.startsWith('tel:');
+    const isMailto = url.startsWith("mailto:");
+    const isTel = url.startsWith("tel:");
 
     if (isMailto || isTel) {
-      const type = isMailto ? 'email' : 'phone';
-      const value = url.split(':')[1] || '';
-      
+      const type = isMailto ? "email" : "phone";
+      const value = url.split(":")[1] || "";
+
       trackEvent("outbound_click", {
         link_url: url,
-        link_domain: isMailto ? 'mailto' : 'tel',
+        link_domain: isMailto ? "mailto" : "tel",
         link_type: type,
         link_value: value,
-        outbound: true
+        outbound: true,
       });
       return;
     }
@@ -188,7 +195,7 @@ export const trackOutboundClick = (url: string) => {
         link_domain: targetUrl.hostname,
         link_path: targetUrl.pathname,
         link_query: targetUrl.search,
-        outbound: true
+        outbound: true,
       });
     }
   } catch (e) {
@@ -203,11 +210,11 @@ export const trackOutboundClick = (url: string) => {
  */
 export const trackWebVitals = async () => {
   if (typeof window === "undefined") return;
-  
+
   try {
-    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import('web-vitals');
-    
-    const sendToGoogleAnalytics = ({ name, delta, id, value }: any) => {
+    const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import("web-vitals");
+
+    const sendToGoogleAnalytics = ({ name, delta, id, value }: import("web-vitals").Metric) => {
       trackEvent(name, {
         value: delta,
         metric_id: id,
@@ -236,20 +243,20 @@ export const initScrollTracking = () => {
 
   const thresholds = [25, 50, 75, 100];
   const reachedThresholds = new Set<number>();
-  
+
   const handleScroll = () => {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    
-    const scrollPercent = Math.round((scrollTop + windowHeight) / documentHeight * 100);
-    
-    thresholds.forEach(threshold => {
+
+    const scrollPercent = Math.round(((scrollTop + windowHeight) / documentHeight) * 100);
+
+    thresholds.forEach((threshold) => {
       if (scrollPercent >= threshold && !reachedThresholds.has(threshold)) {
         reachedThresholds.add(threshold);
         trackEvent("scroll_depth", {
           percent: threshold,
-          page_path: window.location.pathname
+          page_path: window.location.pathname,
         });
       }
     });

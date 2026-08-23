@@ -22,12 +22,14 @@ export const submitContactForm = createServerFn({ method: "POST" })
     // 1. Gravar a submissão principal no Supabase
     const { data: submission, error: dbError } = await supabaseAdmin
       .from("contact_submissions")
-      .insert([{
-        nome: data.nome,
-        email: data.email,
-        assunto: data.assunto,
-        mensagem: data.mensagem
-      }])
+      .insert([
+        {
+          nome: data.nome,
+          email: data.email,
+          assunto: data.assunto,
+          mensagem: data.mensagem,
+        },
+      ])
       .select()
       .single();
 
@@ -37,14 +39,14 @@ export const submitContactForm = createServerFn({ method: "POST" })
     }
 
     // 2. Criar Lead no CRM automaticamente
-    const { error: crmError } = await supabaseAdmin
-      .from("crm_leads")
-      .insert([{
+    const { error: crmError } = await supabaseAdmin.from("crm_leads").insert([
+      {
         name: data.nome,
         email: data.email,
         notes: `Assunto: ${data.assunto}\n\nMensagem: ${data.mensagem}`,
-        source: 'website'
-      }]);
+        source: "website",
+      },
+    ]);
 
     if (crmError) {
       console.error("Erro ao criar lead no CRM:", crmError);
@@ -52,18 +54,18 @@ export const submitContactForm = createServerFn({ method: "POST" })
     }
 
     // 3. Local Audit Status
-    let submissionStatus = "stored_locally_and_crm";
-    let errorMessage = null;
+    const submissionStatus = "stored_locally_and_crm";
+    const errorMessage = null;
 
     // 4. Registar no audit log
-    await supabaseAdmin
-      .from("contact_audit_logs")
-      .insert([{
+    await supabaseAdmin.from("contact_audit_logs").insert([
+      {
         submission_id: submission.id,
         email_to: data.email,
         status: submissionStatus,
-        error_message: errorMessage
-      }]);
+        error_message: errorMessage,
+      },
+    ]);
 
     return { success: true };
   });

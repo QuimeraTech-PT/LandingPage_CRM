@@ -44,18 +44,18 @@ export function Contact() {
 
     try {
       const result = await submitContact({ data });
-      
+
       if (result.spam) {
         setSent(true);
         reset();
         return;
       }
-      
+
       // Track conversion in analytics
       import("@/lib/analytics").then(({ trackEvent }) => {
         trackEvent("contact_form_submit", {
           assunto: data.assunto,
-          method: "web_form"
+          method: "web_form",
         });
       });
 
@@ -64,9 +64,12 @@ export function Contact() {
         description: "Entraremos em contacto brevemente.",
       });
       reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao enviar contacto:", error);
-      const errorMessage = error.message || "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.";
+      const errorMessage =
+        error instanceof Error && error.message
+          ? error.message
+          : "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.";
       toast.error("Erro no envio", {
         description: errorMessage,
       });
@@ -76,7 +79,11 @@ export function Contact() {
   };
 
   return (
-    <section id="contactos" className="bg-background py-24 text-foreground md:py-32" aria-labelledby="contact-heading">
+    <section
+      id="contactos"
+      className="bg-background py-24 text-foreground md:py-32"
+      aria-labelledby="contact-heading"
+    >
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <motion.div
@@ -88,7 +95,10 @@ export function Contact() {
             <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
               Contactos
             </p>
-            <h2 id="contact-heading" className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl">
+            <h2
+              id="contact-heading"
+              className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl"
+            >
               Vamos Construir o Futuro Juntos.
             </h2>
             <p className="mt-5 text-base leading-[1.6] text-surface-muted md:text-lg">
@@ -98,8 +108,12 @@ export function Contact() {
 
             <div className="mt-10 space-y-4">
               <a
-                href="mailto:hello@quimeratech.pt"
-                onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("mailto:hello@quimeratech.pt"))}
+                href="mailto:general@quimeratech.com"
+                onClick={() =>
+                  import("@/lib/analytics").then(({ trackOutboundClick }) =>
+                    trackOutboundClick("mailto:general@quimeratech.com"),
+                  )
+                }
                 className="flex items-center gap-4 rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
@@ -109,24 +123,7 @@ export function Contact() {
                   <span className="block text-xs font-light tracking-wide text-surface-muted uppercase">
                     Email
                   </span>
-                  <span className="text-base font-semibold">hello@quimeratech.pt</span>
-                </span>
-              </a>
-              <a
-                href="https://quimeratech.pt"
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => import("@/lib/analytics").then(({ trackOutboundClick }) => trackOutboundClick("https://quimeratech.pt"))}
-                className="flex items-center gap-4 rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
-              >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">
-                  <Globe className="h-5 w-5" />
-                </span>
-                <span>
-                  <span className="block text-xs font-light tracking-wide text-surface-muted uppercase">
-                    Website
-                  </span>
-                  <span className="text-base font-semibold">quimeratech.pt</span>
+                  <span className="text-base font-semibold">general@quimeratech.com</span>
                 </span>
               </a>
             </div>
@@ -142,121 +139,151 @@ export function Contact() {
               onSubmit={handleSubmit(onSubmit)}
               className="rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 backdrop-blur-xl p-7 shadow-premium md:p-9"
             >
-            <div className="grid gap-5">
-              <div className="grid gap-2">
-                <Label htmlFor="nome" className="text-surface-foreground font-semibold">
-                  Nome próprio e apelido
-                </Label>
-                <Input
-                  id="nome"
-                  {...register("nome")}
-                  placeholder="O seu nome"
-                  autoComplete="name"
-                  className={errors.nome ? "border-destructive focus-visible:ring-destructive" : ""}
-                  aria-invalid={!!errors.nome}
-                  aria-describedby={errors.nome ? "nome-error" : "nome-description"}
-                  required
-                />
-                <p id="nome-description" className="sr-only">Introduza o seu nome completo.</p>
-                {errors.nome && (
-                  <p className="text-xs text-destructive" id="nome-error" role="alert">{errors.nome.message}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email" className="text-surface-foreground font-semibold">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  placeholder="nome@empresa.pt"
-                  autoComplete="email"
-                  className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
-                  aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "email-error" : "email-description"}
-                  required
-                />
-                <p id="email-description" className="sr-only">Introduza um endereço de email válido.</p>
-                {errors.email && (
-                  <p className="text-xs text-destructive" id="email-error" role="alert">{errors.email.message}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="assunto" className="text-surface-foreground font-semibold">
-                  Assunto
-                </Label>
-                <Input
-                  id="assunto"
-                  {...register("assunto")}
-                  placeholder="Como podemos ajudar?"
-                  className={errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""}
-                  aria-invalid={!!errors.assunto}
-                  aria-describedby={errors.assunto ? "assunto-error" : "assunto-description"}
-                  required
-                />
-                <p id="assunto-description" className="sr-only">Indique o motivo do seu contacto.</p>
-                {errors.assunto && (
-                  <p className="text-xs text-destructive" id="assunto-error" role="alert">{errors.assunto.message}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="mensagem" className="text-surface-foreground font-semibold">
-                  Mensagem
-                </Label>
-                <Textarea
-                  id="mensagem"
-                  {...register("mensagem")}
-                  rows={5}
-                  placeholder="Descreva brevemente o seu projeto..."
-                  className={errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""}
-                  aria-invalid={!!errors.mensagem}
-                  aria-describedby={errors.mensagem ? "mensagem-error" : "mensagem-description"}
-                  required
-                />
-                <p id="mensagem-description" className="sr-only">Descreva o seu projeto ou dúvida detalhadamente.</p>
-                {errors.mensagem && (
-                  <p className="text-xs text-destructive" id="mensagem-error" role="alert">{errors.mensagem.message}</p>
-                )}
-              </div>
-
-              {/* Honeypot field - hidden from users */}
-              <div className="sr-only" aria-hidden="true">
-                <Input
-                  tabIndex={-1}
-                  autoComplete="off"
-                  {...register("hp_field")}
-                  placeholder="Leave this empty"
-                />
-              </div>
-
-              <Button 
-                type="submit" 
-                variant="primary"
-                size="lg" 
-                className="w-full shadow-premium hover:shadow-premium-hover transition-all duration-300 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-                disabled={isSubmitting}
-                rightIcon={isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-              >
-                {isSubmitting ? "A enviar..." : "Enviar Mensagem"}
-              </Button>
-
-              <div aria-live="polite" className="mt-2 min-h-[1.25rem]">
-                {sent && (
-                  <p role="status" className="text-sm font-semibold text-primary">
-                    Obrigado! A sua mensagem foi registada — entraremos em contacto brevemente.
+              <div className="grid gap-5">
+                <div className="grid gap-2">
+                  <Label htmlFor="nome" className="text-surface-foreground font-semibold">
+                    Nome próprio e apelido
+                  </Label>
+                  <Input
+                    id="nome"
+                    {...register("nome")}
+                    placeholder="O seu nome"
+                    autoComplete="name"
+                    className={
+                      errors.nome ? "border-destructive focus-visible:ring-destructive" : ""
+                    }
+                    aria-invalid={!!errors.nome}
+                    aria-describedby={errors.nome ? "nome-error" : "nome-description"}
+                    required
+                  />
+                  <p id="nome-description" className="sr-only">
+                    Introduza o seu nome completo.
                   </p>
-                )}
-                {Object.keys(errors).length > 0 && (
-                  <p role="alert" className="sr-only">
-                    O formulário contém erros. Por favor, verifique os campos destacados.
+                  {errors.nome && (
+                    <p className="text-xs text-destructive" id="nome-error" role="alert">
+                      {errors.nome.message}
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email" className="text-surface-foreground font-semibold">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    placeholder="nome@empresa.pt"
+                    autoComplete="email"
+                    className={
+                      errors.email ? "border-destructive focus-visible:ring-destructive" : ""
+                    }
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "email-error" : "email-description"}
+                    required
+                  />
+                  <p id="email-description" className="sr-only">
+                    Introduza um endereço de email válido.
                   </p>
-                )}
+                  {errors.email && (
+                    <p className="text-xs text-destructive" id="email-error" role="alert">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="assunto" className="text-surface-foreground font-semibold">
+                    Assunto
+                  </Label>
+                  <Input
+                    id="assunto"
+                    {...register("assunto")}
+                    placeholder="Como podemos ajudar?"
+                    className={
+                      errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""
+                    }
+                    aria-invalid={!!errors.assunto}
+                    aria-describedby={errors.assunto ? "assunto-error" : "assunto-description"}
+                    required
+                  />
+                  <p id="assunto-description" className="sr-only">
+                    Indique o motivo do seu contacto.
+                  </p>
+                  {errors.assunto && (
+                    <p className="text-xs text-destructive" id="assunto-error" role="alert">
+                      {errors.assunto.message}
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="mensagem" className="text-surface-foreground font-semibold">
+                    Mensagem
+                  </Label>
+                  <Textarea
+                    id="mensagem"
+                    {...register("mensagem")}
+                    rows={5}
+                    placeholder="Descreva brevemente o seu projeto..."
+                    className={
+                      errors.mensagem ? "border-destructive focus-visible:ring-destructive" : ""
+                    }
+                    aria-invalid={!!errors.mensagem}
+                    aria-describedby={errors.mensagem ? "mensagem-error" : "mensagem-description"}
+                    required
+                  />
+                  <p id="mensagem-description" className="sr-only">
+                    Descreva o seu projeto ou dúvida detalhadamente.
+                  </p>
+                  {errors.mensagem && (
+                    <p className="text-xs text-destructive" id="mensagem-error" role="alert">
+                      {errors.mensagem.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Honeypot field - hidden from users */}
+                <div className="sr-only" aria-hidden="true">
+                  <Input
+                    tabIndex={-1}
+                    autoComplete="off"
+                    {...register("hp_field")}
+                    placeholder="Leave this empty"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  className="w-full shadow-premium hover:shadow-premium-hover transition-all duration-300 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                  rightIcon={
+                    isSubmitting ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Send className="h-5 w-5" />
+                    )
+                  }
+                >
+                  {isSubmitting ? "A enviar..." : "Enviar Mensagem"}
+                </Button>
+
+                <div aria-live="polite" className="mt-2 min-h-5">
+                  {sent && (
+                    <p role="status" className="text-sm font-semibold text-primary">
+                      Obrigado! A sua mensagem foi registada — entraremos em contacto brevemente.
+                    </p>
+                  )}
+                  {Object.keys(errors).length > 0 && (
+                    <p role="alert" className="sr-only">
+                      O formulário contém erros. Por favor, verifique os campos destacados.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </form>
-        </motion.div>
-      </div>
+            </form>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -2,30 +2,38 @@ import type { Transition } from "framer-motion";
 
 // Helper to check for reduced motion
 const isReducedMotion = () => {
-  if (typeof window === 'undefined') return false;
-  return document.documentElement.classList.contains('force-reduced-motion') || 
-         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof window === "undefined") return false;
+  return (
+    document.documentElement.classList.contains("force-reduced-motion") ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 };
 
 export const transitions = {
   get default() {
-    return isReducedMotion() ? { duration: 0 } : {
-      duration: 0.4,
-      ease: [0.22, 1, 0.36, 1],
-    };
+    return isReducedMotion()
+      ? { duration: 0 }
+      : {
+          duration: 0.4,
+          ease: [0.22, 1, 0.36, 1],
+        };
   },
   get slow() {
-    return isReducedMotion() ? { duration: 0 } : {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    };
+    return isReducedMotion()
+      ? { duration: 0 }
+      : {
+          duration: 0.6,
+          ease: [0.22, 1, 0.36, 1],
+        };
   },
   get spring() {
-    return isReducedMotion() ? { type: "tween", duration: 0 } : {
-      type: "spring",
-      stiffness: 260,
-      damping: 20,
-    };
+    return isReducedMotion()
+      ? { type: "tween", duration: 0 }
+      : {
+          type: "spring",
+          stiffness: 260,
+          damping: 20,
+        };
   },
 } as Record<string, Transition>;
 
@@ -45,14 +53,18 @@ export const variants = {
     },
   },
   get hoverScale() {
-    return isReducedMotion() ? {} : {
-      scale: 1.05,
-      transition: { duration: 0.2 },
-    };
+    return isReducedMotion()
+      ? {}
+      : {
+          scale: 1.05,
+          transition: { duration: 0.2 },
+        };
   },
   get tapScale() {
-    return isReducedMotion() ? {} : {
-      scale: 0.95,
-    };
+    return isReducedMotion()
+      ? {}
+      : {
+          scale: 0.95,
+        };
   },
 };

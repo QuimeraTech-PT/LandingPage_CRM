@@ -31,9 +31,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
       initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
-      transition={{ 
-        duration: 0.4, 
-        ease: [0.22, 1, 0.36, 1] 
+      transition={{
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className="outline-hidden" // Hide focus ring for this container
     >

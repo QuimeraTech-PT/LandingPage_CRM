@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   DndContext,
   closestCorners,
@@ -8,16 +8,18 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-} from '@dnd-kit/core';
+  DragStartEvent,
+  DragEndEvent,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
 interface KanbanItemProps {
   id: string;
@@ -25,7 +27,7 @@ interface KanbanItemProps {
   subtitle?: string;
   value?: string;
   status: string;
-  data: any;
+  data: unknown;
 }
 
 interface KanbanColumnProps {
@@ -52,36 +54,38 @@ export function KanbanBoard({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
-  const handleDragStart = (event: any) => {
-    setActiveId(event.active.id);
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
 
     if (!over) return;
 
-    const itemId = active.id;
-    const overId = over.id;
+    const itemId = String(active.id);
+    const overId = String(over.id);
 
     // Find the column the item was dropped into
-    const overColumn = columns.find((col) => col.id === overId || col.items.some((item) => item.id === overId));
-    
+    const overColumn = columns.find(
+      (col) => col.id === overId || col.items.some((item) => item.id === overId),
+    );
+
     if (overColumn) {
-      onDragEnd(itemId as string, overColumn.id);
+      onDragEnd(itemId, overColumn.id);
     }
   };
 
-  const activeItem = activeId 
-    ? columns.flatMap(c => c.items).find(i => i.id === activeId) 
+  const activeItem = activeId
+    ? columns.flatMap((c) => c.items).find((i) => i.id === activeId)
     : null;
 
-  const currentColumn = activeId 
-    ? columns.find(c => c.items.some(i => i.id === activeId))
+  const currentColumn = activeId
+    ? columns.find((c) => c.items.some((i) => i.id === activeId))
     : null;
 
   return (
@@ -91,21 +95,23 @@ export function KanbanBoard({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-6 overflow-x-auto pb-6 min-h-[600px]">
+      <div className="flex gap-6 overflow-x-auto pb-6 min-h-150">
         {columns.map((column) => (
           <KanbanColumn key={column.id} column={column} />
         ))}
       </div>
 
-      <DragOverlay dropAnimation={{
-        sideEffects: defaultDropAnimationSideEffects({
-          styles: {
-            active: {
-              opacity: '0.5',
+      <DragOverlay
+        dropAnimation={{
+          sideEffects: defaultDropAnimationSideEffects({
+            styles: {
+              active: {
+                opacity: "0.5",
+              },
             },
-          },
-        }),
-      }}>
+          }),
+        }}
+      >
         {activeItem && currentColumn ? (
           <div className="w-80 rotate-3 scale-105 shadow-2xl">
             {currentColumn.renderItem(activeItem)}
@@ -122,11 +128,16 @@ function KanbanColumn({ column }: { column: KanbanColumnProps }) {
   });
 
   return (
-    <div ref={setNodeRef} className="flex flex-col w-80 shrink-0 bg-muted/20 rounded-xl border border-white/5 h-full min-h-[500px]">
+    <div
+      ref={setNodeRef}
+      className="flex flex-col w-80 shrink-0 bg-muted/20 rounded-xl border border-white/5 h-full min-h-125"
+    >
       <div className="p-4 border-b border-white/5 flex items-center justify-between">
         <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
           {column.title}
-          <Badge variant="secondary" className="text-[10px] py-0">{column.items.length}</Badge>
+          <Badge variant="secondary" className="text-[10px] py-0">
+            {column.items.length}
+          </Badge>
         </h3>
       </div>
       <div className="p-3 space-y-3 flex-1 overflow-y-auto">
@@ -151,14 +162,9 @@ function KanbanColumn({ column }: { column: KanbanColumnProps }) {
 }
 
 function SortableItem({ id, children }: { id: string; children: React.ReactNode }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Translate.toString(transform),

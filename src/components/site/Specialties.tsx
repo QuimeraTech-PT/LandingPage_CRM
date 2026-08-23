@@ -1,35 +1,41 @@
-import { Cloud, Database, KanbanSquare, PenTool, Smartphone } from "lucide-react";
+import { Cloud, Database, KanbanSquare, PenTool, Code2, Lightbulb } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
 
 const containerVariants = variants.staggerContainer;
 
-
 const specialties = [
   {
-    icon: Smartphone,
+    icon: Code2,
     title: "Desenvolvimento Web e Mobile",
-    description: "Flutter, React + Tailwind, CSS, JavaScript.",
+    description:
+      "Flutter, React + Tailwind, CSS, JavaScript. Aplicações responsivas e de alta performance.",
   },
   {
     icon: Database,
     title: "Bases de Dados e Backend",
-    description: "SQL Server, Firebase, Azure, C#, Outsystems.",
+    description: "SQL Server, Firebase, Azure, C#. Arquiteturas robustas e escaláveis.",
   },
   {
     icon: Cloud,
     title: "Cloud e Infraestrutura",
-    description: "Azure, CloudFlare.",
+    description: "Azure, CloudFlare. Soluções cloud seguras e de elevada disponibilidade.",
   },
   {
     icon: PenTool,
     title: "Design e Arquitetura",
-    description: "Web Design, Desenho de Mockups, Modelagem de Dados.",
+    description:
+      "Web Design, Desenho de Mockups, Modelagem de Dados. Experiências visuais e funcionais.",
   },
   {
     icon: KanbanSquare,
     title: "Gestão de Projetos",
-    description: "Metodologias ágeis com JIRA e Confluence.",
+    description: "Metodologias ágeis com JIRA e Confluence. Transparência e entrega iterativa.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Consultoria Tecnológica",
+    description: "Análise estratégica, recomendações de tecnologia, otimização de processos.",
   },
 ];
 
@@ -40,13 +46,20 @@ export function Specialties() {
     hidden: variants.fadeIn.initial,
     visible: {
       ...variants.fadeIn.animate,
-      transition: transitions.default
+      transition: transitions.default,
     },
   };
 
   return (
-    <section id="especialidades" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="specialties-heading">
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40 will-change-[opacity]" />
+    <section
+      id="especialidades"
+      className="relative overflow-hidden bg-background py-24 md:py-32"
+      aria-labelledby="specialties-heading"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 grid-tech opacity-40 will-change-[opacity]"
+      />
       <div
         aria-hidden
         className="pointer-events-none absolute top-1/3 -left-32 h-96 w-96 rounded-full bg-primary/15 blur-[130px]"
@@ -57,16 +70,19 @@ export function Specialties() {
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             O Que Fazemos
           </p>
-          <h2 id="specialties-heading" className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-            Transformamos Ideias em Realidade Digital.
+          <h2
+            id="specialties-heading"
+            className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl"
+          >
+            Transformamos Ideias em Soluções Tecnológicas.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">
-            Com uma equipa multidisciplinar e expertise em tecnologias de ponta, oferecemos um leque
-            abrangente de serviços para impulsionar a sua transformação digital.
+            Oferecemos um leque abrangente de serviços para impulsionar a implementação de soluções
+            tecnológicas, trabalhando com as mais recentes tendências e melhores práticas do setor.
           </p>
         </div>
 
-        <motion.ul 
+        <motion.ul
           className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           variants={containerVariants}
           initial="hidden"
@@ -79,7 +95,11 @@ export function Specialties() {
               variants={itemVariants}
               role="listitem"
               className="glass-card glass-card-hover group flex flex-col p-8 border border-border dark:border-white/10"
-              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("specialty_click", { title, type: "secondary_cta" }))}
+              onClick={() =>
+                import("@/lib/analytics").then(({ trackEvent }) =>
+                  trackEvent("specialty_click", { title, type: "secondary_cta" }),
+                )
+              }
             >
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 dark:bg-primary/25 text-accent transition-colors group-hover:bg-accent/20">
                 <Icon className="h-6 w-6" />
@@ -88,7 +108,7 @@ export function Specialties() {
               <p className="mt-3 text-sm leading-[1.6] text-muted-foreground">{description}</p>
               <span
                 aria-hidden
-                className="absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                className="absolute inset-x-8 bottom-0 h-px bg-linear-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
               />
             </motion.li>
           ))}

@@ -22,18 +22,18 @@ export function CursorFollower() {
       const isMobile = window.innerWidth < 1024;
       const interactions = localStorage.getItem("a11y-interactions") !== "false";
       const hasClassDisabled = document.documentElement.classList.contains("disable-interactions");
-      
+
       // Fully disable on small screens to save battery/perf, or if a11y requested
       setIsEnabled(!isMobile && interactions && !hasClassDisabled);
     };
-    
+
     checkEnabled();
-    window.addEventListener('resize', checkEnabled);
-    
+    window.addEventListener("resize", checkEnabled);
+
     // Listen for changes (e.g. from AccessibilityMenu)
     const observer = new MutationObserver(checkEnabled);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    
+
     if (shouldReduceMotion || !isEnabled) return;
 
     // 2. Throttled movement for performance
@@ -49,8 +49,10 @@ export function CursorFollower() {
       if (!target) return;
 
       const clickableElement = target.closest('button, a, [role="button"]');
-      const isClickable = !!(clickableElement || window.getComputedStyle(target).cursor === 'pointer');
-      
+      const isClickable = !!(
+        clickableElement || window.getComputedStyle(target).cursor === "pointer"
+      );
+
       setIsPointer(isClickable);
       if (!isVisible) setIsVisible(true);
 
@@ -59,7 +61,7 @@ export function CursorFollower() {
         const rect = clickableElement.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         // Pull towards center but keep some user control
         const pull = 0.15;
         cursorX.set(e.clientX + (centerX - e.clientX) * pull);
@@ -72,8 +74,8 @@ export function CursorFollower() {
       }
 
       // Update global mouse coordinates for the interaction-glow utility
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+      document.documentElement.style.setProperty("--mouse-x", `${e.clientX}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${e.clientY}px`);
     };
 
     const handleMouseLeave = () => setIsVisible(false);
@@ -84,19 +86,19 @@ export function CursorFollower() {
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
 
     return () => {
-      window.removeEventListener('resize', checkEnabled);
+      window.removeEventListener("resize", checkEnabled);
       window.removeEventListener("mousemove", moveCursor);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
       observer.disconnect();
     };
-  }, [cursorX, cursorY, isVisible, shouldReduceMotion, isEnabled]);
+  }, [cursorX, cursorY, isVisible, shouldReduceMotion, isEnabled, targetScale]);
 
   const handlePointerDown = () => {
     import("@/lib/analytics").then(({ trackEvent }) => {
-      trackEvent("cursor_interaction", { 
+      trackEvent("cursor_interaction", {
         type: "click",
-        is_pointer: isPointer
+        is_pointer: isPointer,
       });
     });
   };
@@ -106,7 +108,7 @@ export function CursorFollower() {
   return (
     <motion.div
       onPointerDown={handlePointerDown}
-      className="pointer-events-none fixed left-0 top-0 z-[100] hidden lg:block cursor-follower-container"
+      className="pointer-events-none fixed left-0 top-0 z-100 hidden lg:block cursor-follower-container"
       style={{
         x: springX,
         y: springY,
@@ -125,23 +127,23 @@ export function CursorFollower() {
       >
         {/* Main core circle */}
         <div className="h-2 w-2 rounded-full bg-accent border border-white/20 shadow-premium" />
-        
+
         {/* Outer ring */}
-        <motion.div 
+        <motion.div
           animate={{
             scale: isPointer ? 1.05 : 1,
-            rotate: 360
+            rotate: 360,
           }}
           transition={{
             rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-            scale: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+            scale: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
           }}
           className="absolute h-6 w-6 rounded-full border border-secondary/60"
         />
-        
+
         {/* Tech crosshairs */}
-        <div className="absolute h-8 w-[1px] bg-secondary/30" />
-        <div className="absolute h-[1px] w-8 bg-secondary/30" />
+        <div className="absolute h-8 w-px bg-secondary/30" />
+        <div className="absolute h-px w-8 bg-secondary/30" />
       </motion.div>
     </motion.div>
   );

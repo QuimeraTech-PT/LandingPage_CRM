@@ -1,11 +1,11 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getRevenueForecast } from '@/lib/finances.functions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Target, ShieldCheck } from 'lucide-react';
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getRevenueForecast } from "@/lib/finances.functions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUp, TrendingDown, Target, ShieldCheck } from "lucide-react";
 
 export function RevenueForecast() {
   const { data: forecast } = useSuspenseQuery({
-    queryKey: ['crm-revenue-forecast'],
+    queryKey: ["crm-revenue-forecast"],
     queryFn: () => getRevenueForecast(),
   });
 
@@ -18,7 +18,9 @@ export function RevenueForecast() {
           <TrendingUp className="h-5 w-5 text-primary" />
           Previsão de Receita (6 Meses)
         </CardTitle>
-        <Badge variant="outline" className="text-primary border-primary/20">Estimativa</Badge>
+        <Badge variant="outline" className="text-primary border-primary/20">
+          Estimativa
+        </Badge>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
@@ -28,7 +30,9 @@ export function RevenueForecast() {
               Confirmado
             </div>
             <div className="text-xl font-bold">
-              {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(forecast.confirmedRevenue)}
+              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                forecast.confirmedRevenue,
+              )}
             </div>
           </div>
           <div className="space-y-1">
@@ -37,7 +41,9 @@ export function RevenueForecast() {
               Provável (Funil)
             </div>
             <div className="text-xl font-bold opacity-80">
-              {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(forecast.probableRevenue)}
+              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                forecast.probableRevenue,
+              )}
             </div>
           </div>
         </div>
@@ -46,16 +52,18 @@ export function RevenueForecast() {
           <div className="flex justify-between text-sm">
             <span>Total Projetado</span>
             <span className="font-bold text-primary">
-              {new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(totalProjected)}
+              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                totalProjected,
+              )}
             </span>
           </div>
           <div className="h-3 w-full bg-muted rounded-full overflow-hidden flex">
-            <div 
-              className="h-full bg-green-500 transition-all" 
+            <div
+              className="h-full bg-green-500 transition-all"
               style={{ width: `${(forecast.confirmedRevenue / totalProjected) * 100}%` }}
             />
-            <div 
-              className="h-full bg-primary/40 transition-all" 
+            <div
+              className="h-full bg-primary/40 transition-all"
               style={{ width: `${(forecast.probableRevenue / totalProjected) * 100}%` }}
             />
           </div>
@@ -68,7 +76,15 @@ export function RevenueForecast() {
   );
 }
 
-function Badge({ children, variant, className }: { children: React.ReactNode, variant?: any, className?: string }) {
+function Badge({
+  children,
+  variant,
+  className,
+}: {
+  children: React.ReactNode;
+  variant?: "outline";
+  className?: string;
+}) {
   return (
     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${className}`}>
       {children}

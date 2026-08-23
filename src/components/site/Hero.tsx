@@ -7,14 +7,14 @@ import { transitions, variants } from "@/lib/animations";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
-  
+
   // High priority for hero visuals
   useEffect(() => {
-    const heroVisuals = document.querySelectorAll('#top img, #top svg');
-    heroVisuals.forEach(el => {
+    const heroVisuals = document.querySelectorAll("#top img, #top svg");
+    heroVisuals.forEach((el) => {
       if (el instanceof HTMLImageElement) {
-        el.loading = 'eager';
-        el.fetchPriority = 'high';
+        el.loading = "eager";
+        el.fetchPriority = "high";
       }
     });
   }, []);
@@ -38,23 +38,24 @@ export function Hero() {
     },
   };
   return (
-    <section id="top" className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32" aria-labelledby="hero-heading">
+    <section
+      id="top"
+      className="relative overflow-hidden bg-background pt-32 pb-24 md:pt-44 md:pb-32"
+      aria-labelledby="hero-heading"
+    >
       {/* Abstract geometric background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-tech opacity-40 dark:opacity-70 transition-opacity duration-700 will-change-[opacity] interaction-pulse" />
-      
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 grid-tech opacity-40 dark:opacity-70 transition-opacity duration-700 will-change-[opacity] interaction-pulse"
+      />
+
       {/* Enhanced aurora effects */}
       <div
         aria-hidden
-        className="glow-aurora -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 bg-primary/30"
+        className="glow-aurora -top-40 left-1/2 h-150 w-150 -translate-x-1/2 bg-primary/30"
       />
-      <div
-        aria-hidden
-        className="glow-aurora -bottom-40 right-0 h-[500px] w-[500px] bg-accent/25"
-      />
-      <div
-        aria-hidden
-        className="glow-aurora top-1/4 -left-20 h-[400px] w-[400px] bg-blue-500/15"
-      />
+      <div aria-hidden className="glow-aurora -bottom-40 right-0 h-125 w-125 bg-accent/25" />
+      <div aria-hidden className="glow-aurora top-1/4 -left-20 h-100 w-100 bg-blue-500/15" />
 
       <svg
         aria-hidden
@@ -91,7 +92,7 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <motion.div 
+        <motion.div
           className="mx-auto max-w-3xl text-center"
           variants={containerVariants}
           initial="hidden"
@@ -104,53 +105,53 @@ export function Hero() {
           >
             Excelência em Desenvolvimento de Software
           </motion.div>
-          <motion.h1 
+          <motion.h1
             id="hero-heading"
             variants={itemVariants}
             className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground md:text-5xl lg:text-7xl lg:tracking-[-0.03em]"
           >
-            Sua Visão, Nossa <span className="text-gradient-brand selection:bg-accent selection:text-accent-foreground">Engenharia de Elite.</span>
+            Soluções Inteligentes{" "}
+            <span className="text-gradient-brand selection:bg-accent selection:text-accent-foreground">
+              Impacto Real
+            </span>
           </motion.h1>
 
-          <motion.div 
+          <motion.h2
             variants={itemVariants}
-            className="mt-6 flex flex-wrap justify-center gap-2 text-[10px] font-bold tracking-widest text-primary/60 uppercase"
+            className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-normal text-muted-foreground md:text-lg"
           >
-            <span>• Alta Performance</span>
-            <span>• Cloud Native</span>
-            <span>• UX Premium</span>
-          </motion.div>
+            A sua parceira estratégica em desenvolvimento de software e consultoria tecnológica.
+            Transformamos ideias em soluções digitais que impulsionam o crescimento do seu negócio.
+          </motion.h2>
 
-          <motion.p 
-            variants={itemVariants}
-            className="mx-auto mt-6 max-w-2xl text-base leading-[1.6] font-medium text-muted-foreground md:text-lg"
-          >
-            '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                        \n                                            \n                                            remove this selected item
-          </motion.p>
-          
-
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Button 
-              asChild 
-              variant="primary" 
-              size="lg" 
-              className="w-full sm:w-auto" 
+            <Button
+              asChild
+              variant="primary"
+              size="lg"
+              className="w-full sm:w-auto"
               rightIcon={<ArrowRight className="h-5 w-5" />}
-              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "especialidades", type: "primary" }))}
+              onClick={() =>
+                import("@/lib/analytics").then(({ trackEvent }) =>
+                  trackEvent("hero_cta_click", { target: "especialidades", type: "primary" }),
+                )
+              }
             >
-              <a href="#especialidades">
-                Descubra as Nossas Soluções
-              </a>
+              <a href="#especialidades">Descubra as Nossas Soluções</a>
             </Button>
             <Button
               asChild
               size="lg"
               variant="secondary"
               className="w-full sm:w-auto"
-              onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("hero_cta_click", { target: "contactos", type: "secondary" }))}
+              onClick={() =>
+                import("@/lib/analytics").then(({ trackEvent }) =>
+                  trackEvent("hero_cta_click", { target: "contactos", type: "secondary" }),
+                )
+              }
             >
               <a href="#contactos">Fale Connosco</a>
             </Button>

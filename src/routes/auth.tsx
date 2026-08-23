@@ -1,40 +1,44 @@
-import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Chrome, Loader2, Mail, Lock } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Chrome, Loader2, Mail, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute('/auth')({
+export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
 function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const search = useSearch({ from: '/auth' }) as { redirect?: string };
+  const search = useSearch({ from: "/auth" }) as { redirect?: string };
 
   useEffect(() => {
     // Check if we already have a session
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         console.log("Session found, redirecting to admin");
-        navigate({ to: search.redirect || '/admin', replace: true });
+        navigate({ to: search.redirect || "/admin", replace: true });
       }
     };
     checkSession();
 
     // Use a listener that DOES NOT immediately redirect to allow the form to exist
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth event:", event, !!session);
-      if (session && event === 'SIGNED_IN') {
-        navigate({ to: search.redirect || '/admin', replace: true });
+      if (session && event === "SIGNED_IN") {
+        navigate({ to: search.redirect || "/admin", replace: true });
       }
     });
 
@@ -45,15 +49,18 @@ function AuthPage() {
     try {
       setIsLoading(true);
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
       if (error) throw error;
-    } catch (error: any) {
-      toast.error('Erro ao iniciar sessão com o Google: ' + error.message);
+    } catch (error: unknown) {
+      toast.error(
+        "Erro ao iniciar sessão com o Google: " +
+          (error instanceof Error ? error.message : "Erro desconhecido"),
+      );
       setIsLoading(false);
     }
   };
@@ -61,7 +68,7 @@ function AuthPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error('Por favor, preencha todos os campos.');
+      toast.error("Por favor, preencha todos os campos.");
       return;
     }
 
@@ -73,11 +80,13 @@ function AuthPage() {
       });
 
       if (error) throw error;
-      
-      toast.success('Sessão iniciada com sucesso!');
-      navigate({ to: search.redirect || '/admin' });
-    } catch (error: any) {
-      toast.error('Erro no login: ' + error.message);
+
+      toast.success("Sessão iniciada com sucesso!");
+      navigate({ to: search.redirect || "/admin" });
+    } catch (error: unknown) {
+      toast.error(
+        "Erro no login: " + (error instanceof Error ? error.message : "Erro desconhecido"),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -88,14 +97,12 @@ function AuthPage() {
       <Card className="w-full max-w-md bg-card/50 backdrop-blur-sm border-white/10">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold tracking-tight">CRM QuimeraTech</CardTitle>
-          <CardDescription>
-            Inicie sessão para aceder ao painel de administração.
-          </CardDescription>
+          <CardDescription>Inicie sessão para aceder ao painel de administração.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
-          <Button 
-            variant="outline" 
-            className="w-full h-12 gap-2 text-base" 
+          <Button
+            variant="outline"
+            className="w-full h-12 gap-2 text-base"
             onClick={handleGoogleLogin}
             disabled={isLoading}
           >
@@ -121,14 +128,14 @@ function AuthPage() {
               <Label htmlFor="email">E-mail</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="admin@quimeratech.com" 
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@quimeratech.com"
                   className="pl-10"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required 
+                  required
                 />
               </div>
             </div>
@@ -136,25 +143,27 @@ function AuthPage() {
               <Label htmlFor="password">Palavra-passe</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  id="password" 
-                  type="password" 
+                <Input
+                  id="password"
+                  type="password"
                   className="pl-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required 
+                  required
                 />
               </div>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Entrar'}
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Entrar"}
             </Button>
           </form>
-          
+
           <div className="rounded-lg bg-primary/5 p-3 border border-primary/20">
             <p className="text-[10px] text-primary/70 font-mono">
-              CREDENCIAIS DE TESTE:<br/>
-              User: admin@quimeratech.com<br/>
+              CREDENCIAIS DE TESTE:
+              <br />
+              User: admin@quimeratech.com
+              <br />
               Pass: quimera123
             </p>
           </div>

@@ -1,14 +1,28 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getCRMStats, getLeads, getActivityLogs } from '@/lib/crm.functions';
-import { LayoutDashboard, Users, Briefcase, TrendingUp, Wallet, ArrowRight, History, CheckCircle2, AlertCircle, Clock, Search, Filter, AlertTriangle } from 'lucide-react';
-import { RevenueForecast } from '@/components/crm/RevenueForecast';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { useState, useMemo } from 'react';
-import { Input } from '@/components/ui/input';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getCRMStats, getLeads, getActivityLogs } from "@/lib/crm.functions";
+import {
+  LayoutDashboard,
+  Users,
+  Briefcase,
+  TrendingUp,
+  Wallet,
+  ArrowRight,
+  History,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  Search,
+  Filter,
+  AlertTriangle,
+} from "lucide-react";
+import { RevenueForecast } from "@/components/crm/RevenueForecast";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useState, useMemo } from "react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -16,51 +30,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Database, Json } from "@/integrations/supabase/types";
 
-export const Route = createFileRoute('/admin/')({
+type Lead = Database["public"]["Tables"]["crm_leads"]["Row"];
+type ActivityLog = Database["public"]["Tables"]["crm_activity_logs"]["Row"];
+
+const getLogDetail = (details: Json | null, key: string) => {
+  if (!details || typeof details !== "object" || Array.isArray(details)) return undefined;
+  const value = details[key];
+  return typeof value === "string" ? value : undefined;
+};
+
+export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
 });
 
 function AdminDashboard() {
   const [logFilter, setLogFilter] = useState({
-    type: 'all',
-    search: '',
+    type: "all",
+    search: "",
   });
 
   const { data: stats } = useSuspenseQuery({
-    queryKey: ['crm-stats'],
+    queryKey: ["crm-stats"],
     queryFn: () => getCRMStats(),
   });
 
   const { data: leads } = useSuspenseQuery({
-    queryKey: ['crm-leads'],
+    queryKey: ["crm-leads"],
     queryFn: () => getLeads(),
   });
 
   const { data: logs } = useSuspenseQuery({
-    queryKey: ['crm-activity-logs'],
+    queryKey: ["crm-activity-logs"],
     queryFn: () => getActivityLogs({ data: { limit: 100 } }),
   });
 
   const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];
-  
+
   const filteredLogs = useMemo(() => {
     if (!Array.isArray(logs)) return [];
-    return logs.filter(log => {
-      const matchesType = logFilter.type === 'all' || log.entity_type === logFilter.type;
-      const searchStr = logFilter.search.toLowerCase();
-      const matchesSearch = !searchStr || 
-        log.action.toLowerCase().includes(searchStr) || 
-        log.entity_type.toLowerCase().includes(searchStr) ||
-        JSON.stringify(log.details).toLowerCase().includes(searchStr);
-      return matchesType && matchesSearch;
-    }).slice(0, 8);
+    return logs
+      .filter((log) => {
+        const matchesType = logFilter.type === "all" || log.entity_type === logFilter.type;
+        const searchStr = logFilter.search.toLowerCase();
+        const matchesSearch =
+          !searchStr ||
+          log.action.toLowerCase().includes(searchStr) ||
+          log.entity_type.toLowerCase().includes(searchStr) ||
+          JSON.stringify(log.details).toLowerCase().includes(searchStr);
+        return matchesType && matchesSearch;
+      })
+      .slice(0, 8);
   }, [logs, logFilter]);
 
-  const funnelData = Array.isArray(leads) ? leads.reduce((acc: any, lead: any) => {
-    acc[lead.status] = (acc[lead.status] || 0) + 1;
-    return acc;
-  }, {}) : {};
+  const funnelData = Array.isArray(leads)
+    ? leads.reduce<Record<string, number>>((acc, lead) => {
+        acc[lead.status] = (acc[lead.status] || 0) + 1;
+        return acc;
+      }, {})
+    : {};
 
   return (
     <div className="p-8 space-y-8 bg-background min-h-screen text-foreground">
@@ -100,7 +129,11 @@ function AdminDashboard() {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(stats.revenue)}</div>
+            <div className="text-2xl font-bold">
+              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                stats.revenue,
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">Faturado até ao momento</p>
           </CardContent>
         </Card>
@@ -108,10 +141,16 @@ function AdminDashboard() {
         <Card className="bg-card/50 backdrop-blur-sm border-white/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Lucro Líquido</CardTitle>
-            <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">€</div>
+            <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+              €
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(stats.profit)}</div>
+            <div className="text-2xl font-bold">
+              {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                stats.profit,
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">Após despesas</p>
           </CardContent>
         </Card>
@@ -124,34 +163,40 @@ function AdminDashboard() {
             <CardHeader>
               <CardTitle>Pipeline de Vendas</CardTitle>
             </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {['new', 'contacted', 'proposal', 'negotiation', 'closed_won'].map((status) => {
-                const count = funnelData[status] || 0;
-                const total = Array.isArray(leads) ? leads.length : 1;
-                const percentage = (count / total) * 100;
-                const labels: any = { new: 'Novas', contacted: 'Contactadas', proposal: 'Proposta', negotiation: 'Negociação', closed_won: 'Ganhas' };
-                
-                return (
-                  <div key={status} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>{labels[status]}</span>
-                      <span className="font-bold">{count}</span>
+            <CardContent>
+              <div className="space-y-4">
+                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status) => {
+                  const count = funnelData[status] || 0;
+                  const total = Array.isArray(leads) ? leads.length : 1;
+                  const percentage = (count / total) * 100;
+                  const labels: Record<string, string> = {
+                    new: "Novas",
+                    contacted: "Contactadas",
+                    proposal: "Proposta",
+                    negotiation: "Negociação",
+                    closed_won: "Ganhas",
+                  };
+
+                  return (
+                    <div key={status} className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>{labels[status]}</span>
+                        <span className="font-bold">{count}</span>
+                      </div>
+                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all duration-500"
+                          style={{ width: `${Math.max(percentage, 2)}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary transition-all duration-500" 
-                        style={{ width: `${Math.max(percentage, 2)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
         </div>
-        
+
         <Card className="col-span-3 bg-card/50 backdrop-blur-sm border-white/10">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Últimas Leads</CardTitle>
@@ -163,17 +208,24 @@ function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentLeads.map((lead: any) => (
-                <div key={lead.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-white/5">
+              {recentLeads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-white/5"
+                >
                   <div>
                     <p className="text-sm font-semibold">{lead.name}</p>
-                    <p className="text-xs text-muted-foreground">{lead.company || 'Individual'}</p>
+                    <p className="text-xs text-muted-foreground">{lead.company || "Individual"}</p>
                   </div>
-                  <Badge variant="outline" className="text-[10px]">{lead.status}</Badge>
+                  <Badge variant="outline" className="text-[10px]">
+                    {lead.status}
+                  </Badge>
                 </div>
               ))}
               {recentLeads.length === 0 && (
-                <p className="text-sm text-muted-foreground italic text-center py-8">Nenhuma lead registada.</p>
+                <p className="text-sm text-muted-foreground italic text-center py-8">
+                  Nenhuma lead registada.
+                </p>
               )}
             </div>
           </CardContent>
@@ -190,16 +242,16 @@ function AdminDashboard() {
             <div className="flex flex-col gap-2 mt-4">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                <Input 
-                  placeholder="Pesquisar logs..." 
+                <Input
+                  placeholder="Pesquisar logs..."
                   className="pl-8 h-8 text-xs bg-muted/50 border-white/10"
                   value={logFilter.search}
-                  onChange={(e) => setLogFilter(prev => ({ ...prev, search: e.target.value }))}
+                  onChange={(e) => setLogFilter((prev) => ({ ...prev, search: e.target.value }))}
                 />
               </div>
-              <Select 
-                value={logFilter.type} 
-                onValueChange={(val) => setLogFilter(prev => ({ ...prev, type: val }))}
+              <Select
+                value={logFilter.type}
+                onValueChange={(val) => setLogFilter((prev) => ({ ...prev, type: val }))}
               >
                 <SelectTrigger className="h-8 text-xs bg-muted/50 border-white/10">
                   <div className="flex items-center gap-2">
@@ -218,33 +270,50 @@ function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4 mt-2">
-              {filteredLogs.map((log: any) => (
-                <div key={log.id} className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0">
-                  <div className={cn(
-                    "mt-0.5 rounded-full p-1 h-fit",
-                    log.status === 'success' ? "bg-green-500/10 text-green-500" : 
-                    log.status === 'warning' ? "bg-yellow-500/10 text-yellow-500" : 
-                    "bg-red-500/10 text-red-500"
-                  )}>
-                    {log.status === 'success' ? <CheckCircle2 className="h-3 w-3" /> : 
-                     log.status === 'warning' ? <Clock className="h-3 w-3" /> : 
-                     <AlertCircle className="h-3 w-3" />}
+              {filteredLogs.map((log: ActivityLog) => (
+                <div
+                  key={log.id}
+                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0"
+                >
+                  <div
+                    className={cn(
+                      "mt-0.5 rounded-full p-1 h-fit",
+                      log.status === "success"
+                        ? "bg-green-500/10 text-green-500"
+                        : log.status === "warning"
+                          ? "bg-yellow-500/10 text-yellow-500"
+                          : "bg-red-500/10 text-red-500",
+                    )}
+                  >
+                    {log.status === "success" ? (
+                      <CheckCircle2 className="h-3 w-3" />
+                    ) : log.status === "warning" ? (
+                      <Clock className="h-3 w-3" />
+                    ) : (
+                      <AlertCircle className="h-3 w-3" />
+                    )}
                   </div>
                   <div className="space-y-1 min-w-0">
                     <p className="font-medium text-foreground truncate capitalize">
-                      {log.action.replace(/_/g, ' ')}
+                      {log.action.replace(/_/g, " ")}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
-                      <span className="opacity-60">{log.entity_type}:</span> {log.details?.fileName || log.details?.projectName || log.details?.newName || log.action}
+                      <span className="opacity-60">{log.entity_type}:</span>{" "}
+                      {getLogDetail(log.details, "fileName") ||
+                        getLogDetail(log.details, "projectName") ||
+                        getLogDetail(log.details, "newName") ||
+                        log.action}
                     </p>
                     <p className="text-[10px] text-muted-foreground opacity-60">
-                      {new Date(log.created_at).toLocaleString('pt-PT')}
+                      {new Date(log.created_at).toLocaleString("pt-PT")}
                     </p>
                   </div>
                 </div>
               ))}
               {filteredLogs.length === 0 && (
-                <p className="text-xs text-muted-foreground italic py-4 text-center">Nenhum log encontrado.</p>
+                <p className="text-xs text-muted-foreground italic py-4 text-center">
+                  Nenhum log encontrado.
+                </p>
               )}
             </div>
           </CardContent>
@@ -252,20 +321,32 @@ function AdminDashboard() {
 
         <div className="col-span-2 grid gap-4">
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+            <Button
+              variant="outline"
+              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              asChild
+            >
               <Link to="/admin/leads">
                 <Users className="h-8 w-8 text-primary" />
                 Gerir Leads
               </Link>
             </Button>
-            <Button variant="outline" className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+            <Button
+              variant="outline"
+              className="h-32 flex-col gap-3 text-lg border-primary/20 bg-primary/5 hover:bg-primary/10"
+              asChild
+            >
               <Link to="/admin/projects">
                 <Briefcase className="h-8 w-8 text-primary" />
                 Gerir Projetos
               </Link>
             </Button>
           </div>
-          <Button variant="outline" className="h-32 gap-4 text-xl border-primary/20 bg-primary/5 hover:bg-primary/10" asChild>
+          <Button
+            variant="outline"
+            className="h-32 gap-4 text-xl border-primary/20 bg-primary/5 hover:bg-primary/10"
+            asChild
+          >
             <Link to="/admin/finances">
               <Wallet className="h-8 w-8 text-primary" />
               Gerir Finanças e Cash Flow

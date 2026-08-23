@@ -1,11 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
-import { google, drive_v3 } from 'googleapis';
+import { google, drive_v3 } from "googleapis";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import type { Json } from "@/integrations/supabase/types";
 import { z } from "zod";
+
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : "Erro desconhecido";
 
 const getDriveClient = () => {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
   if (!email || !key) {
     console.warn("Google Drive: Credenciais não encontradas no ambiente.");
@@ -16,10 +20,10 @@ const getDriveClient = () => {
     const auth = new google.auth.JWT({
       email,
       key,
-      scopes: ['https://www.googleapis.com/auth/drive.file']
+      scopes: ["https://www.googleapis.com/auth/drive.file"],
     });
 
-    return google.drive({ version: 'v3', auth });
+    return google.drive({ version: "v3", auth });
   } catch (e) {
     console.error("Google Drive: Erro ao inicializar cliente JWT:", e);
     return null;
@@ -30,29 +34,40 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const createProjectFolder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    clientName: z.string(),
-    projectName: z.string()
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        clientName: z.string(),
+        projectName: z.string(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
-    const logDriveActivity = async (action: string, details: any, status: 'success' | 'failure' | 'warning' = 'success') => {
+    const logDriveActivity = async (
+      action: string,
+      details: Json,
+      status: "success" | "failure" | "warning" = "success",
+    ) => {
       try {
-        await supabaseAdmin
-          .from("crm_activity_logs")
-          .insert([{
+        await supabaseAdmin.from("crm_activity_logs").insert([
+          {
             user_id: userId,
             action,
-            entity_type: 'drive',
+            entity_type: "drive",
             entity_id: data.projectId,
             details,
-            status
-          }]);
+            status,
+          },
+        ]);
       } catch (e) {
         console.error("Log Drive failure:", e);
       }
@@ -61,7 +76,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     try {
       const drive = getDriveClient();
       if (!drive) {
-        await logDriveActivity('create_folder_failure', { error: 'Missing secrets' }, 'failure');
+        await logDriveActivity("create_folder_failure", { error: "Missing secrets" }, "failure");
         return { error: "Drive não configurado", status: "pending_config" };
       }
 
@@ -69,13 +84,13 @@ export const createProjectFolder = createServerFn({ method: "POST" })
 
       const folderMetadata: drive_v3.Schema$File = {
         name: `${data.clientName} - ${data.projectName}`,
-        mimeType: 'application/vnd.google-apps.folder',
-        parents: rootFolderId ? [rootFolderId] : []
+        mimeType: "application/vnd.google-apps.folder",
+        parents: rootFolderId ? [rootFolderId] : [],
       };
 
       const folder = await drive.files.create({
         requestBody: folderMetadata,
-        fields: 'id',
+        fields: "id",
       });
 
       const folderId = folder.data.id;
@@ -85,26 +100,33 @@ export const createProjectFolder = createServerFn({ method: "POST" })
           .from("crm_projects")
           .update({ google_drive_folder_id: folderId })
           .eq("id", data.projectId);
-        
-        await logDriveActivity('create_folder_success', { folderId });
+
+        await logDriveActivity("create_folder_success", { folderId });
       }
 
       return { folderId };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao criar pasta no Drive:", error);
-      await logDriveActivity('create_folder_error', { error: error.message }, 'failure');
+      await logDriveActivity("create_folder_error", { error: getErrorMessage(error) }, "failure");
       throw new Error("Falha na integração com o Google Drive.");
     }
   });
 
 export const listProjectFiles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    folderId: z.string()
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        folderId: z.string(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     if (!context?.userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -115,7 +137,8 @@ export const listProjectFiles = createServerFn({ method: "GET" })
 
       const response = await drive.files.list({
         q: `'${data.folderId}' in parents and trashed = false`,
-        fields: 'files(id, name, mimeType, webViewLink, iconLink, size, modifiedTime, thumbnailLink)',
+        fields:
+          "files(id, name, mimeType, webViewLink, iconLink, size, modifiedTime, thumbnailLink)",
       });
 
       return { files: response.data.files || [], status: "success" };
@@ -127,70 +150,84 @@ export const listProjectFiles = createServerFn({ method: "GET" })
 
 export const uploadFileToProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    folderId: z.string(),
-    fileName: z.string(),
-    fileType: z.string(),
-    fileContent: z.string(), // base64
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        folderId: z.string(),
+        fileName: z.string(),
+        fileType: z.string(),
+        fileContent: z.string(), // base64
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
       const drive = getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
-      const buffer = Buffer.from(data.fileContent, 'base64');
+      const buffer = Buffer.from(data.fileContent, "base64");
       const fileMetadata = {
         name: data.fileName,
-        parents: [data.folderId]
+        parents: [data.folderId],
       };
-      
-      const { Readable } = await import('stream');
+
+      const { Readable } = await import("stream");
       const media = {
         mimeType: data.fileType,
-        body: Readable.from(buffer)
+        body: Readable.from(buffer),
       };
 
       const file = await drive.files.create({
         requestBody: fileMetadata,
         media: media,
-        fields: 'id, webViewLink',
+        fields: "id, webViewLink",
       });
 
-      await supabaseAdmin
-        .from("crm_activity_logs")
-        .insert([{
+      await supabaseAdmin.from("crm_activity_logs").insert([
+        {
           user_id: userId,
-          action: 'upload_file',
-          entity_type: 'drive',
+          action: "upload_file",
+          entity_type: "drive",
           entity_id: data.projectId,
           details: { fileName: data.fileName, fileId: file.data.id },
-          status: 'success'
-        }]);
+          status: "success",
+        },
+      ]);
 
       return { success: true, fileId: file.data.id, link: file.data.webViewLink };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Upload error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const renameDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    fileId: z.string(),
-    newName: z.string(),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        fileId: z.string(),
+        newName: z.string(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -202,35 +239,42 @@ export const renameDriveFile = createServerFn({ method: "POST" })
         requestBody: { name: data.newName },
       });
 
-      await supabaseAdmin
-        .from("crm_activity_logs")
-        .insert([{
+      await supabaseAdmin.from("crm_activity_logs").insert([
+        {
           user_id: userId,
-          action: 'rename_file',
-          entity_type: 'drive',
+          action: "rename_file",
+          entity_type: "drive",
           entity_id: data.projectId,
           details: { fileId: data.fileId, newName: data.newName },
-          status: 'success'
-        }]);
+          status: "success",
+        },
+      ]);
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Rename error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const deleteDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    fileId: z.string(),
-    fileName: z.string(),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        fileId: z.string(),
+        fileName: z.string(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -242,37 +286,44 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
         requestBody: { trashed: true },
       });
 
-      await supabaseAdmin
-        .from("crm_activity_logs")
-        .insert([{
+      await supabaseAdmin.from("crm_activity_logs").insert([
+        {
           user_id: userId,
-          action: 'delete_file',
-          entity_type: 'drive',
+          action: "delete_file",
+          entity_type: "drive",
           entity_id: data.projectId,
           details: { fileId: data.fileId, fileName: data.fileName },
-          status: 'success'
-        }]);
+          status: "success",
+        },
+      ]);
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Delete error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const moveDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    fileId: z.string(),
-    fileName: z.string(),
-    oldParentId: z.string(),
-    newParentId: z.string(),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        fileId: z.string(),
+        fileName: z.string(),
+        oldParentId: z.string(),
+        newParentId: z.string(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -285,37 +336,51 @@ export const moveDriveFile = createServerFn({ method: "POST" })
         removeParents: data.oldParentId,
       });
 
-      await supabaseAdmin
-        .from("crm_activity_logs")
-        .insert([{
+      await supabaseAdmin.from("crm_activity_logs").insert([
+        {
           user_id: userId,
-          action: 'move_file',
-          entity_type: 'drive',
+          action: "move_file",
+          entity_type: "drive",
           entity_id: data.projectId,
-          details: { fileId: data.fileId, fileName: data.fileName, oldParentId: data.oldParentId, newParentId: data.newParentId },
-          status: 'success'
-        }]);
+          details: {
+            fileId: data.fileId,
+            fileName: data.fileName,
+            oldParentId: data.oldParentId,
+            newParentId: data.newParentId,
+          },
+          status: "success",
+        },
+      ]);
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Move error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    files: z.array(z.object({
-      fileId: z.string(),
-      newName: z.string(),
-    })),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        files: z.array(
+          z.object({
+            fileId: z.string(),
+            newName: z.string(),
+          }),
+        ),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -329,42 +394,51 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
             fileId: file.fileId,
             requestBody: { name: file.newName },
           });
-          await supabaseAdmin
-            .from("crm_activity_logs")
-            .insert([{
+          await supabaseAdmin.from("crm_activity_logs").insert([
+            {
               user_id: userId,
-              action: 'rename_file',
-              entity_type: 'drive',
+              action: "rename_file",
+              entity_type: "drive",
               entity_id: data.projectId,
               details: { fileId: file.fileId, newName: file.newName },
-              status: 'success'
-            }]);
+              status: "success",
+            },
+          ]);
           results.push({ fileId: file.fileId, success: true });
-        } catch (e: any) {
-          results.push({ fileId: file.fileId, success: false, error: e.message });
+        } catch (error: unknown) {
+          results.push({ fileId: file.fileId, success: false, error: getErrorMessage(error) });
         }
       }
 
       return { success: true, results };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Batch rename error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    files: z.array(z.object({
-      fileId: z.string(),
-      fileName: z.string(),
-    })),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        files: z.array(
+          z.object({
+            fileId: z.string(),
+            fileName: z.string(),
+          }),
+        ),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -378,44 +452,53 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
             fileId: file.fileId,
             requestBody: { trashed: true },
           });
-          await supabaseAdmin
-            .from("crm_activity_logs")
-            .insert([{
+          await supabaseAdmin.from("crm_activity_logs").insert([
+            {
               user_id: userId,
-              action: 'delete_file',
-              entity_type: 'drive',
+              action: "delete_file",
+              entity_type: "drive",
               entity_id: data.projectId,
               details: { fileId: file.fileId, fileName: file.fileName },
-              status: 'success'
-            }]);
+              status: "success",
+            },
+          ]);
           results.push({ fileId: file.fileId, success: true });
-        } catch (e: any) {
-          results.push({ fileId: file.fileId, success: false, error: e.message });
+        } catch (error: unknown) {
+          results.push({ fileId: file.fileId, success: false, error: getErrorMessage(error) });
         }
       }
 
       return { success: true, results };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Batch delete error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });
 
 export const batchMoveDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: any) => z.object({
-    projectId: z.string(),
-    newParentId: z.string(),
-    files: z.array(z.object({
-      fileId: z.string(),
-      fileName: z.string(),
-      oldParentId: z.string(),
-    })),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        projectId: z.string(),
+        newParentId: z.string(),
+        files: z.array(
+          z.object({
+            fileId: z.string(),
+            fileName: z.string(),
+            oldParentId: z.string(),
+          }),
+        ),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     const userId = context?.userId;
     if (!userId) throw new Response("Unauthorized", { status: 401 });
-    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Response("Forbidden", { status: 403 });
 
     try {
@@ -430,36 +513,41 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
             addParents: data.newParentId,
             removeParents: file.oldParentId,
           });
-          await supabaseAdmin
-            .from("crm_activity_logs")
-            .insert([{
+          await supabaseAdmin.from("crm_activity_logs").insert([
+            {
               user_id: userId,
-              action: 'move_file',
-              entity_type: 'drive',
+              action: "move_file",
+              entity_type: "drive",
               entity_id: data.projectId,
-              details: { fileId: file.fileId, fileName: file.fileName, oldParentId: file.oldParentId, newParentId: data.newParentId },
-              status: 'success'
-            }]);
-          results.push({ 
-            fileId: file.fileId, 
+              details: {
+                fileId: file.fileId,
+                fileName: file.fileName,
+                oldParentId: file.oldParentId,
+                newParentId: data.newParentId,
+              },
+              status: "success",
+            },
+          ]);
+          results.push({
+            fileId: file.fileId,
             fileName: file.fileName,
             oldParentId: file.oldParentId,
-            success: true 
+            success: true,
           });
-        } catch (e: any) {
-          results.push({ 
-            fileId: file.fileId, 
+        } catch (error: unknown) {
+          results.push({
+            fileId: file.fileId,
             fileName: file.fileName,
             oldParentId: file.oldParentId,
-            success: false, 
-            error: e.message 
+            success: false,
+            error: getErrorMessage(error),
           });
         }
       }
 
       return { success: true, results };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Batch move error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: getErrorMessage(error) };
     }
   });

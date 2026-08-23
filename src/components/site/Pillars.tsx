@@ -34,11 +34,15 @@ export function Pillars() {
     hidden: variants.fadeIn.initial,
     visible: {
       ...variants.fadeIn.animate,
-      transition: transitions.default
+      transition: transitions.default,
     },
   };
   return (
-    <section id="valores" className="relative overflow-hidden bg-background py-24 md:py-32" aria-labelledby="pillars-heading">
+    <section
+      id="valores"
+      className="relative overflow-hidden bg-background py-24 md:py-32"
+      aria-labelledby="pillars-heading"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/10 dark:bg-accent/15 blur-[100px] dark:blur-[140px]"
@@ -48,13 +52,15 @@ export function Pillars() {
         className="pointer-events-none absolute bottom-0 left-0 h-80 w-80 rounded-full bg-primary/5 dark:bg-primary/10 blur-[100px] dark:blur-[120px]"
       />
 
-
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="max-w-3xl">
           <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
             Nossos Pilares
           </p>
-          <h2 id="pillars-heading" className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+          <h2
+            id="pillars-heading"
+            className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl"
+          >
             Os Valores que Nos Distinguem.
           </h2>
           <p className="mt-5 text-base leading-[1.6] text-muted-foreground md:text-lg">
@@ -63,8 +69,8 @@ export function Pillars() {
           </p>
         </div>
 
-        <motion.ul 
-          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" 
+        <motion.ul
+          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
           role="list"
           variants={containerVariants}
           initial="hidden"

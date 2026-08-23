@@ -4,36 +4,36 @@ import { Cpu, Rocket, Users } from "lucide-react";
 
 export function About() {
   const shouldReduceMotion = useReducedMotion();
-  
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { ...variants.fadeIn.initial, y: 20 },
-    visible: { 
+    visible: {
       ...variants.fadeIn.animate,
       y: 0,
-      transition: transitions.medium
-    }
+      transition: transitions.medium,
+    },
   };
 
   const stats = [
     { icon: Rocket, label: "Missão", value: "Impulsionar a transformação digital com propósito." },
     { icon: Cpu, label: "Visão", value: "Ser referência global em engenharia de software." },
-    { icon: Users, label: "Valores", value: "Transparência, qualidade técnica e foco no cliente." }
+    { icon: Users, label: "Valores", value: "Transparência, qualidade técnica e foco no cliente." },
   ];
 
   return (
-    <section 
-      id="sobre" 
+    <section
+      id="sobre"
       className="relative overflow-hidden bg-background py-24 text-foreground md:py-32 contain-paint"
       aria-labelledby="about-heading"
     >
@@ -42,7 +42,7 @@ export function About() {
       <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-secondary/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -62,9 +62,12 @@ export function About() {
                 </span>
               </div>
 
-              <h2 id="about-heading" className="text-4xl leading-[1.1] font-bold tracking-tight md:text-5xl lg:text-6xl">
+              <h2
+                id="about-heading"
+                className="text-4xl leading-[1.1] font-bold tracking-tight md:text-5xl lg:text-6xl"
+              >
                 QuimeraTech: <br />
-                <span className="bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
                   Inovação em Software.
                 </span>
               </h2>
@@ -72,16 +75,22 @@ export function About() {
               <p className="max-w-2xl text-lg leading-[1.8] text-surface-muted md:text-xl">
                 A QuimeraTech é uma software house de excelência, dedicada ao desenvolvimento de
                 soluções digitais personalizadas que impulsionam a eficiência, a inovação e o
-                crescimento dos negócios dos nossos clientes.
+                crescimento dos negócios dos nossos clientes. Construímos desde websites
+                institucionais a plataformas SaaS complexas e sistemas empresariais à medida, com
+                absoluto na qualidade do produto e na experiência do utilizador.
               </p>
 
               <div className="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-3">
                 {stats.map((stat, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={idx}
                     variants={itemVariants}
                     className="glass-card glass-card-hover group flex flex-col p-5 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10"
-                    onClick={() => import("@/lib/analytics").then(({ trackEvent }) => trackEvent("about_card_click", { label: stat.label }))}
+                    onClick={() =>
+                      import("@/lib/analytics").then(({ trackEvent }) =>
+                        trackEvent("about_card_click", { label: stat.label }),
+                      )
+                    }
                   >
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 text-primary transition-transform group-hover:scale-110">
                       <stat.icon className="h-6 w-6" aria-hidden="true" />
@@ -96,82 +105,121 @@ export function About() {
 
           {/* Visual Técnico - Código Animado */}
           <div className="lg:col-span-5 self-stretch">
-            <motion.div 
+            <motion.div
               variants={{
-                hidden: { 
-                  opacity: 0, 
+                hidden: {
+                  opacity: 0,
                   x: shouldReduceMotion ? 0 : 30,
-                  scale: shouldReduceMotion ? 0.98 : 1
+                  scale: shouldReduceMotion ? 0.98 : 1,
                 },
-                visible: { 
-                  opacity: 1, 
+                visible: {
+                  opacity: 1,
                   x: 0,
                   scale: 1,
-                  transition: { 
+                  transition: {
                     ...transitions.slow,
-                    delay: 0.3
-                  } 
-                }
+                    delay: 0.3,
+                  },
+                },
               }}
-              className="relative h-full min-h-[400px] lg:min-h-0"
+              className="relative h-full min-h-100 lg:min-h-0"
             >
               {/* Moldura Glassmorphism com efeito de código */}
-              <div 
+              <div
                 tabIndex={0}
                 className="glass-card group relative flex h-full flex-col overflow-hidden bg-[#f8f9fa] dark:bg-[#0d1117] transition-all duration-500 hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden rounded-3xl shadow-sm dark:shadow-none"
                 role="article"
                 aria-label="Editor de código: QuimeraTech Software House Logic"
               >
                 <div className="sr-only">
-                  Este elemento contém uma representação visual de código descrevendo a excelência técnica da QuimeraTech.
-                  A classe SoftwareHouse possui uma stack com React e Node, e um método assíncrono para construir o futuro com qualidade e velocidade infinitas.
+                  Este elemento contém uma representação visual de código descrevendo a excelência
+                  técnica da QuimeraTech. A classe SoftwareHouse possui uma stack com React e Node,
+                  e um método assíncrono para construir o futuro com qualidade e velocidade
+                  infinitas.
                 </div>
                 {/* Header de janela de código */}
-                <div className="flex shrink-0 items-center space-x-2 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 px-4 py-3" aria-hidden="true">
+                <div
+                  className="flex shrink-0 items-center space-x-2 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 px-4 py-3"
+                  aria-hidden="true"
+                >
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-                  <span className="ml-4 text-[10px] font-mono text-black/40 dark:text-white/60">quimeratech.ts</span>
+                  <span className="ml-4 text-[10px] font-mono text-black/40 dark:text-white/60">
+                    quimeratech.ts
+                  </span>
                 </div>
 
-                <div className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm" aria-hidden="true">
+                <div
+                  className="grow overflow-hidden p-6 font-mono text-xs leading-relaxed md:text-sm"
+                  aria-hidden="true"
+                >
                   <div className="flex space-x-4">
                     <div className="select-none text-black/20 dark:text-white/30">
                       {Array.from({ length: 14 }).map((_, i) => (
-                        <div key={i}>{String(i + 1).padStart(2, '0')}</div>
+                        <div key={i}>{String(i + 1).padStart(2, "0")}</div>
                       ))}
                     </div>
                     <div className="space-y-1">
-                      <div className="text-[#a626a4] dark:text-[#c678dd]">class <span className="text-[#4078f2] dark:text-[#61afef]">SoftwareHouse</span> {"{"}</div>
-                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> = [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>, <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];</div>
-                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">private <span className="text-[#383a42] dark:text-[#abb2bf]">mission</span> = <span className="text-[#50a14f] dark:text-[#98c379]">"Innovation"</span>;</div>
+                      <div className="text-[#a626a4] dark:text-[#c678dd]">
+                        class{" "}
+                        <span className="text-[#4078f2] dark:text-[#61afef]">SoftwareHouse</span>{" "}
+                        {"{"}
+                      </div>
+                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">
+                        private <span className="text-[#383a42] dark:text-[#abb2bf]">stack</span> =
+                        [<span className="text-[#50a14f] dark:text-[#98c379]">"React"</span>,{" "}
+                        <span className="text-[#50a14f] dark:text-[#98c379]">"Node"</span>];
+                      </div>
+                      <div className="pl-4 text-[#4078f2] dark:text-[#61afef]">
+                        private <span className="text-[#383a42] dark:text-[#abb2bf]">mission</span>{" "}
+                        = <span className="text-[#50a14f] dark:text-[#98c379]">"Innovation"</span>;
+                      </div>
                       <div className="h-4" />
-                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">async <span className="text-[#e45649] dark:text-[#e06c75]">buildFuture</span>() {"{"}</div>
-                      <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">await <span className="text-[#383a42] dark:text-[#abb2bf]">this</span>.<span className="text-[#986801] dark:text-[#d19a66]">transform</span>({"{"}</div>
-                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">quality: <span className="text-[#986801] dark:text-[#d19a66]">true</span>,</div>
-                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">speed: <span className="text-[#986801] dark:text-[#d19a66]">Infinity</span>,</div>
-                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">purpose: <span className="text-[#50a14f] dark:text-[#98c379]">"Impact"</span></div>
+                      <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">
+                        async{" "}
+                        <span className="text-[#e45649] dark:text-[#e06c75]">buildFuture</span>(){" "}
+                        {"{"}
+                      </div>
+                      <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">
+                        await <span className="text-[#383a42] dark:text-[#abb2bf]">this</span>.
+                        <span className="text-[#986801] dark:text-[#d19a66]">transform</span>({"{"}
+                      </div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">
+                        quality: <span className="text-[#986801] dark:text-[#d19a66]">true</span>,
+                      </div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">
+                        speed: <span className="text-[#986801] dark:text-[#d19a66]">Infinity</span>,
+                      </div>
+                      <div className="pl-12 text-[#383a42] dark:text-[#abb2bf]">
+                        purpose:{" "}
+                        <span className="text-[#50a14f] dark:text-[#98c379]">"Impact"</span>
+                      </div>
                       <div className="pl-8 text-[#a626a4] dark:text-[#c678dd]">{"})"};</div>
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                       <div className="h-4" />
-                      <div className="pl-4 text-black/30 dark:text-white/20">// Continuous improvement...</div>
+                      <div className="pl-4 text-black/30 dark:text-white/20">
+                        // Continuous improvement...
+                      </div>
                       <div className="text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Efeito de brilho/scanner */}
-                <motion.div 
+                <motion.div
                   animate={shouldReduceMotion ? {} : { top: ["-10%", "110%"] }}
                   transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                  className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none interaction-pulse"
+                  className="absolute left-0 right-0 h-24 bg-linear-to-b from-transparent via-primary/5 to-transparent pointer-events-none interaction-pulse"
                 />
               </div>
 
               {/* Badge de Tecnologia */}
               <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-background dark:bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                <span className="text-[10px] font-bold tracking-widest text-primary uppercase">Clean Code</span>
+                <span className="text-[10px] font-bold tracking-widest text-primary uppercase">
+                  Clean Code
+                </span>
               </div>
             </motion.div>
           </div>

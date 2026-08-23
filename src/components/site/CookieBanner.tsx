@@ -28,10 +28,14 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   useEffect(() => {
     setMounted(true);
     const savedConsent = getAnalyticsConsent();
-    
+
     if (savedConsent) {
       if (typeof savedConsent === "object") {
-        setPreferences({ essential: true, analytics: savedConsent.analytics ?? false, marketing: savedConsent.marketing ?? false });
+        setPreferences({
+          essential: true,
+          analytics: savedConsent.analytics ?? false,
+          marketing: savedConsent.marketing ?? false,
+        });
         updateAnalyticsConsent(savedConsent);
       } else {
         const isAll = savedConsent === "all";
@@ -39,7 +43,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         updateAnalyticsConsent(isAll ? "all" : "essential");
       }
     }
-    
+
     if (!savedConsent && location.pathname !== "/politica-de-cookies") {
       const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
@@ -93,7 +97,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
           exit={{ opacity: 0, y: 20, scale: 0.98 }}
           role="region"
           aria-label="Gestão de Cookies"
-          className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-4xl md:bottom-8"
+          className="fixed bottom-4 left-4 right-4 z-9999 mx-auto max-w-4xl md:bottom-8"
         >
           <div className="relative overflow-hidden rounded-3xl border border-border dark:border-white/10 bg-card/90 dark:bg-card/90 p-6 shadow-2xl backdrop-blur-xl md:p-8 glass-card">
             <div className="flex flex-col gap-6">
@@ -107,11 +111,16 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                     A sua privacidade é a nossa prioridade
                   </h3>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Utilizamos cookies para otimizar o desempenho do site, analisar o tráfego e personalizar a sua experiência. 
-                    Personalize as suas preferências abaixo ou aceite todas para a melhor experiência. Leia a nossa{" "}
-                    <Link to="/politica-de-cookies" className="text-primary font-semibold hover:underline">
+                    Utilizamos cookies para otimizar o desempenho do site, analisar o tráfego e
+                    personalizar a sua experiência. Personalize as suas preferências abaixo ou
+                    aceite todas para a melhor experiência. Leia a nossa{" "}
+                    <Link
+                      to="/politica-de-cookies"
+                      className="text-primary font-semibold hover:underline"
+                    >
                       Política de Cookies
-                    </Link>.
+                    </Link>
+                    .
                   </p>
                 </div>
 
@@ -125,11 +134,15 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
               </div>
 
               {/* Granular Settings Toggle */}
-              <button 
+              <button
                 onClick={() => setShowDetails(!showDetails)}
                 className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 transition-colors w-fit"
               >
-                {showDetails ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                {showDetails ? (
+                  <ChevronDown className="h-3 w-3" />
+                ) : (
+                  <ChevronRight className="h-3 w-3" />
+                )}
                 {showDetails ? "Ocultar configurações detalhadas" : "Configurações detalhadas"}
               </button>
 
@@ -147,19 +160,29 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                           Essenciais
                           <ShieldCheck className="h-3 w-3 text-primary" />
                         </div>
-                        <p className="text-xs text-muted-foreground">Necessários para o site funcionar.</p>
+                        <p className="text-xs text-muted-foreground">
+                          Necessários para o site funcionar.
+                        </p>
                       </div>
-                      <Switch checked={true} disabled aria-label="Cookies essenciais sempre ativos" />
+                      <Switch
+                        checked={true}
+                        disabled
+                        aria-label="Cookies essenciais sempre ativos"
+                      />
                     </div>
 
                     <div className="flex items-center justify-between py-2">
                       <div className="space-y-0.5">
                         <div className="text-sm font-semibold">Analíticos</div>
-                        <p className="text-xs text-muted-foreground">Ajudam-nos a perceber como os utilizadores interagem com o site.</p>
+                        <p className="text-xs text-muted-foreground">
+                          Ajudam-nos a perceber como os utilizadores interagem com o site.
+                        </p>
                       </div>
-                      <Switch 
-                        checked={preferences.analytics} 
-                        onCheckedChange={(checked) => setPreferences(prev => ({ ...prev, analytics: checked }))}
+                      <Switch
+                        checked={preferences.analytics}
+                        onCheckedChange={(checked) =>
+                          setPreferences((prev) => ({ ...prev, analytics: checked }))
+                        }
                         aria-label="Ativar cookies analíticos"
                       />
                     </div>
@@ -167,11 +190,15 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                     <div className="flex items-center justify-between py-2">
                       <div className="space-y-0.5">
                         <div className="text-sm font-semibold">Marketing</div>
-                        <p className="text-xs text-muted-foreground">Utilizados para apresentar anúncios mais relevantes.</p>
+                        <p className="text-xs text-muted-foreground">
+                          Utilizados para apresentar anúncios mais relevantes.
+                        </p>
                       </div>
-                      <Switch 
-                        checked={preferences.marketing} 
-                        onCheckedChange={(checked) => setPreferences(prev => ({ ...prev, marketing: checked }))}
+                      <Switch
+                        checked={preferences.marketing}
+                        onCheckedChange={(checked) =>
+                          setPreferences((prev) => ({ ...prev, marketing: checked }))
+                        }
                         aria-label="Ativar cookies de marketing"
                       />
                     </div>

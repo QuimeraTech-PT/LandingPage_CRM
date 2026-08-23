@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/robots/txt')({
+export const Route = createFileRoute("/robots/txt")({
   server: {
     handlers: {
       GET: async () => {
@@ -14,8 +14,8 @@ Sitemap: https://quimeratech.pt/sitemap-legal.xml`;
 
         return new Response(robots, {
           headers: {
-            'Content-Type': 'text/plain',
-            'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+            "Content-Type": "text/plain",
+            "Cache-Control": "public, max-age=86400, s-maxage=86400",
           },
         });
       },

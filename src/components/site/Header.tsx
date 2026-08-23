@@ -8,8 +8,6 @@ import { Logo } from "./Logo";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
-
-
 const links = [
   { href: "#sobre", label: "Sobre" },
   { href: "#especialidades", label: "Especialidades" },
@@ -23,7 +21,6 @@ import { useReducedMotion } from "framer-motion";
 import { motion } from "framer-motion";
 import { scrollToSection as performScroll } from "@/utils/scroll";
 
-
 export function Header() {
   const shouldReduceMotion = useReducedMotion();
   const location = useLocation();
@@ -36,11 +33,13 @@ export function Header() {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
-        const { data } = await supabase.rpc('has_role', {
+        const { data } = await supabase.rpc("has_role", {
           _user_id: session.user.id,
-          _role: 'admin'
+          _role: "admin",
         });
         setIsAdmin(!!data);
       }
@@ -51,7 +50,7 @@ export function Header() {
   const toggleMenu = () => {
     const newState = !open;
     setOpen(newState);
-    
+
     // Sync with FloatingActions via custom event
     window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: newState } }));
   };
@@ -59,7 +58,7 @@ export function Header() {
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const targetId = href.replace("#", "");
-    
+
     if (!isHome) {
       navigate({ to: "/", hash: targetId });
       if (open) {
@@ -70,7 +69,7 @@ export function Header() {
     }
 
     performScroll(targetId);
-    
+
     if (open) {
       setOpen(false);
       window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
@@ -87,7 +86,9 @@ export function Header() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "border-b border-border/50 dark:border-white/5 bg-background/80 backdrop-blur-xl py-0 shadow-lg" : "bg-transparent py-2"
+        scrolled
+          ? "border-b border-border/50 dark:border-white/5 bg-background/80 backdrop-blur-xl py-0 shadow-lg"
+          : "bg-transparent py-2"
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
@@ -104,15 +105,18 @@ export function Header() {
               className="group relative py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               {l.label}
-              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" aria-hidden="true" />
+              <span
+                className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"
+                aria-hidden="true"
+              />
             </motion.a>
           ))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-6 pl-6 border-l border-border/50">
           {isAdmin && (
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin"
               className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors mr-4"
               title="Aceder ao CRM"
             >
@@ -144,7 +148,9 @@ export function Header() {
         className={`fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden transition-all ${
           shouldReduceMotion ? "duration-0" : "duration-300"
         } ${
-          open ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
+          open
+            ? "translate-x-0 opacity-100 pointer-events-auto"
+            : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex h-20 items-center justify-between px-5">
@@ -152,14 +158,16 @@ export function Header() {
           <button
             ref={(el) => {
               if (open && el) {
-                // We'll let FocusTrap handle the initial focus, 
+                // We'll let FocusTrap handle the initial focus,
                 // but we keep this ref logic simple
               }
             }}
             type="button"
             onClick={() => {
               setOpen(false);
-              window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+              window.dispatchEvent(
+                new CustomEvent("mobileMenuToggle", { detail: { open: false } }),
+              );
             }}
             className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
             aria-label="Fechar menu"
@@ -173,7 +181,9 @@ export function Header() {
           focusTrapOptions={{
             onDeactivate: () => {
               setOpen(false);
-              window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+              window.dispatchEvent(
+                new CustomEvent("mobileMenuToggle", { detail: { open: false } }),
+              );
               menuButtonRef.current?.focus();
             },
             clickOutsideDeactivates: true,
@@ -190,10 +200,14 @@ export function Header() {
                 className="justify-start text-lg font-semibold h-14"
                 onClick={() => {
                   setOpen(false);
-                  window.dispatchEvent(new CustomEvent("mobileMenuToggle", { detail: { open: false } }));
+                  window.dispatchEvent(
+                    new CustomEvent("mobileMenuToggle", { detail: { open: false } }),
+                  );
                 }}
               >
-                <a href={l.href} onClick={(e) => scrollToSection(e, l.href)}>{l.label}</a>
+                <a href={l.href} onClick={(e) => scrollToSection(e, l.href)}>
+                  {l.label}
+                </a>
               </Button>
             ))}
           </nav>

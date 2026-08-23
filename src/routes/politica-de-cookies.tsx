@@ -31,7 +31,7 @@ export const Route = createFileRoute("/politica-de-cookies")({
         ...breadcrumbList([
           { name: "Início", path: "/" },
           { name: "Política de Cookies", path },
-        ])
+        ]),
       }),
       jsonLd({
         "@context": "https://schema.org",
@@ -59,7 +59,7 @@ function CookiesPolicy() {
   const handleClearCookies = () => {
     updateAnalyticsConsent("none");
     toast.success("Preferências de cookies repostas com sucesso.");
-    
+
     // Re-initialize analytics with default (denied) consent
     const gtmId = import.meta.env.VITE_GTM_ID;
     if (gtmId) {
@@ -75,7 +75,11 @@ function CookiesPolicy() {
     <PageTransition>
       <div className="min-h-screen bg-background text-foreground">
         <Header />
-        <main className="mx-auto max-w-4xl px-5 py-24 lg:px-8 lg:py-32 focus:outline-hidden" tabIndex={-1} id="main-content">
+        <main
+          className="mx-auto max-w-4xl px-5 py-24 lg:px-8 lg:py-32 focus:outline-hidden"
+          tabIndex={-1}
+          id="main-content"
+        >
           <Link
             to="/"
             className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -89,7 +93,7 @@ function CookiesPolicy() {
               <Cookie className="h-10 w-10 text-primary" />
               Política de Cookies
             </h1>
-            
+
             <p className="mt-4 text-sm text-muted-foreground italic">
               Última atualização: 15 de agosto de 2026
             </p>
@@ -101,14 +105,20 @@ function CookiesPolicy() {
                   Gestão Instantânea
                 </h3>
                 <p className="text-muted-foreground text-sm">
-                  Pode alterar as suas preferências de consentimento ou revogar o seu consentimento a qualquer momento utilizando as ferramentas abaixo.
+                  Pode alterar as suas preferências de consentimento ou revogar o seu consentimento
+                  a qualquer momento utilizando as ferramentas abaixo.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 shrink-0">
                 <Button onClick={handleOpenSettings} variant="primary" size="sm">
                   Configurar Preferências
                 </Button>
-                <Button onClick={handleClearCookies} variant="outline" size="sm" className="text-destructive hover:bg-destructive/10">
+                <Button
+                  onClick={handleClearCookies}
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:bg-destructive/10"
+                >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Limpar Consentimento
                 </Button>
@@ -122,67 +132,113 @@ function CookiesPolicy() {
                   1. O que são cookies?
                 </h2>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Cookies são pequenos ficheiros de texto que são descarregados para o seu dispositivo quando visita um website. Estes permitem que o website reconheça o seu dispositivo e armazene algumas informações sobre as suas preferências ou ações passadas.
+                  Cookies são pequenos ficheiros de texto que são descarregados para o seu
+                  dispositivo quando visita um website. Estes permitem que o website reconheça o seu
+                  dispositivo e armazene algumas informações sobre as suas preferências ou ações
+                  passadas.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-2xl font-semibold text-foreground">2. Como utilizamos os cookies?</h2>
+                <h2 className="text-2xl font-semibold text-foreground">
+                  2. Como utilizamos os cookies?
+                </h2>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Na QuimeraTech, utilizamos cookies para garantir que o nosso website funciona corretamente, para analisar o desempenho do site e para personalizar a sua experiência. Não utilizamos cookies para fins publicitários intrusivos.
+                  Na QuimeraTech, utilizamos cookies para garantir que o nosso website funciona
+                  corretamente, para analisar o desempenho do site e para personalizar a sua
+                  experiência. Não utilizamos cookies para fins publicitários intrusivos.
                 </p>
               </div>
 
               <div className="bg-muted/30 p-8 rounded-2xl border border-border">
-                <h2 className="text-2xl font-semibold text-foreground mb-6">3. Tipos de cookies que utilizamos</h2>
-                
+                <h2 className="text-2xl font-semibold text-foreground mb-6">
+                  3. Tipos de cookies que utilizamos
+                </h2>
+
                 <div className="space-y-6">
                   <div className="border-b border-border pb-4 last:border-0 last:pb-0">
                     <h3 className="text-lg font-medium text-primary mb-2">Cookies Essenciais</h3>
                     <p className="text-sm text-muted-foreground">
-                      Estes cookies são estritamente necessários para fornecer os serviços disponíveis através do nosso website e para utilizar algumas das suas funcionalidades, como o acesso a áreas seguras. Como estes cookies são estritamente necessários para o funcionamento do site, não pode recusá-los sem afetar o funcionamento do mesmo.
+                      Estes cookies são estritamente necessários para fornecer os serviços
+                      disponíveis através do nosso website e para utilizar algumas das suas
+                      funcionalidades, como o acesso a áreas seguras. Como estes cookies são
+                      estritamente necessários para o funcionamento do site, não pode recusá-los sem
+                      afetar o funcionamento do mesmo.
                     </p>
                   </div>
 
                   <div className="border-b border-border pb-4 last:border-0 last:pb-0">
-                    <h3 className="text-lg font-medium text-primary mb-2">Cookies de Analítica e Desempenho</h3>
+                    <h3 className="text-lg font-medium text-primary mb-2">
+                      Cookies de Analítica e Desempenho
+                    </h3>
                     <p className="text-sm text-muted-foreground">
-                      Estes cookies recolhem informações que são utilizadas de forma agregada para nos ajudar a compreender como o nosso website está a ser utilizado ou a eficácia das nossas campanhas de marketing, ou para nos ajudar a personalizar o nosso website para si.
-                      <br /><br />
-                      Utilizamos o <strong className="text-foreground">Google Analytics</strong> e o <strong className="text-foreground">Google Tag Manager</strong> para este fim, mas apenas se nos der o seu consentimento explícito.
+                      Estes cookies recolhem informações que são utilizadas de forma agregada para
+                      nos ajudar a compreender como o nosso website está a ser utilizado ou a
+                      eficácia das nossas campanhas de marketing, ou para nos ajudar a personalizar
+                      o nosso website para si.
+                      <br />
+                      <br />
+                      Utilizamos o <strong className="text-foreground">Google Analytics</strong> e o{" "}
+                      <strong className="text-foreground">Google Tag Manager</strong> para este fim,
+                      mas apenas se nos der o seu consentimento explícito.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-medium text-primary mb-2">Cookies de Funcionalidade</h3>
+                    <h3 className="text-lg font-medium text-primary mb-2">
+                      Cookies de Funcionalidade
+                    </h3>
                     <p className="text-sm text-muted-foreground">
-                      Estes cookies são utilizados para melhorar a funcionalidade do nosso website, mas não são essenciais para a sua utilização. No entanto, sem estes cookies, certas funcionalidades podem tornar-se indisponíveis.
+                      Estes cookies são utilizados para melhorar a funcionalidade do nosso website,
+                      mas não são essenciais para a sua utilização. No entanto, sem estes cookies,
+                      certas funcionalidades podem tornar-se indisponíveis.
                     </p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-2xl font-semibold text-foreground">4. Como controlar os cookies?</h2>
+                <h2 className="text-2xl font-semibold text-foreground">
+                  4. Como controlar os cookies?
+                </h2>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Tem o direito de decidir se aceita ou rejeita cookies. Pode exercer os seus direitos de preferência de cookies configurando as suas preferências no nosso "Banner de Cookies" que aparece na sua primeira visita ou através do botão "Configurar Preferências" no topo desta página.
+                  Tem o direito de decidir se aceita ou rejeita cookies. Pode exercer os seus
+                  direitos de preferência de cookies configurando as suas preferências no nosso
+                  "Banner de Cookies" que aparece na sua primeira visita ou através do botão
+                  "Configurar Preferências" no topo desta página.
                 </p>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Além disso, a maioria dos navegadores permite-lhe controlar os cookies através das suas definições. No entanto, se limitar a capacidade dos websites de definir cookies, poderá piorar a sua experiência de utilizador global.
+                  Além disso, a maioria dos navegadores permite-lhe controlar os cookies através das
+                  suas definições. No entanto, se limitar a capacidade dos websites de definir
+                  cookies, poderá piorar a sua experiência de utilizador global.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-2xl font-semibold text-foreground">5. Atualizações a esta Política</h2>
+                <h2 className="text-2xl font-semibold text-foreground">
+                  5. Atualizações a esta Política
+                </h2>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Podemos atualizar esta Política de Cookies periodicamente para refletir, por exemplo, alterações nos cookies que utilizamos ou por outros motivos operacionais, legais ou regulamentares. Por favor, revisite esta página regularmente para se manter informado.
+                  Podemos atualizar esta Política de Cookies periodicamente para refletir, por
+                  exemplo, alterações nos cookies que utilizamos ou por outros motivos operacionais,
+                  legais ou regulamentares. Por favor, revisite esta página regularmente para se
+                  manter informado.
                 </p>
               </div>
 
               <div className="border-t border-border pt-8">
                 <h2 className="text-2xl font-semibold text-foreground">6. Mais informações</h2>
                 <p className="mt-4 leading-relaxed text-muted-foreground">
-                  Se tiver alguma dúvida sobre a nossa utilização de cookies ou outras tecnologias, envie-nos um e-mail para <a href="mailto:hello@quimeratech.pt" className="text-primary hover:underline">hello@quimeratech.pt</a> ou consulte a nossa <Link to="/politica-de-privacidade" className="text-primary hover:underline">Política de Privacidade</Link>.
+                  Se tiver alguma dúvida sobre a nossa utilização de cookies ou outras tecnologias,
+                  envie-nos um e-mail para{" "}
+                  <a href="mailto:legal@quimeratech.pt" className="text-primary hover:underline">
+                    legal@quimeratech.pt
+                  </a>{" "}
+                  ou consulte a nossa{" "}
+                  <Link to="/politica-de-privacidade" className="text-primary hover:underline">
+                    Política de Privacidade
+                  </Link>
+                  .
                 </p>
               </div>
             </section>

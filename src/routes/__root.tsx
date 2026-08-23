@@ -15,10 +15,14 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingActions } from "@/components/site/FloatingActions";
-import { initAnalytics, updateAnalyticsConsent, trackWebVitals, initScrollTracking } from "@/lib/analytics";
+import {
+  initAnalytics,
+  updateAnalyticsConsent,
+  trackWebVitals,
+  initScrollTracking,
+} from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
 import { CursorFollower } from "@/components/site/CursorFollower";
-
 
 function NotFoundComponent() {
   return (
@@ -86,7 +90,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "QuimeraTech — Software House de Excelência" },
-      { name: "description", content: "Desenvolvimento de software à medida, consultoria tecnológica e soluções digitais inteligentes." },
+      {
+        name: "description",
+        content:
+          "Desenvolvimento de software à medida, consultoria tecnológica e soluções digitais inteligentes.",
+      },
       { name: "author", content: "QuimeraTech" },
       { property: "og:site_name", content: "QuimeraTech" },
       { property: "og:type", content: "website" },
@@ -99,7 +107,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "preload", href: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+      {
+        rel: "preload",
+        href: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -198,25 +212,23 @@ function RootComponent() {
     return () => window.removeEventListener("open-cookie-settings", handleOpenConsent);
   }, []);
 
-
   useEffect(() => {
     const loadAnalytics = async () => {
       try {
         const config = await getAnalyticsConfig();
         if (config.gtmId) {
           initAnalytics(config.gtmId);
-          
+
           // Initialize GA4 if gaId is provided (complementary to GTM if needed)
-          if (config.gaId && typeof window.gtag === 'function') {
+          if (config.gaId && typeof window.gtag === "function") {
             const gaScript = document.createElement("script");
             gaScript.async = true;
             gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
             document.head.appendChild(gaScript);
-            
-            window.gtag('config', config.gaId);
+
+            window.gtag("config", config.gaId);
           }
 
-          
           // Initial state is already handled by the inline script
           // updateAnalyticsConsent is now safer and doesn't need to be called here
           // as gtag('consent', 'default', ...) already reflects the stored choice.
@@ -228,7 +240,7 @@ function RootComponent() {
         console.error("Failed to load analytics config:", error);
       }
     };
-    
+
     loadAnalytics();
   }, []);
 
@@ -236,7 +248,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-100 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         Saltar para o conteúdo principal
       </a>

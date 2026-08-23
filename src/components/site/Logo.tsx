@@ -27,7 +27,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
           "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] transition-opacity duration-300",
           "hidden dark:block",
           sizeClasses[size],
-          className
+          className,
         )}
         width={1920}
         height={720}
@@ -42,7 +42,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
           "w-auto transition-opacity duration-300",
           "block dark:hidden opacity-90",
           sizeClasses[size],
-          className
+          className,
         )}
         width={1920}
         height={720}
@@ -53,7 +53,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
     </div>
   );
 
-  const commonClasses = "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
+  const commonClasses =
+    "flex items-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-shadow";
 
   if (isHome) {
     return (
@@ -63,8 +64,9 @@ export function Logo({ className, size = "md" }: LogoProps) {
         aria-label="QuimeraTech — Voltar ao topo da página"
         onClick={(e) => {
           e.preventDefault();
-          const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
-                                  document.documentElement.classList.contains("force-reduced-motion");
+          const isReducedMotion =
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+            document.documentElement.classList.contains("force-reduced-motion");
           window.scrollTo({ top: 0, behavior: isReducedMotion ? "auto" : "smooth" });
           // Move focus to the top of the page for keyboard users
           const topElement = document.getElementById("top") || document.body;

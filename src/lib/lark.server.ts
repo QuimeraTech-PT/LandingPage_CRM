@@ -1,4 +1,3 @@
-
 /**
  * Lark Suite (Feishu) Integration Helper
  * Used to communicate with Lark Open Platform APIs.
@@ -14,7 +13,7 @@ interface LarkTokenResponse {
 interface LarkMessageResponse {
   code: number;
   msg: string;
-  data: any;
+  data: unknown;
 }
 
 /**
@@ -22,23 +21,26 @@ interface LarkMessageResponse {
  * Requires LARK_APP_ID and LARK_APP_SECRET environment variables.
  */
 async function getTenantAccessToken(): Promise<string> {
-  const appId = process.env['LARK_APP_ID'];
-  const appSecret = process.env['LARK_APP_SECRET'];
+  const appId = process.env["LARK_APP_ID"];
+  const appSecret = process.env["LARK_APP_SECRET"];
 
   if (!appId || !appSecret) {
     throw new Error("LARK_APP_ID or LARK_APP_SECRET is not configured.");
   }
 
-  const response = await fetch("https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
+  const response = await fetch(
+    "https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        app_id: appId,
+        app_secret: appSecret,
+      }),
     },
-    body: JSON.stringify({
-      app_id: appId,
-      app_secret: appSecret,
-    }),
-  });
+  );
 
   const data = (await response.json()) as LarkTokenResponse;
 
@@ -54,12 +56,15 @@ async function getTenantAccessToken(): Promise<string> {
  * @param chatId The receive_id (chat_id) of the group.
  * @param content The contact form data.
  */
-export async function sendLarkContactNotification(chatId: string, contactData: {
-  nome: string;
-  email: string;
-  assunto: string;
-  mensagem: string;
-}) {
+export async function sendLarkContactNotification(
+  chatId: string,
+  contactData: {
+    nome: string;
+    email: string;
+    assunto: string;
+    mensagem: string;
+  },
+) {
   try {
     const token = await getTenantAccessToken();
 
@@ -117,18 +122,21 @@ export async function sendLarkContactNotification(chatId: string, contactData: {
       ],
     };
 
-    const response = await fetch(`https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          receive_id: chatId,
+          msg_type: "interactive",
+          content: JSON.stringify(card),
+        }),
       },
-      body: JSON.stringify({
-        receive_id: chatId,
-        msg_type: "interactive",
-        content: JSON.stringify(card),
-      }),
-    });
+    );
 
     const result = (await response.json()) as LarkMessageResponse;
 
@@ -137,8 +145,9 @@ export async function sendLarkContactNotification(chatId: string, contactData: {
     }
 
     return { success: true };
-  } catch (error: any) {
-    console.error("Failed to send Lark notification:", error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Failed to send Lark notification:", errorMessage);
     throw error;
   }
 }
@@ -147,9 +156,13 @@ export async function sendLarkContactNotification(chatId: string, contactData: {
  * Sends a feedback email using Lark's Public Mailbox API.
  * Requires LARK_PUBLIC_MAILBOX_EMAIL environment variable.
  */
-export async function sendLarkEmailFeedback(customerEmail: string, customerName: string, subject: string) {
-  const publicMailbox = process.env['LARK_PUBLIC_MAILBOX_EMAIL'];
-  
+export async function sendLarkEmailFeedback(
+  customerEmail: string,
+  customerName: string,
+  subject: string,
+) {
+  const publicMailbox = process.env["LARK_PUBLIC_MAILBOX_EMAIL"];
+
   if (!publicMailbox) {
     console.warn("LARK_PUBLIC_MAILBOX_EMAIL is not configured. Email feedback skipped.");
     return { success: false, reason: "missing_config" };
@@ -160,20 +173,23 @@ export async function sendLarkEmailFeedback(customerEmail: string, customerName:
 
     // Using Lark's mail.v1.public_mailbox.message.send endpoint
     // Note: This is a simplified representation of the Public Mailbox Send API
-    const response = await fetch(`https://open.larksuite.com/open-apis/mail/v1/public_mailboxes/${publicMailbox}/messages/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `https://open.larksuite.com/open-apis/mail/v1/public_mailboxes/${publicMailbox}/messages/send`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          subject: `Re: ${subject} - QuimeraTech`,
+          content: `Olá ${customerName},\n\nObrigado pelo seu contacto. Recebemos a sua mensagem com sucesso e a nossa equipa irá analisá-la brevemente.\n\nCom os melhores cumprimentos,\nEquipa QuimeraTech`,
+          to_address: customerEmail,
+        }),
       },
-      body: JSON.stringify({
-        subject: `Re: ${subject} - QuimeraTech`,
-        content: `Olá ${customerName},\n\nObrigado pelo seu contacto. Recebemos a sua mensagem com sucesso e a nossa equipa irá analisá-la brevemente.\n\nCom os melhores cumprimentos,\nEquipa QuimeraTech`,
-        to_address: customerEmail,
-      }),
-    });
+    );
 
-    const result = await response.json() as any;
+    const result = (await response.json()) as LarkMessageResponse;
 
     if (result.code !== 0) {
       console.error(`Lark Mail Error: ${result.msg} (code: ${result.code})`);
@@ -181,8 +197,9 @@ export async function sendLarkEmailFeedback(customerEmail: string, customerName:
     }
 
     return { success: true };
-  } catch (error: any) {
-    console.error("Failed to send Lark email:", error.message);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Failed to send Lark email:", errorMessage);
+    return { success: false, error: errorMessage };
   }
 }
