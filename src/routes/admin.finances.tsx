@@ -52,10 +52,10 @@ function FinancesPage() {
 
   const { data: transactionsData } = useSuspenseQuery({
     queryKey: ["crm-transactions"],
-    queryFn: () => getTransactions(),
+    queryFn: () => getTransactions({ data: {} }),
   });
 
-  const transactions = (transactionsData as any).items || transactionsData;
+  const transactions = transactionsData.items;
 
   const { data: projectsData } = useSuspenseQuery({
     queryKey: ["crm-projects"],
