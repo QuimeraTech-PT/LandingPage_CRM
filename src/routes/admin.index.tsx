@@ -17,6 +17,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { RevenueForecast } from "@/components/crm/RevenueForecast";
+import { CRMStats } from "@/components/crm/CRMStats";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,7 +67,7 @@ function AdminDashboard() {
     queryFn: () => getActivityLogs({ data: { limit: 100 } }),
   });
 
-  const recentLeads = Array.isArray(leads) ? leads.slice(0, 5) : [];
+  const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
   const filteredLogs = useMemo(() => {
     if (!Array.isArray(logs)) return [];
@@ -84,8 +85,8 @@ function AdminDashboard() {
       .slice(0, 8);
   }, [logs, logFilter]);
 
-  const funnelData = Array.isArray(leads)
-    ? leads.reduce<Record<string, number>>((acc, lead) => {
+  const funnelData = Array.isArray(leads.items)
+    ? leads.items.reduce<Record<string, number>>((acc, lead) => {
         acc[lead.status] = (acc[lead.status] || 0) + 1;
         return acc;
       }, {})
@@ -105,37 +106,60 @@ function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 space-y-4">
           <RevenueForecast />
-          <Card className="bg-card/50 backdrop-blur-sm border-white/10">
+          <Card className="bg-card/50 backdrop-blur-sm border-white/10 overflow-hidden relative group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <TrendingUp className="h-24 w-24 text-primary" />
+            </div>
             <CardHeader>
-              <CardTitle>Pipeline de Vendas</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Pipeline de Vendas
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status) => {
+              <div className="space-y-6">
+                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status, idx) => {
                   const count = funnelData[status] || 0;
-                  const total = Array.isArray(leads) ? leads.length : 1;
-                  const percentage = (count / total) * 100;
+                  const total = Array.isArray(leads.items) ? leads.items.length : 1;
+                  const percentage = (count / Math.max(total, 1)) * 100;
                   const labels: Record<string, string> = {
-                    new: "Novas",
-                    contacted: "Contactadas",
-                    proposal: "Proposta",
-                    negotiation: "Negociação",
-                    closed_won: "Ganhas",
+                    new: "Novas Oportunidades",
+                    contacted: "Qualificação",
+                    proposal: "Proposta Enviada",
+                    negotiation: "Em Negociação",
+                    closed_won: "Fecho Ganho",
                   };
+                  const colors = [
+                    "bg-blue-500/40",
+                    "bg-blue-500/60",
+                    "bg-cyan-500/80",
+                    "bg-primary",
+                    "bg-green-500",
+                  ];
 
                   return (
-                    <div key={status} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>{labels[status]}</span>
-                        <span className="font-bold">{count}</span>
+                    <motion.div 
+                      key={status} 
+                      className="space-y-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                    >
+                      <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        <span className="flex items-center gap-2">
+                          <div className={cn("h-2 w-2 rounded-full", colors[idx])} />
+                          {labels[status]}
+                        </span>
+                        <span className="text-foreground">{count}</span>
                       </div>
-                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all duration-500"
-                          style={{ width: `${Math.max(percentage, 2)}%` }}
+                      <div className="h-2.5 w-full bg-muted/30 rounded-full overflow-hidden border border-white/5">
+                        <motion.div
+                          className={cn("h-full transition-all duration-1000 ease-out", colors[idx])}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${Math.max(percentage, 2)}%` }}
                         />
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
