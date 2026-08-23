@@ -151,7 +151,7 @@ export function MethodologySkeleton() {
             ))}
           </div>
           <div className="lg:col-span-7">
-            <div className="h-full min-h-[500px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
+            <div className="h-full min-h-[500px] lg:min-h-[560px] rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 bg-[#0F172A]/80 p-6 sm:p-8 md:p-12 space-y-8">
               <div className="flex items-center gap-4">
                 <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-white/5" />
                 <Skeleton className="h-8 w-1/3 bg-white/5" />
