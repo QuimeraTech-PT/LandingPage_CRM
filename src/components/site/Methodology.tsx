@@ -251,7 +251,7 @@ function MethodologyContent() {
                           : "bg-primary/5 dark:bg-white/5 text-primary group-hover:text-accent"
                       }`}
                     >
-                      <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                      <Icon className="h-5 w-5 sm:h-6 sm:w-6 aspect-square" aria-hidden="true" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -354,7 +354,7 @@ function MethodologyContent() {
                             className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-[1.25rem] bg-white/5 border border-white/10 hover:border-accent/30 transition-colors group"
                           >
                             <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full border border-accent/30 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-                              <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent" />
+                              <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent aspect-square" aria-hidden="true" />
                             </div>
                             <span className="text-xs sm:text-sm font-medium text-slate-200">
                               {checkitem}

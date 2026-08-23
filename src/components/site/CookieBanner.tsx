@@ -55,6 +55,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       lastActiveElement.current = document.activeElement as HTMLElement;
       setShowDetails(true);
       setIsVisible(true);
+      // Wait for animation then focus
+      setTimeout(() => {
+        const firstFocusable = document.querySelector('[role="region"][aria-label="Gestão de Cookies"] button');
+        if (firstFocusable instanceof HTMLElement) firstFocusable.focus();
+      }, 300);
     },
   }));
 
@@ -63,6 +68,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_saved", { ...preferences });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -73,6 +79,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "all" });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -83,6 +90,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     setIsVisible(false);
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("cookie_consent_accepted", { type: "essential" });
+      if (lastActiveElement.current) lastActiveElement.current.focus();
     });
   };
 
@@ -125,9 +133,12 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
                 </div>
 
                 <button
-                  onClick={() => setIsVisible(false)}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                  aria-label="Fechar"
+                  onClick={() => {
+                    setIsVisible(false);
+                    if (lastActiveElement.current) lastActiveElement.current.focus();
+                  }}
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  aria-label="Fechar gestor de privacidade"
                 >
                   <X className="h-5 w-5" />
                 </button>
