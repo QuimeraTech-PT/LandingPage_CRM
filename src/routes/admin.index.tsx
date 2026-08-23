@@ -15,7 +15,9 @@ import {
   Search,
   Filter,
   AlertTriangle,
+  Target,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { RevenueForecast } from "@/components/crm/RevenueForecast";
 import { CRMStats } from "@/components/crm/CRMStats";
 import { Button } from "@/components/ui/button";
