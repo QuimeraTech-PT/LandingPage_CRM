@@ -20,6 +20,7 @@ import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as SitemapPagesXmlRouteImport } from './routes/sitemap-pages.xml'
 import { Route as SitemapLegalXmlRouteImport } from './routes/sitemap-legal.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminFinancesRouteImport } from './routes/admin.finances'
@@ -79,6 +80,11 @@ const RobotsTxtRoute = RobotsTxtRouteImport.update({
   path: '/robots/txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -98,13 +104,14 @@ const AdminFinancesRoute = AdminFinancesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -113,13 +120,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -130,13 +138,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/sitemap-legal/xml': typeof SitemapLegalXmlRoute
   '/sitemap-pages/xml': typeof SitemapPagesXmlRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/auth/callback'
     | '/robots/txt'
     | '/sitemap-legal/xml'
     | '/sitemap-pages/xml'
@@ -196,7 +208,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PoliticaDeCookiesRoute: typeof PoliticaDeCookiesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   TermosDeServicoRoute: typeof TermosDeServicoRoute
@@ -285,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/projects'
@@ -325,10 +344,20 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   PoliticaDeCookiesRoute: PoliticaDeCookiesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   TermosDeServicoRoute: TermosDeServicoRoute,
