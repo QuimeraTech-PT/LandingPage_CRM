@@ -237,7 +237,7 @@ function MethodologyContent() {
                     key={phase.step}
                     variants={itemVariants}
                     onClick={() => handleStepClick(phase.step, phase.title)}
-                    className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 sm:p-6 text-left transition-all duration-300 glass-card-hover flex-1 ${
+                    className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 sm:p-6 text-left transition-all duration-300 glass-card-hover flex-1 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 outline-none ${
                       isActive
                         ? "border-accent/50 bg-accent/10 dark:bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1"
                         : "border-border bg-card/40 dark:bg-white/5 hover:border-primary/30"
