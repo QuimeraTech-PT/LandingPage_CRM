@@ -261,7 +261,7 @@ function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4 mt-2 relative z-10">
-              {filteredLogs.map((log: ActivityLog, idx) => (
+              {filteredLogs.map((log: ActivityLog, idx: number) => (
                 <motion.div
                   key={log.id}
                   initial={{ opacity: 0, x: -10 }}
