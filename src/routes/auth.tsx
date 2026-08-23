@@ -20,9 +20,23 @@ function AuthPage() {
   const search = useSearch({ from: '/auth' }) as { redirect?: string };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && event === 'SIGNED_IN') {
+    // Check if we already have a session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log("Session found, redirecting to admin");
         navigate({ to: search.redirect || '/admin', replace: true });
+      }
+    };
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event, !!session);
+      if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+        // SMALL DELAY to ensure session is fully propagated
+        setTimeout(() => {
+          navigate({ to: search.redirect || '/admin', replace: true });
+        }, 500);
       }
     });
 
