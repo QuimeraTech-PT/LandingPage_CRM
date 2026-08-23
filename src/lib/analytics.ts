@@ -114,6 +114,19 @@ export const updateAnalyticsConsent = (
     event: "consent_updated",
     consent_type: typeof consent === "string" ? consent : "granular",
   });
+
+  // If consent was granted and GTM wasn't loaded yet, load it now
+  const hasConsent = typeof consent === "string" ? (consent === "all") : (consent.analytics || consent.marketing);
+  if (hasConsent && !document.querySelector(`script[src*="googletagmanager.com/gtm.js"]`)) {
+    getAnalyticsConfig().then(config => {
+      if (config.gtmId) {
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtm.js?id=${config.gtmId}`;
+        document.head.appendChild(script);
+      }
+    });
+  }
 };
 
 /**

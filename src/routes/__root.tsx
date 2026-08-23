@@ -223,8 +223,9 @@ function RootComponent() {
         if (config.gtmId) {
           initAnalytics(config.gtmId);
 
-          // Initialize GA4 if gaId is provided (complementary to GTM if needed)
-          if (config.gaId && typeof window.gtag === "function") {
+          // Initialize GA4 only if consent is already granted
+          const currentConsent = getAnalyticsConsent();
+          if (config.gaId && typeof window.gtag === "function" && currentConsent?.analytics) {
             const gaScript = document.createElement("script");
             gaScript.async = true;
             gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
