@@ -72,8 +72,8 @@ function AdminDashboard() {
   const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
   const filteredLogs = useMemo(() => {
-    if (!Array.isArray(logs)) return [];
-    return logs
+    const logsItems = Array.isArray(logs.items) ? logs.items : (Array.isArray(logs) ? logs : []);
+    return logsItems
       .filter((log) => {
         const matchesType = logFilter.type === "all" || log.entity_type === logFilter.type;
         const searchStr = logFilter.search.toLowerCase();
