@@ -149,9 +149,10 @@ export function Contact() {
                     {...register("nome")}
                     placeholder="O seu nome"
                     autoComplete="name"
-                    className={
-                      errors.nome ? "border-destructive focus-visible:ring-destructive" : ""
-                    }
+                    className={cn(
+                      errors.nome ? "border-destructive focus-visible:ring-destructive" : "",
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    )}
                     aria-invalid={!!errors.nome}
                     aria-describedby={errors.nome ? "nome-error" : "nome-description"}
                     required
@@ -175,9 +176,10 @@ export function Contact() {
                     {...register("email")}
                     placeholder="nome@empresa.pt"
                     autoComplete="email"
-                    className={
-                      errors.email ? "border-destructive focus-visible:ring-destructive" : ""
-                    }
+                    className={cn(
+                      errors.email ? "border-destructive focus-visible:ring-destructive" : "",
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    )}
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? "email-error" : "email-description"}
                     required
@@ -199,9 +201,10 @@ export function Contact() {
                     id="assunto"
                     {...register("assunto")}
                     placeholder="Como podemos ajudar?"
-                    className={
-                      errors.assunto ? "border-destructive focus-visible:ring-destructive" : ""
-                    }
+                    className={cn(
+                      errors.assunto ? "border-destructive focus-visible:ring-destructive" : "",
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    )}
                     aria-invalid={!!errors.assunto}
                     aria-describedby={errors.assunto ? "assunto-error" : "assunto-description"}
                     required
