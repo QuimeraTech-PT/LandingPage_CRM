@@ -5,7 +5,7 @@ import FocusTrap from "focus-trap-react";
 import { AccessibilityMenu } from "./AccessibilityMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate, Link } from "@tanstack/react-router";
 
 const links = [
   { href: "#sobre", label: "Sobre" },
