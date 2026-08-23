@@ -1,6 +1,7 @@
 import { Cloud, Database, KanbanSquare, PenTool, Code2, Lightbulb } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
+import { ContentCard } from "./ContentCard";
 
 const containerVariants = variants.staggerContainer;
 
@@ -90,27 +91,17 @@ export function Specialties() {
           viewport={{ once: true, margin: "-100px" }}
         >
           {specialties.map(({ icon: Icon, title, description }) => (
-            <motion.li
+            <ContentCard
               key={title}
-              variants={itemVariants}
-              role="listitem"
-              className="glass-card glass-card-hover group flex flex-col p-8 border border-border dark:border-white/10"
+              title={title}
+              description={description}
+              icon={Icon}
               onClick={() =>
                 import("@/lib/analytics").then(({ trackEvent }) =>
                   trackEvent("specialty_click", { title, type: "secondary_cta" }),
                 )
               }
-            >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 dark:bg-primary/25 text-accent transition-colors group-hover:bg-accent/20">
-                <Icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg leading-[1.3] font-semibold text-card-foreground">{title}</h3>
-              <p className="mt-3 text-sm leading-[1.6] text-muted-foreground">{description}</p>
-              <span
-                aria-hidden
-                className="absolute inset-x-8 bottom-0 h-px bg-linear-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              />
-            </motion.li>
+            />
           ))}
         </motion.ul>
       </div>

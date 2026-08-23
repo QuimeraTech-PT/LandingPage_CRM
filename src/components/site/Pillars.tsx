@@ -1,6 +1,7 @@
 import { Cpu, Handshake, Lightbulb, TrendingUp } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
+import { ContentCard } from "./ContentCard";
 
 const containerVariants = variants.staggerContainer;
 
@@ -78,18 +79,14 @@ export function Pillars() {
           viewport={{ once: true, margin: "-100px" }}
         >
           {pillars.map(({ icon: Icon, title, description }) => (
-            <motion.li
+            <ContentCard
               key={title}
-              role="listitem"
-              variants={itemVariants}
-              className="glass-card glass-card-hover group flex flex-col p-8 border border-border dark:border-white/10"
-            >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/20 dark:border-accent/30 bg-accent/5 dark:bg-accent/10 text-accent transition-transform group-hover:scale-110">
-                <Icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg leading-[1.3] font-semibold text-foreground">{title}</h3>
-              <p className="mt-3 text-sm leading-[1.6] text-muted-foreground">{description}</p>
-            </motion.li>
+              title={title}
+              description={description}
+              icon={Icon}
+              variant="accent"
+              className="p-8"
+            />
           ))}
         </motion.ul>
       </div>

@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
 import { Cpu, Rocket, Users } from "lucide-react";
+import { ContentCard } from "./ContentCard";
 
 export function About() {
   const shouldReduceMotion = useReducedMotion();
@@ -13,15 +14,6 @@ export function About() {
         staggerChildren: 0.2,
         delayChildren: 0.1,
       },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { ...variants.fadeIn.initial, y: 20 },
-    visible: {
-      ...variants.fadeIn.animate,
-      y: 0,
-      transition: transitions.medium,
     },
   };
 
@@ -82,28 +74,18 @@ export function About() {
 
               <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-8 sm:grid-cols-3">
                 {stats.map((stat, idx) => (
-                  <motion.div
+                  <ContentCard
                     key={idx}
-                    variants={itemVariants}
-                    className="glass-card glass-card-hover group relative flex flex-col p-4 bg-card/60 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/10 rounded-2xl overflow-hidden"
+                    title={stat.label}
+                    description={stat.value}
+                    icon={stat.icon}
+                    className="p-4 rounded-2xl"
                     onClick={() =>
                       import("@/lib/analytics").then(({ trackEvent }) =>
                         trackEvent("about_card_click", { label: stat.label }),
                       )
                     }
-                  >
-                    <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary transition-transform group-hover:scale-110">
-                      <stat.icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <h3 className="text-sm font-bold text-surface-foreground mb-1">{stat.label}</h3>
-                    <p className="text-[11px] sm:text-xs leading-relaxed text-surface-muted">
-                      {stat.value}
-                    </p>
-                    <span
-                      aria-hidden
-                      className="absolute inset-x-8 bottom-0 h-px bg-linear-to-r from-transparent via-accent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    />
-                  </motion.div>
+                  />
                 ))}
               </div>
             </motion.div>

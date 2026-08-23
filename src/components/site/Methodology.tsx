@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   CheckCircle2,
   ChevronRight,
@@ -147,16 +147,47 @@ export function Methodology() {
     },
   };
 
-  const handleStepClick = (step: string, title: string) => {
-    setActiveStep(activeStep === step ? null : step);
-    import("@/lib/analytics").then(({ trackEvent }) =>
-      trackEvent("methodology_step_click", {
-        step,
-        title,
-        action: activeStep === step ? "collapse" : "expand",
-      }),
-    );
-  };
+  const handleStepClick = useCallback(
+    (step: string, title: string) => {
+      setActiveStep((prev) => (prev === step ? null : step));
+      import("@/lib/analytics").then(({ trackEvent }) =>
+        trackEvent("methodology_step_click", {
+          step,
+          title,
+          action: activeStep === step ? "collapse" : "expand",
+        }),
+      );
+    },
+    [activeStep],
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!activeStep) return;
+
+      const currentIndex = phases.findIndex((p) => p.step === activeStep);
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % phases.length;
+        handleStepClick(phases[nextIndex].step, phases[nextIndex].title);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + phases.length) % phases.length;
+        handleStepClick(phases[prevIndex].step, phases[prevIndex].title);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeStep, handleStepClick]);
+
+  const detailsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (activeStep && detailsRef.current && window.innerWidth < 1024) {
+      detailsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeStep]);
 
   return (
     <section
@@ -243,7 +274,7 @@ export function Methodology() {
           </motion.div>
 
           {/* Step Details Panel */}
-          <div className="lg:col-span-7 h-full order-2 lg:order-none">
+          <div className="lg:col-span-7 h-full order-2 lg:order-none" ref={detailsRef}>
             <AnimatePresence mode="wait">
               {activeStep ? (
                 <motion.div
