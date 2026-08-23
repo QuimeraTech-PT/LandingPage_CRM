@@ -189,7 +189,7 @@ export function Methodology() {
         <div className="mt-16 grid gap-8 lg:grid-cols-12 items-stretch" ref={containerRef}>
           {/* Steps Navigation */}
           <motion.div
-            className="lg:col-span-5"
+            className="lg:col-span-5 h-full"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
