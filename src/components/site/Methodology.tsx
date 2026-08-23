@@ -186,16 +186,17 @@ export function Methodology() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-12" ref={containerRef}>
+        <div className="mt-16 grid gap-8 lg:grid-cols-12 items-stretch" ref={containerRef}>
           {/* Steps Navigation */}
           <motion.div
-            className="lg:col-span-5 space-y-4"
+            className="lg:col-span-5 h-full"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            {phases.map((phase) => {
+            <div className="flex flex-col gap-6 h-full">
+              {phases.map((phase) => {
               const Icon = phase.icon;
               const isActive = activeStep === phase.step;
 
@@ -204,7 +205,7 @@ export function Methodology() {
                   key={phase.step}
                   variants={itemVariants}
                   onClick={() => handleStepClick(phase.step, phase.title)}
-                  className={`w-full group relative flex items-center gap-4 rounded-3xl border p-5 text-left transition-all duration-300 glass-card-hover ${
+                  className={`w-full group relative flex items-center gap-4 rounded-3xl border p-6 text-left transition-all duration-300 glass-card-hover flex-1 ${
                     isActive
                       ? "border-accent/50 bg-accent/10 dark:bg-accent/10 shadow-lg shadow-accent/20 -translate-y-1"
                       : "border-border bg-card/40 dark:bg-white/5 hover:border-primary/30"
@@ -237,11 +238,12 @@ export function Methodology() {
                   </div>
                 </motion.button>
               );
-            })}
+              })}
+            </div>
           </motion.div>
 
           {/* Step Details Panel */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 h-full">
             <AnimatePresence mode="wait">
               {activeStep ? (
                 <motion.div
@@ -258,7 +260,7 @@ export function Methodology() {
                       : { opacity: 0, x: -20, filter: "blur(10px)" }
                   }
                   transition={transitions.default}
-                  className="glass-card h-full min-h-100 p-8 md:p-12 flex flex-col rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
+                  className="glass-card h-full p-8 md:p-12 flex flex-col rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
                 >
                   {/* Subtle inner glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
