@@ -96,7 +96,7 @@ export function PillarsSkeleton() {
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <SkeletonCard key={i} />
+            <SkeletonCard key={i} className="min-h-[200px]" />
           ))}
         </div>
       </div>
