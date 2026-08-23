@@ -38,9 +38,9 @@ async function logActivity({
 export const getCRMStats = createServerFn({ method: "GET" })
   .handler(async () => {
     const [leads, projects, finances] = await Promise.all([
-      supabaseAdmin.from("crm_leads").select("*", { count: "exact" }),
-      supabaseAdmin.from("crm_projects").select("*", { count: "exact" }),
-      supabaseAdmin.from("crm_finances").select("*"),
+      supabaseAdmin.from("crm_leads").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("crm_projects").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("crm_finances").select("amount, type"),
     ]);
 
     const totalLeads = leads.count || 0;
