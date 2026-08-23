@@ -18,6 +18,7 @@ import { FloatingActions } from "@/components/site/FloatingActions";
 import {
   initAnalytics,
   updateAnalyticsConsent,
+  getAnalyticsConsent,
   trackWebVitals,
   initScrollTracking,
 } from "@/lib/analytics";

@@ -1,3 +1,5 @@
+import { getAnalyticsConfig } from "./analytics.functions";
+
 /**
  * Utility for managing Google Tag Manager and GA4 consent.
  * This script handles the integration with the CookieBanner preference.
