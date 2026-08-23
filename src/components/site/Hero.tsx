@@ -129,7 +129,7 @@ export function Hero() {
                                         
                                             
                                             
-                                            Crie um botão ou redirecionamento automático para o CRM logo após eu terminar o login.
+                                            nao estou a conseguir aceder a pagina de auth
           </motion.p>
           
 
