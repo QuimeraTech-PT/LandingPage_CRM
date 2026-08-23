@@ -28,22 +28,31 @@ export const initAnalytics = (gtmId: string) => {
     };
   }
 
-  // Load GTM snippet
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
-  document.head.appendChild(script);
+  // Only load scripts if at least one tracking consent is granted
+  const currentConsent = getAnalyticsConsent();
+  const hasConsent = currentConsent && (currentConsent.analytics || currentConsent.marketing);
 
-  // Add noscript fallback
-  const noscript = document.createElement("noscript");
-  const iframe = document.createElement("iframe");
-  iframe.src = `https://www.googletagmanager.com/ns.html?id=${gtmId}`;
-  iframe.height = "0";
-  iframe.width = "0";
-  iframe.style.display = "none";
-  iframe.style.visibility = "hidden";
-  noscript.appendChild(iframe);
-  document.body.insertBefore(noscript, document.body.firstChild);
+  if (hasConsent) {
+    // Load GTM snippet
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+    document.head.appendChild(script);
+
+    // Add noscript fallback
+    const noscript = document.createElement("noscript");
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.googletagmanager.com/ns.html?id=${gtmId}`;
+    iframe.height = "0";
+    iframe.width = "0";
+    iframe.style.display = "none";
+    iframe.style.visibility = "hidden";
+    noscript.appendChild(iframe);
+    document.body.insertBefore(noscript, document.body.firstChild);
+  } else {
+    // If no consent yet, we'll wait for the updateAnalyticsConsent to be called
+    console.debug("[Analytics] GTM loading deferred until consent is granted.");
+  }
 };
 
 /**
