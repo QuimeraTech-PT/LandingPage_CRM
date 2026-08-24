@@ -22,8 +22,8 @@ export const getCompanies = createServerFn({ method: "GET" })
 
 export const getCompanyById = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(z.string().uuid())
-  .handler(async ({ input, context }) => {
+  .inputValidator((data: unknown) => z.string().uuid().parse(data))
+  .handler(async ({ data: id, context }) => {
     const { supabase } = context;
     const { data, error } = await supabase
       .from("crm_companies")
