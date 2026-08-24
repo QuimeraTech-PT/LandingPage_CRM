@@ -127,6 +127,7 @@ function AdminLayout() {
         <div className="mx-auto max-w-7xl min-h-full">
           <Outlet />
         </div>
+        <GlobalActions />
       </main>
     </div>
   );
