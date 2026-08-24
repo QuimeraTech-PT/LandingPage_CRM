@@ -42,8 +42,88 @@ export async function logActivity({
   }
 }
 
+export function calculateProjectHealth(
+  project: any,
+  tasks: any[] = [],
+  transactions: any[] = [],
+  activities: any[] = []
+) {
+  let score = 70; // Baseline
+  const rationale: string[] = [];
+
+  // Check budget
+  if (project.budget && project.total_value) {
+    const budgetUsed = transactions
+      .filter(t => t.project_id === project.id && t.type === 'expense')
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+    
+    if (budgetUsed > project.budget) {
+      score -= 30;
+      rationale.push("Orçamento excedido");
+    } else if (budgetUsed > project.budget * 0.8) {
+      score -= 10;
+      rationale.push("Orçamento próximo do limite (80%+)");
+    } else {
+      score += 10;
+    }
+  }
+
+  // Check deadline
+  if (project.end_date) {
+    const deadline = new Date(project.end_date);
+    const now = new Date();
+    const diffDays = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0 && project.status !== 'completed') {
+      score -= 25;
+      rationale.push("Prazo ultrapassado");
+    } else if (diffDays < 7 && project.status !== 'completed') {
+      score -= 10;
+      rationale.push("Deadline próximo (menos de 7 dias)");
+    }
+  }
+
+  // Check tasks
+  const projectTasks = tasks.filter(t => t.project_id === project.id);
+  if (projectTasks.length > 0) {
+    const completedTasks = projectTasks.filter(t => t.status === 'done').length;
+    const completionRate = completedTasks / projectTasks.length;
+    
+    if (completionRate === 1) {
+      score += 15;
+      rationale.push("Todas as tarefas concluídas");
+    } else if (completionRate < 0.2 && projectTasks.length > 5) {
+      score -= 10;
+      rationale.push("Baixa taxa de conclusão de tarefas");
+    }
+  }
+
+  // Check activity
+  const recentActivity = activities.filter(a => 
+    a.entity_id === project.id && 
+    new Date(a.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  );
+  if (recentActivity.length > 0) {
+    score += 10;
+  } else if (project.status === 'in_progress') {
+    score -= 15;
+    rationale.push("Sem atividade recente (7 dias)");
+  }
+
+  // Clamp score
+  score = Math.max(0, Math.min(100, score));
+
+  let status: "Healthy" | "At Risk" | "Critical" = "Healthy";
+  if (score < 40) status = "Critical";
+  else if (score < 70) status = "At Risk";
+
+  return { score, status, rationale };
+}
+
+
 export * from "./crm.companies.functions";
 export * from "./crm.tasks.functions";
+export * from "./crm.support.functions";
 
 export const getCRMStats = createServerFn({ method: "GET" })
 
@@ -188,6 +268,14 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    
+    // Fetch old value for audit
+    const { data: oldLead } = await supabase
+      .from("crm_leads")
+      .select("status, estimated_value")
+      .eq("id", data.id)
+      .single();
+
     const { error } = await supabase
       .from("crm_leads")
       .update({
@@ -203,8 +291,11 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       action: "update_status",
       entityType: "lead",
       entityId: data.id,
-      details: { status: data.status },
+      oldValue: oldLead,
+      newValue: { status: data.status, estimated_value: data.estimated_value },
+      details: `Estado alterado para ${data.status}`
     });
+
 
     return { success: true };
   });
@@ -230,8 +321,15 @@ export const updateLead = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
 
+    // Fetch old value for audit
+    const { data: oldLead } = await supabase
+      .from("crm_leads")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
     if (error) throw error;
 
     await logActivity({
@@ -239,7 +337,9 @@ export const updateLead = createServerFn({ method: "POST" })
       action: "update",
       entityType: "lead",
       entityId: id,
-      details: updateData,
+      oldValue: oldLead,
+      newValue: updateData,
+      details: "Lead atualizada manualmente"
     });
 
     return { success: true };
@@ -427,8 +527,14 @@ export const updateProject = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabase.from("crm_projects").update(updateData).eq("id", id);
+    // Fetch old value for audit
+    const { data: oldProject } = await supabase
+      .from("crm_projects")
+      .select("*")
+      .eq("id", id)
+      .single();
 
+    const { error } = await supabase.from("crm_projects").update(updateData).eq("id", id);
     if (error) throw error;
 
     await logActivity({
@@ -436,7 +542,9 @@ export const updateProject = createServerFn({ method: "POST" })
       action: "update_project",
       entityType: "project",
       entityId: id,
-      details: updateData,
+      oldValue: oldProject,
+      newValue: updateData,
+      details: "Projeto atualizado manualmente"
     });
 
     return { success: true };
@@ -458,21 +566,50 @@ export const getTransactions = createServerFn({ method: "GET" })
     let query = supabase
       .from("crm_finances")
       .select("*, crm_projects(name)")
-      .order("date", { ascending: false })
       .order("created_at", { ascending: false });
 
     if (data.type) query = query.eq("type", data.type);
     if (data.cursor) query = query.lt("created_at", data.cursor);
 
-    const { data: items, error } = await query.limit(data.limit + 1);
+    const { data: transactions, error } = await query.limit(data.limit + 1);
 
     if (error) throw error;
 
-    const hasNextPage = items.length > data.limit;
-    const finalItems = hasNextPage ? items.slice(0, -1) : items;
-    const nextCursor = hasNextPage ? finalItems[finalItems.length - 1].created_at : null;
+    const hasNextPage = transactions.length > data.limit;
+    const items = hasNextPage ? transactions.slice(0, -1) : transactions;
+    const nextCursor = hasNextPage ? items[items.length - 1].created_at : null;
 
-    return { items: finalItems, nextCursor };
+    return { items, nextCursor };
+  });
+
+export const getNotifications = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { data, error } = await (supabase as any)
+      .from("crm_notifications")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return data;
+  });
+
+export const markNotificationAsRead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await (supabase as any)
+      .from("crm_notifications")
+      .update({ read: true })
+      .eq("id", data.id)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+    return { success: true };
   });
 
 export const createTransaction = createServerFn({ method: "POST" })

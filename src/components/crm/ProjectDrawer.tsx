@@ -35,8 +35,9 @@ import {
 import { ActivityTimeline } from "./ActivityTimeline";
 import { ProjectFiles } from "./ProjectFiles";
 import { useQuery } from "@tanstack/react-query";
-import { getActivityLogs, getTasks } from "@/lib/crm.functions";
+import { getActivityLogs, getTasks, calculateProjectHealth, getTransactions } from "@/lib/crm.functions";
 import { Badge } from "@/components/ui/badge";
+import { ProjectHealthScore } from "./ProjectHealthScore";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -67,6 +68,19 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
     enabled: open,
   });
 
+  const { data: finances = { items: [] } } = useQuery({
+    queryKey: ["crm-finances", project.id],
+    queryFn: () => getTransactions({ data: { limit: 100 } }),
+    enabled: open,
+  });
+
+  const projectHealth = calculateProjectHealth(
+    project,
+    tasks as any[],
+    (finances as any).items || [],
+    logs as any[]
+  );
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -87,21 +101,27 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent className="sm:max-w-2xl bg-card border-white/10 text-foreground overflow-y-auto custom-scrollbar">
         <SheetHeader className="pb-6 border-b border-white/5">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Briefcase className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <SheetTitle className="text-2xl font-black tracking-tight truncate">{project.name}</SheetTitle>
-              <div className="flex items-center gap-2">
-                <SheetDescription className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
-                  CLIENTE: {project.crm_leads?.name || "N/A"}
-                </SheetDescription>
-                <Badge variant="outline" className="text-[9px] h-4 py-0 border-white/10">
-                  {project.status}
-                </Badge>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Briefcase className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <SheetTitle className="text-2xl font-black tracking-tight truncate">{project.name}</SheetTitle>
+                <div className="flex items-center gap-2">
+                  <SheetDescription className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
+                    CLIENTE: {project.crm_leads?.name || "N/A"}
+                  </SheetDescription>
+                  <Badge variant="outline" className="text-[9px] h-4 py-0 border-white/10">
+                    {project.status}
+                  </Badge>
+                </div>
               </div>
             </div>
+            
+            <ProjectHealthScore 
+              {...projectHealth} 
+            />
           </div>
         </SheetHeader>
 

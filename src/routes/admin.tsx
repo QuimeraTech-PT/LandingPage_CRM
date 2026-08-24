@@ -11,13 +11,16 @@ import {
   ChevronRight,
   Menu,
   Building2,
-  CheckSquare
+  CheckSquare,
+  Ticket
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+import { GlobalActions } from "@/components/crm/GlobalActions";
+import { NotificationBell } from "@/components/crm/NotificationBell";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -40,6 +43,7 @@ function AdminLayout() {
     { label: "Projetos", icon: Briefcase, href: "/admin/projects" },
     { label: "Tarefas", icon: CheckSquare, href: "/admin/tasks" },
     { label: "Finanças", icon: Wallet, href: "/admin/finances" },
+    { label: "Suporte", icon: Ticket, href: "/admin/support" },
   ];
 
   const handleLogout = async () => {
@@ -92,7 +96,10 @@ function AdminLayout() {
         </nav>
 
         <div className="border-t border-white/5 p-4 space-y-4">
-          <ThemeToggle />
+          <div className="flex items-center justify-between gap-2">
+            <ThemeToggle />
+            <NotificationBell />
+          </div>
           <Button
             variant="ghost"
             className={cn(
@@ -124,6 +131,7 @@ function AdminLayout() {
         <div className="mx-auto max-w-7xl min-h-full">
           <Outlet />
         </div>
+        <GlobalActions />
       </main>
     </div>
   );

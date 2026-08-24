@@ -22,6 +22,7 @@ import { Route as SitemapLegalXmlRouteImport } from './routes/sitemap-legal.xml'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminFinancesRouteImport } from './routes/admin.finances'
@@ -92,6 +93,11 @@ const AdminTasksRoute = AdminTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/robots/txt': typeof RobotsTxtRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/admin/support'
     | '/admin/tasks'
     | '/auth/callback'
     | '/robots/txt'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/admin/support'
     | '/admin/tasks'
     | '/auth/callback'
     | '/robots/txt'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
+    | '/admin/support'
     | '/admin/tasks'
     | '/auth/callback'
     | '/robots/txt'
@@ -335,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTasksRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/projects'
@@ -371,6 +390,7 @@ interface AdminRouteChildren {
   AdminFinancesRoute: typeof AdminFinancesRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
+  AdminSupportRoute: typeof AdminSupportRoute
   AdminTasksRoute: typeof AdminTasksRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -380,6 +400,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFinancesRoute: AdminFinancesRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminProjectsRoute: AdminProjectsRoute,
+  AdminSupportRoute: AdminSupportRoute,
   AdminTasksRoute: AdminTasksRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
