@@ -75,6 +75,12 @@ function AdminDashboard() {
     queryFn: () => getTasks({ data: {} }),
   });
 
+  const { data: projectsData } = useSuspenseQuery({
+    queryKey: ["crm-projects"],
+    queryFn: () => getProjects(),
+  });
+  const projects = Array.isArray(projectsData?.items) ? projectsData.items : [];
+
 
   const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
