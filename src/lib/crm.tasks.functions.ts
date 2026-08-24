@@ -13,14 +13,14 @@ export const getTasks = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    // @ts-ignore - Tables generated after SQL execution
+    // @ts-ignore
     let query = supabase.from("crm_tasks").select("*, crm_projects(name), crm_leads(name)");
     if (data.projectId) query = query.eq("project_id", data.projectId);
     if (data.leadId) query = query.eq("lead_id", data.leadId);
     if (data.status) query = query.eq("status", data.status);
     const { data: tasks, error } = await query.order("due_date", { ascending: true });
     if (error) throw error;
-    return tasks;
+    return tasks as any[];
   });
 
 export const createTask = createServerFn({ method: "POST" })
@@ -37,7 +37,7 @@ export const createTask = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    // @ts-ignore - Tables generated after SQL execution
+    // @ts-ignore
     const { data: task, error } = await supabase.from("crm_tasks").insert([{ ...data, assigned_to: userId }]).select().single();
     if (error) throw error;
     return task;

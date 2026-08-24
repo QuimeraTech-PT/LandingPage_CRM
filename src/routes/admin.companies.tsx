@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCompanies, createCompany } from "@/lib/crm.functions";
-import { Building2, Plus, Search, Globe, Phone, Mail } from "lucide-react";
+import { Building2, Plus, Search, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -113,7 +113,7 @@ function CompaniesPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {companies?.map((company) => (
+        {(companies as any[])?.map((company) => (
           <Card key={company.id} className="bg-card/50 backdrop-blur-sm border-white/10 hover:border-primary/50 transition-all group">
             <CardHeader className="pb-2">
               <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">{company.name}</CardTitle>
