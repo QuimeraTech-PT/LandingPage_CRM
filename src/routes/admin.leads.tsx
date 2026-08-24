@@ -6,6 +6,7 @@ import {
   updateLeadStatus,
   convertLeadToProject,
   updateLead,
+  getCompanies,
 } from "@/lib/crm.functions";
 import {
   Users,
