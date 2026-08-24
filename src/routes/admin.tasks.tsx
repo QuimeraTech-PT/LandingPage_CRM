@@ -45,16 +45,36 @@ function TasksPage() {
     },
   });
 
-  const columns = [
-    { id: "todo", title: "A Fazer" },
-    { id: "in_progress", title: "Em Progresso" },
-    { id: "review", title: "Revisão" },
-    { id: "done", title: "Concluído" },
-  ];
-
   const handleDragEnd = (taskId: string, newStatus: string) => {
     updateMutation.mutate({ data: { id: taskId, status: newStatus as any } });
   };
+
+  const kanbanColumns = [
+    { 
+      id: "todo", 
+      title: "A Fazer", 
+      items: (tasks || []).filter(t => t.status === 'todo').map(t => ({ id: t.id, title: t.title, status: t.status, data: t })),
+      renderItem: (item: any) => <TaskCard task={item.data} />
+    },
+    { 
+      id: "in_progress", 
+      title: "Em Progresso", 
+      items: (tasks || []).filter(t => t.status === 'in_progress').map(t => ({ id: t.id, title: t.title, status: t.status, data: t })),
+      renderItem: (item: any) => <TaskCard task={item.data} />
+    },
+    { 
+      id: "review", 
+      title: "Revisão", 
+      items: (tasks || []).filter(t => t.status === 'review').map(t => ({ id: t.id, title: t.title, status: t.status, data: t })),
+      renderItem: (item: any) => <TaskCard task={item.data} />
+    },
+    { 
+      id: "done", 
+      title: "Concluído", 
+      items: (tasks || []).filter(t => t.status === 'done').map(t => ({ id: t.id, title: t.title, status: t.status, data: t })),
+      renderItem: (item: any) => <TaskCard task={item.data} />
+    },
+  ];
 
   return (
     <div className="h-full flex flex-col space-y-8 p-8 animate-in fade-in duration-700 overflow-hidden">
@@ -90,12 +110,8 @@ function TasksPage() {
 
       <div className="flex-1 min-h-0">
         <KanbanBoard
-          items={tasks || []}
-          columns={columns}
+          columns={kanbanColumns}
           onDragEnd={handleDragEnd}
-          renderItem={(task) => (
-            <TaskCard task={task as any} />
-          )}
         />
       </div>
     </div>
