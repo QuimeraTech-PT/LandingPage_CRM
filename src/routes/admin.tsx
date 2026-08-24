@@ -11,7 +11,8 @@ import {
   ChevronRight,
   Menu,
   Building2,
-  CheckSquare
+  CheckSquare,
+  Ticket
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
