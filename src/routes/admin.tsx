@@ -9,7 +9,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Menu
+  Menu,
+  Building2
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ function AdminLayout() {
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Leads", icon: Users, href: "/admin/leads" },
+    { label: "Empresas", icon: Building2, href: "/admin/companies" },
     { label: "Projetos", icon: Briefcase, href: "/admin/projects" },
     { label: "Finanças", icon: Wallet, href: "/admin/finances" },
   ];

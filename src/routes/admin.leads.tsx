@@ -21,6 +21,8 @@ import {
   Kanban as KanbanIcon,
 } from "lucide-react";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
+import { LeadDrawer } from "@/components/crm/LeadDrawer";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -457,7 +459,19 @@ function LeadsPage() {
         />
       )}
 
-      <Dialog open={!!editingLead} onOpenChange={(open) => !open && setEditingLead(null)}>
+      {editingLead && (
+        <LeadDrawer
+          lead={editingLead}
+          open={!!editingLead}
+          onClose={() => setEditingLead(null)}
+          onUpdate={(updatedData) => {
+            updateLeadMutation.mutate({ data: { ...updatedData, id: editingLead.id } });
+          }}
+        />
+      )}
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+
         <DialogContent className="sm:max-w-106.25 bg-card border-white/10 text-foreground">
           {editingLead && (
             <form onSubmit={handleUpdateLead}>
