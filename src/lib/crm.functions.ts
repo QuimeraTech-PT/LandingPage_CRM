@@ -42,6 +42,85 @@ export async function logActivity({
   }
 }
 
+export function calculateProjectHealth(
+  project: any,
+  tasks: any[] = [],
+  transactions: any[] = [],
+  activities: any[] = []
+) {
+  let score = 70; // Baseline
+  const rationale: string[] = [];
+
+  // Check budget
+  if (project.budget && project.total_value) {
+    const budgetUsed = transactions
+      .filter(t => t.project_id === project.id && t.type === 'expense')
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+    
+    if (budgetUsed > project.budget) {
+      score -= 30;
+      rationale.push("Orçamento excedido");
+    } else if (budgetUsed > project.budget * 0.8) {
+      score -= 10;
+      rationale.push("Orçamento próximo do limite (80%+)");
+    } else {
+      score += 10;
+    }
+  }
+
+  // Check deadline
+  if (project.end_date) {
+    const deadline = new Date(project.end_date);
+    const now = new Date();
+    const diffDays = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0 && project.status !== 'completed') {
+      score -= 25;
+      rationale.push("Prazo ultrapassado");
+    } else if (diffDays < 7 && project.status !== 'completed') {
+      score -= 10;
+      rationale.push("Deadline próximo (menos de 7 dias)");
+    }
+  }
+
+  // Check tasks
+  const projectTasks = tasks.filter(t => t.project_id === project.id);
+  if (projectTasks.length > 0) {
+    const completedTasks = projectTasks.filter(t => t.status === 'done').length;
+    const completionRate = completedTasks / projectTasks.length;
+    
+    if (completionRate === 1) {
+      score += 15;
+      rationale.push("Todas as tarefas concluídas");
+    } else if (completionRate < 0.2 && projectTasks.length > 5) {
+      score -= 10;
+      rationale.push("Baixa taxa de conclusão de tarefas");
+    }
+  }
+
+  // Check activity
+  const recentActivity = activities.filter(a => 
+    a.entity_id === project.id && 
+    new Date(a.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  );
+  if (recentActivity.length > 0) {
+    score += 10;
+  } else if (project.status === 'in_progress') {
+    score -= 15;
+    rationale.push("Sem atividade recente (7 dias)");
+  }
+
+  // Clamp score
+  score = Math.max(0, Math.min(100, score));
+
+  let status: "Healthy" | "At Risk" | "Critical" = "Healthy";
+  if (score < 40) status = "Critical";
+  else if (score < 70) status = "At Risk";
+
+  return { score, status, rationale };
+}
+
+
 export * from "./crm.companies.functions";
 export * from "./crm.tasks.functions";
 export * from "./crm.support.functions";
