@@ -20,6 +20,7 @@ import {
 import { motion } from "framer-motion";
 import { RevenueForecast } from "@/components/crm/RevenueForecast";
 import { CRMStats } from "@/components/crm/CRMStats";
+import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -323,57 +324,8 @@ function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 mt-2 relative z-10">
-              {filteredLogs.map((log: ActivityLog, idx: number) => (
-                <motion.div
-                  key={log.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="flex gap-3 text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0 group"
-                >
-                  <div
-                    className={cn(
-                      "mt-0.5 rounded-full p-1.5 h-fit shadow-inner transition-transform group-hover:scale-110",
-                      log.status === "success"
-                        ? "bg-green-500/10 text-green-500"
-                        : log.status === "warning"
-                          ? "bg-yellow-500/10 text-yellow-500"
-                          : "bg-red-500/10 text-red-500",
-                    )}
-                  >
-                    {log.status === "success" ? (
-                      <CheckCircle2 className="h-3 w-3" />
-                    ) : log.status === "warning" ? (
-                      <Clock className="h-3 w-3" />
-                    ) : (
-                      <AlertCircle className="h-3 w-3" />
-                    )}
-                  </div>
-                  <div className="space-y-0.5 min-w-0">
-                    <p className="font-bold text-[11px] uppercase tracking-wider text-foreground truncate group-hover:text-primary transition-colors">
-                      {log.action.replace(/_/g, " ")}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground truncate opacity-80">
-                      <span className="font-medium text-primary/70">{log.entity_type}:</span>{" "}
-                      {getLogDetail(log.details, "fileName") ||
-                        getLogDetail(log.details, "projectName") ||
-                        getLogDetail(log.details, "newName") ||
-                        log.action}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground opacity-50 flex items-center gap-1">
-                      <Clock className="h-2 w-2" />
-                      {new Date(log.created_at).toLocaleTimeString("pt-PT", { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-              {filteredLogs.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground opacity-30">
-                  <History className="h-6 w-6 mb-2" />
-                  <p className="text-[10px] italic">Sem registos.</p>
-                </div>
-              )}
+            <div className="space-y-4 mt-2 relative z-10 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+              <ActivityTimeline logs={filteredLogs as any} />
             </div>
           </CardContent>
         </Card>

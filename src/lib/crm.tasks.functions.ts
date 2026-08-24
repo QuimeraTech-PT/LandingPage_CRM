@@ -45,3 +45,24 @@ export const createTask = createServerFn({ method: "POST" })
     if (error) throw error;
     return task;
   });
+
+export const updateTask = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) =>
+    z.object({
+      id: z.string().uuid(),
+      title: z.string().optional(),
+      description: z.string().optional(),
+      status: z.enum(["todo", "in_progress", "review", "done"]).optional(),
+      priority: z.enum(["low", "medium", "high"]).optional(),
+      due_date: z.string().optional(),
+    }).parse(data)
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { id, ...updates } = data;
+    // @ts-ignore
+    const { data: task, error } = await supabase.from("crm_tasks").update(updates).eq("id", id).select().single();
+    if (error) throw error;
+    return task;
+  });

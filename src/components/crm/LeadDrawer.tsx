@@ -18,7 +18,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, MessageSquare, Info, Settings, Calendar, Briefcase } from "lucide-react";
+import { History, MessageSquare, Info, Settings, Calendar, Briefcase, Plus } from "lucide-react";
+import { ActivityTimeline } from "./ActivityTimeline";
+import { useQuery } from "@tanstack/react-query";
+import { getActivityLogs } from "@/lib/crm.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 type Lead = Database["public"]["Tables"]["crm_leads"]["Row"];
@@ -140,12 +143,7 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: LeadDrawerProps) {
           </TabsContent>
 
           <TabsContent value="activity" className="mt-6">
-            <div className="space-y-4">
-              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground opacity-30 border-2 border-dashed border-white/5 rounded-2xl">
-                <History className="h-10 w-10 mb-2" />
-                <p className="text-xs italic">Histórico em construção...</p>
-              </div>
-            </div>
+            <ActivityTimelineWrapper leadId={lead.id} />
           </TabsContent>
           
           <TabsContent value="tasks" className="mt-6">
@@ -165,21 +163,12 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: LeadDrawerProps) {
   );
 }
 
-function Plus({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M5 12h14"/><path d="M12 5v14"/>
-    </svg>
-  );
+
+function ActivityTimelineWrapper({ leadId }: { leadId: string }) {
+  const { data: logs = [] } = useQuery({
+    queryKey: ["crm-activity-logs", leadId],
+    queryFn: () => getActivityLogs({ data: { entityType: "lead", limit: 50 } }),
+  });
+
+  return <ActivityTimeline logs={logs as any} />;
 }

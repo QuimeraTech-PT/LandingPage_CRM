@@ -21,16 +21,16 @@ import { CSS } from "@dnd-kit/utilities";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 
-interface KanbanItemProps {
+export interface KanbanItemProps {
   id: string;
   title: string;
   subtitle?: string;
   value?: string;
   status: string;
-  data: unknown;
+  data: any;
 }
 
-interface KanbanColumnProps {
+export interface KanbanColumnProps {
   id: string;
   title: string;
   items: KanbanItemProps[];
