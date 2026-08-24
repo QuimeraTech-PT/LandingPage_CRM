@@ -188,16 +188,33 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    
+    // Fetch old value for audit
+    const { data: oldLead } = await supabase
+      .from("crm_leads")
+      .select("status, estimated_value")
+      .eq("id", data.id)
+      .single();
+
     const { error } = await supabase
       .from("crm_leads")
       .update({
         status: data.status,
         estimated_value: data.estimated_value,
-        company_id: (data as any).company_id // Safely handle company_id if provided
       })
       .eq("id", data.id);
 
     if (error) throw error;
+
+    await logActivity({
+      userId,
+      action: "update_status",
+      entityType: "lead",
+      entityId: data.id,
+      oldValue: oldLead,
+      newValue: { status: data.status, estimated_value: data.estimated_value },
+      details: `Estado alterado para ${data.status}`
+    });
 
     await logActivity({
       userId,
