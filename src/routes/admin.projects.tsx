@@ -439,71 +439,9 @@ function ProjectsPage() {
           }}
         />
       )}
-                    defaultValue={editingProject.name}
-                    required
-                    className="bg-muted/50 border-white/10"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-status">Estado</Label>
-                  <Select name="status" defaultValue={editingProject.status}>
-                    <SelectTrigger className="bg-muted/50 border-white/10">
-                      <SelectValue placeholder="Selecione o estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="planning">Planeamento</SelectItem>
-                      <SelectItem value="active">Ativo</SelectItem>
-                      <SelectItem value="on_hold">Em Pausa</SelectItem>
-                      <SelectItem value="completed">Concluído</SelectItem>
-                      <SelectItem value="cancelled">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-folder">ID da Pasta Google Drive</Label>
-                  <Input
-                    id="edit-folder"
-                    name="folder_id"
-                    defaultValue={editingProject.google_drive_folder_id ?? ""}
-                    className="bg-muted/50 border-white/10"
-                    placeholder="ID da pasta no URL do Drive"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-start">Data de Início</Label>
-                  <Input
-                    id="edit-start"
-                    name="start_date"
-                    type="date"
-                    defaultValue={editingProject.start_date ?? ""}
-                    className="bg-muted/50 border-white/10"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-budget">Orçamento Previsto (€)</Label>
-                  <Input
-                    id="edit-budget"
-                    name="budget"
-                    type="number"
-                    step="0.01"
-                    defaultValue={editingProject.budget ?? ""}
-                    className="bg-muted/50 border-white/10"
-                    placeholder="0.00"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="ghost" type="button" onClick={() => setEditingProject(null)}>
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={updateProjectMutation.isPending}>
-                  {updateProjectMutation.isPending ? "A guardar..." : "Guardar Alterações"}
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
+    </div>
+  );
+}
     </div>
   );
 }
