@@ -20,6 +20,7 @@ import {
 import { motion } from "framer-motion";
 import { RevenueForecast } from "@/components/crm/RevenueForecast";
 import { CRMStats } from "@/components/crm/CRMStats";
+import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
