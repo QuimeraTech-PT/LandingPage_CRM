@@ -12,6 +12,7 @@ export const getCompanies = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
+    // @ts-ignore - Tables generated after SQL execution
     let query = supabase.from("crm_companies").select("*").order("name");
     if (data.search) query = query.ilike("name", `%${data.search}%`);
     const { data: companies, error } = await query.limit(data.limit);
@@ -32,6 +33,7 @@ export const createCompany = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    // @ts-ignore - Tables generated after SQL execution
     const { data: company, error } = await supabase.from("crm_companies").insert([{ ...data, owner_id: userId }]).select().single();
     if (error) throw error;
     return company;
@@ -46,6 +48,7 @@ export const getContacts = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
+    // @ts-ignore - Tables generated after SQL execution
     let query = supabase.from("crm_contacts").select("*, crm_companies(name)");
     if (data.companyId) query = query.eq("company_id", data.companyId);
     const { data: contacts, error } = await query;
