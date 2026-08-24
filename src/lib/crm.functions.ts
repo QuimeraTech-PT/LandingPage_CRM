@@ -5,13 +5,15 @@ import type { Json } from "@/integrations/supabase/types";
 import { z } from "zod";
 
 // Helper to log activities
-async function logActivity({
+export async function logActivity({
   userId,
   action,
   entityType,
   entityId,
   details = {},
   status = "success",
+  oldValue,
+  newValue,
 }: {
   userId?: string;
   action: string;
@@ -19,6 +21,8 @@ async function logActivity({
   entityId?: string;
   details?: Json;
   status?: "success" | "failure" | "warning";
+  oldValue?: Json;
+  newValue?: Json;
 }) {
   try {
     await supabaseAdmin.from("crm_activity_logs").insert([
