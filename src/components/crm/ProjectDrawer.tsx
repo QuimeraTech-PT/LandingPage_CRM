@@ -35,7 +35,7 @@ import {
 import { ActivityTimeline } from "./ActivityTimeline";
 import { ProjectFiles } from "./ProjectFiles";
 import { useQuery } from "@tanstack/react-query";
-import { getActivityLogs, getTasks, calculateProjectHealth } from "@/lib/crm.functions";
+import { getActivityLogs, getTasks, calculateProjectHealth, getTransactions } from "@/lib/crm.functions";
 import { Badge } from "@/components/ui/badge";
 import { ProjectHealthScore } from "./ProjectHealthScore";
 import { cn } from "@/lib/utils";
