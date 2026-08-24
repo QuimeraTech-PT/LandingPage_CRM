@@ -28,7 +28,7 @@ export const getCompanyById = createServerFn({ method: "GET" })
     const { data, error } = await supabase
       .from("crm_companies")
       .select("*, crm_contacts(*), crm_projects(*), crm_leads(*)")
-      .eq("id", input)
+      .eq("id", id)
       .single();
     if (error) throw error;
     return data;
