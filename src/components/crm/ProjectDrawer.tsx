@@ -120,12 +120,7 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
             </div>
             
             <ProjectHealthScore 
-              {...calculateProjectHealth(
-                project, 
-                tasks, 
-                [], // transactions could be added if passed to drawer
-                logs
-              )} 
+              {...projectHealth} 
             />
           </div>
         </SheetHeader>
