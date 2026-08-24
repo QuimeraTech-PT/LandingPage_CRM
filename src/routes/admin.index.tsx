@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getCRMStats, getLeads, getActivityLogs } from "@/lib/crm.functions";
+import { getCRMStats, getLeads, getActivityLogs, getTasks } from "@/lib/crm.functions";
 import {
   LayoutDashboard,
   Users,
@@ -69,6 +69,12 @@ function AdminDashboard() {
     queryFn: () => getActivityLogs({ data: { limit: 100 } }),
   });
 
+  const { data: tasks } = useSuspenseQuery({
+    queryKey: ["crm-tasks"],
+    queryFn: () => getTasks({ data: {} }),
+  });
+
+
   const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
   const filteredLogs = useMemo(() => {
@@ -98,14 +104,39 @@ function AdminDashboard() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-700">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
-          Dashboard Executivo
-        </h1>
-        <p className="text-sm text-muted-foreground font-medium">
-          Bem-vindo ao centro de operações da QuimeraTech.
-        </p>
+      <header className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+            Dashboard Executivo
+          </h1>
+          <p className="text-sm text-muted-foreground font-medium">
+            Bem-vindo ao centro de operações da QuimeraTech.
+          </p>
+        </div>
+
+        <div className="flex gap-4 mt-4 md:mt-0">
+          <Card className="bg-card/40 border-white/5 p-3 flex items-center gap-3">
+            <div className="p-2 bg-yellow-500/10 rounded-lg">
+              <Clock className="h-5 w-5 text-yellow-500" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase font-bold text-muted-foreground">Tarefas Hoje</p>
+              <p className="text-xl font-black">{(tasks as any[])?.filter(t => t.status === 'todo').length || 0}</p>
+            </div>
+          </Card>
+          
+          <Card className="bg-card/40 border-white/5 p-3 flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase font-bold text-muted-foreground">Insights Novos</p>
+              <p className="text-xl font-black">3</p>
+            </div>
+          </Card>
+        </div>
       </header>
+
 
       <CRMStats stats={stats} />
 
@@ -221,8 +252,40 @@ function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Quimera Insights Section */}
+        <Card className="col-span-1 bg-primary/5 border-primary/20 shadow-2xl relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 p-8 opacity-10 group-hover:scale-110 transition-transform">
+            <Target className="h-32 w-32 text-primary" />
+          </div>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg font-black italic">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              QUIMERA INSIGHTS
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[
+              { text: "3 leads sem follow-up há mais de 7 dias.", color: "text-yellow-500", icon: Clock },
+              { text: "O pipeline aumentou 18% este mês.", color: "text-green-500", icon: TrendingUp },
+              { text: "O projeto ACME está com deadline próximo.", color: "text-red-500", icon: AlertTriangle },
+            ].map((insight, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex gap-3 items-start p-3 bg-card/40 rounded-xl border border-white/5 group-hover:border-primary/20 transition-all"
+              >
+                <insight.icon className={cn("h-4 w-4 mt-0.5 shrink-0", insight.color)} />
+                <p className="text-xs font-medium leading-relaxed">{insight.text}</p>
+              </motion.div>
+            ))}
+          </CardContent>
+        </Card>
+
         <Card className="col-span-1 bg-card/40 backdrop-blur-md border-white/5 shadow-xl relative overflow-hidden">
+
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 pointer-events-none" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
