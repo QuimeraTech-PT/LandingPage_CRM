@@ -241,8 +241,15 @@ export const updateLead = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
 
+    // Fetch old value for audit
+    const { data: oldLead } = await supabase
+      .from("crm_leads")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
     if (error) throw error;
 
     await logActivity({
@@ -250,7 +257,9 @@ export const updateLead = createServerFn({ method: "POST" })
       action: "update",
       entityType: "lead",
       entityId: id,
-      details: updateData,
+      oldValue: oldLead,
+      newValue: updateData,
+      details: "Lead atualizada manualmente"
     });
 
     return { success: true };
