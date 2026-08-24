@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getCRMStats, getLeads, getActivityLogs, getTasks } from "@/lib/crm.functions";
+import { getCRMStats, getLeads, getActivityLogs, getTasks, getProjects } from "@/lib/crm.functions";
 import {
   LayoutDashboard,
   Users,
