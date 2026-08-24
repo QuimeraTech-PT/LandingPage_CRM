@@ -103,6 +103,45 @@ function AdminDashboard() {
       }, {})
     : {};
 
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const staleLeadsCount = Array.isArray(leads.items) 
+    ? leads.items.filter(l => 
+        l.status !== 'closed_won' && 
+        l.status !== 'closed_lost' && 
+        new Date(l.updated_at || l.created_at) < sevenDaysAgo
+      ).length
+    : 0;
+
+  const upcomingDeadlines = Array.isArray(projects)
+    ? projects.filter(p => 
+        p.status !== 'completed' && 
+        p.end_date && 
+        new Date(p.end_date) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      )
+    : [];
+
+  const insights = [
+    { 
+      text: staleLeadsCount > 0 ? `${staleLeadsCount} leads sem follow-up há mais de 7 dias.` : "Todas as leads têm follow-up em dia.", 
+      color: staleLeadsCount > 0 ? "text-yellow-500" : "text-green-500", 
+      icon: Clock 
+    },
+    { 
+      text: `O pipeline tem ${Array.isArray(leads.items) ? leads.items.length : 0} oportunidades ativas.`, 
+      color: "text-primary", 
+      icon: TrendingUp 
+    },
+    { 
+      text: upcomingDeadlines.length > 0 
+        ? `${upcomingDeadlines.length} projetos com deadline próximo.` 
+        : "Sem deadlines críticos nos próximos 7 dias.", 
+      color: upcomingDeadlines.length > 0 ? "text-red-500" : "text-green-500", 
+      icon: AlertTriangle 
+    },
+  ];
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-700">
       <header className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
