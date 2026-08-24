@@ -202,3 +202,12 @@ Implement: user authentication, role-based authorization, Row-Level Security (RL
 **Deliverable:**
 
 A fully functional CRM application with complete backend logic, database persistence, and frontend UI covering all modules described. Every feature must work end-to-end; data relationships must be enforced; automations must execute; insights must be calculated from real data. Test the critical workflows: lead-to-client conversion, proposal-to-project, financial tracking, and notifications.
+
+## Done Tasks
+- [x] B2B Automation: Conversion of leads to projects with company/contact auto-creation.
+- [x] Audit System: Granular logs with old/new values.
+- [x] Support Module: Integrated ticketing system under `/admin/support`.
+- [x] Health Scoring: Objective project performance algorithm and UI.
+- [x] CRM Dashboard: Dynamic insights and funnel visualization.
+- [x] Task Kanban: Global productivity view.
+- [x] Data-driven "Quimera Insights" on Dashboard.
