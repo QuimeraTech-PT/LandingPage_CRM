@@ -566,6 +566,52 @@ export const getTransactions = createServerFn({ method: "GET" })
     let query = supabase
       .from("crm_finances")
       .select("*, crm_projects(name)")
+      .order("created_at", { ascending: false });
+
+    if (data.type) query = query.eq("type", data.type);
+    if (data.cursor) query = query.lt("created_at", data.cursor);
+
+    const { data: transactions, error } = await query.limit(data.limit + 1);
+
+    if (error) throw error;
+
+    const hasNextPage = transactions.length > data.limit;
+    const items = hasNextPage ? transactions.slice(0, -1) : transactions;
+    const nextCursor = hasNextPage ? items[items.length - 1].created_at : null;
+
+    return { items, nextCursor };
+  });
+
+export const getNotifications = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { data, error } = await supabase
+      .from("crm_notifications")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return data;
+  });
+
+export const markNotificationAsRead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("crm_notifications")
+      .update({ read: true })
+      .eq("id", data.id)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+    return { success: true };
+  });
+
       .order("date", { ascending: false })
       .order("created_at", { ascending: false });
 
