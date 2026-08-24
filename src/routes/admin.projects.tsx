@@ -442,9 +442,7 @@ function ProjectsPage() {
     </div>
   );
 }
-    </div>
-  );
-}
+
 
 function ProjectKanbanCard({
   project,
