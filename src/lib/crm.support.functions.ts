@@ -19,7 +19,7 @@ export const getTickets = createServerFn({ method: "GET" })
 
     if (data.companyId) query = query.eq("company_id", data.companyId);
     if (data.projectId) query = query.eq("project_id", data.projectId);
-    if (data.status) query = query.eq("status", data.status);
+    if (data.status) query = query.eq("status", data.status as any);
     
     const { data: tickets, error } = await query.limit(data.limit);
     if (error) throw error;
