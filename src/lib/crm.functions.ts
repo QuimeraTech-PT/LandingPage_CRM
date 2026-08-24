@@ -602,7 +602,7 @@ export const markNotificationAsRead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("crm_notifications")
       .update({ read: true })
       .eq("id", data.id)
