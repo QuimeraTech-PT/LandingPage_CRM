@@ -10,7 +10,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  Building2
+  Building2,
+  CheckSquare
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
