@@ -22,6 +22,9 @@ import {
 } from "lucide-react";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
 import { LeadDrawer } from "@/components/crm/LeadDrawer";
+import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
+import { getActivityLogs } from "@/lib/crm.functions";
+import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

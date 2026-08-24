@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
 import { ProjectReport } from "@/components/crm/ProjectReport";
-import { getTransactions } from "@/lib/crm.functions";
+import { ProjectDrawer } from "@/components/crm/ProjectDrawer";
+import { getTransactions, getActivityLogs } from "@/lib/crm.functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -428,22 +429,16 @@ function ProjectsPage() {
         />
       )}
 
-      <Dialog open={!!editingProject} onOpenChange={(open) => !open && setEditingProject(null)}>
-        <DialogContent className="sm:max-w-106.25 bg-card border-white/10 text-foreground">
-          {editingProject && (
-            <form onSubmit={handleUpdateProject}>
-              <DialogHeader>
-                <DialogTitle>Editar Projeto</DialogTitle>
-                <DialogDescription>
-                  Altere os detalhes do projeto e a associação ao Drive.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-name">Nome do Projeto</Label>
-                  <Input
-                    id="edit-name"
-                    name="name"
+      {editingProject && (
+        <ProjectDrawer
+          project={editingProject}
+          open={!!editingProject}
+          onClose={() => setEditingProject(null)}
+          onUpdate={(updatedData) => {
+            updateProjectMutation.mutate({ data: updatedData });
+          }}
+        />
+      )}
                     defaultValue={editingProject.name}
                     required
                     className="bg-muted/50 border-white/10"
