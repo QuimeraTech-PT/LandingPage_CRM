@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+import { GlobalActions } from "@/components/crm/GlobalActions";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
