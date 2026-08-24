@@ -68,6 +68,19 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
     enabled: open,
   });
 
+  const { data: finances = { items: [] } } = useQuery({
+    queryKey: ["crm-finances", project.id],
+    queryFn: () => getTransactions({ data: { limit: 100 } }),
+    enabled: open,
+  });
+
+  const projectHealth = calculateProjectHealth(
+    project,
+    tasks as any[],
+    (finances as any).items || [],
+    logs as any[]
+  );
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
