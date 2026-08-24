@@ -24,6 +24,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminFinancesRouteImport } from './routes/admin.finances'
+import { Route as AdminCompaniesRouteImport } from './routes/admin.companies'
 
 const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
   id: '/termos-de-servico',
@@ -100,6 +101,11 @@ const AdminFinancesRoute = AdminFinancesRouteImport.update({
   path: '/finances',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCompaniesRoute = AdminCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
+  '/admin/companies': typeof AdminCompaniesRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
+  '/admin/companies': typeof AdminCompaniesRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
+  '/admin/companies': typeof AdminCompaniesRoute
   '/admin/finances': typeof AdminFinancesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
+    | '/admin/companies'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
+    | '/admin/companies'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/termos-de-servico'
+    | '/admin/companies'
     | '/admin/finances'
     | '/admin/leads'
     | '/admin/projects'
@@ -325,10 +337,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFinancesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/companies': {
+      id: '/admin/companies'
+      path: '/companies'
+      fullPath: '/admin/companies'
+      preLoaderRoute: typeof AdminCompaniesRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminCompaniesRoute: typeof AdminCompaniesRoute
   AdminFinancesRoute: typeof AdminFinancesRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
@@ -336,6 +356,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCompaniesRoute: AdminCompaniesRoute,
   AdminFinancesRoute: AdminFinancesRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminProjectsRoute: AdminProjectsRoute,
