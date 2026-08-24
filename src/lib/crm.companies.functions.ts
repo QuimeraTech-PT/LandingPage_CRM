@@ -50,6 +50,7 @@ export const getContacts = createServerFn({ method: "GET" })
     const { supabase } = context;
     // @ts-ignore
     let query = supabase.from("crm_contacts").select("*, crm_companies(name)");
+    // @ts-ignore
     if (data.companyId) query = query.eq("company_id", data.companyId);
     const { data: contacts, error } = await query;
     if (error) throw error;

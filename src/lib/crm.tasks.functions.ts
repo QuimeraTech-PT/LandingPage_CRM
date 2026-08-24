@@ -15,8 +15,11 @@ export const getTasks = createServerFn({ method: "GET" })
     const { supabase } = context;
     // @ts-ignore
     let query = supabase.from("crm_tasks").select("*, crm_projects(name), crm_leads(name)");
+    // @ts-ignore
     if (data.projectId) query = query.eq("project_id", data.projectId);
+    // @ts-ignore
     if (data.leadId) query = query.eq("lead_id", data.leadId);
+    // @ts-ignore
     if (data.status) query = query.eq("status", data.status);
     const { data: tasks, error } = await query.order("due_date", { ascending: true });
     if (error) throw error;
