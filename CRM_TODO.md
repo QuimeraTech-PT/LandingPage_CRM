@@ -1,7 +1,9 @@
 '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
                                         
                                             
-                                            You are a full-stack engineer tasked with building a production-ready CRM system for QuimeraTech. Your objective is to create a complete, functional, scalable application—not a mockup or interface prototype.
+                                            podes continaur a implementar
+
+You are a full-stack engineer tasked with building a production-ready CRM system for QuimeraTech. Your objective is to create a complete, functional, scalable application—not a mockup or interface prototype.
 
 **Core Requirement:**
 
