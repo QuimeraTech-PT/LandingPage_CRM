@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { GlobalActions } from "@/components/crm/GlobalActions";
+import { NotificationBell } from "@/components/crm/NotificationBell";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
@@ -95,7 +96,10 @@ function AdminLayout() {
         </nav>
 
         <div className="border-t border-white/5 p-4 space-y-4">
-          <ThemeToggle />
+          <div className="flex items-center justify-between gap-2">
+            <ThemeToggle />
+            <NotificationBell />
+          </div>
           <Button
             variant="ghost"
             className={cn(

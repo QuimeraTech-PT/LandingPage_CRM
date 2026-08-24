@@ -211,3 +211,6 @@ A fully functional CRM application with complete backend logic, database persist
 - [x] CRM Dashboard: Dynamic insights and funnel visualization.
 - [x] Task Kanban: Global productivity view.
 - [x] Data-driven "Quimera Insights" on Dashboard.
+- [x] Notification System: Real-time bell with unread tracking and state management.
+- [x] Global Quick Actions: Persistent "+" button for rapid entity creation.
+- [x] Database: Added `crm_notifications` table with RLS and user scoping.
