@@ -527,8 +527,14 @@ export const updateProject = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { id, ...updateData } = data;
-    const { error } = await supabase.from("crm_projects").update(updateData).eq("id", id);
+    // Fetch old value for audit
+    const { data: oldProject } = await supabase
+      .from("crm_projects")
+      .select("*")
+      .eq("id", id)
+      .single();
 
+    const { error } = await supabase.from("crm_projects").update(updateData).eq("id", id);
     if (error) throw error;
 
     await logActivity({
@@ -536,7 +542,9 @@ export const updateProject = createServerFn({ method: "POST" })
       action: "update_project",
       entityType: "project",
       entityId: id,
-      details: updateData,
+      oldValue: oldProject,
+      newValue: updateData,
+      details: "Projeto atualizado manualmente"
     });
 
     return { success: true };
