@@ -1,19 +1,7 @@
-# Limpeza e Otimização do CRM
+'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                        
+                                            
+                                            Integrar o Google Drive no CRM para listar e gerir pastas e ficheiros autenticados pela minha conta.
 
-## 1. Segurança e Autenticação (Concluído)
-- [x] Criar nova rota de autenticação robusta (`/auth`) com suporte a Impersonation (DEV) e Google (PROD).
-- [x] Implementar middleware `requireSupabaseAuth` em todas as `createServerFn`.
-- [x] Adicionar guardas de rota no TanStack Router para `/admin`.
-
-## 2. Performance e Otimização (Otimizado)
-- [x] Otimizar queries de estatísticas (seleção de colunas específicas).
-- [x] Implementar paginação por cursor e filtros de servidor na listagem de leads e projetos.
-- [x] Aplicar índices adequados no banco para as queries do CRM.
-- [x] Configurar `staleTime` e `gcTime` globais no `QueryClient`.
-- [ ] Implementar prefetching nos loaders das rotas admin.
-
-## 3. Limpeza Técnica
-- [x] Consolidar regras de performance na memória do projeto.
-- [ ] Remover código morto de `src/lib/animations.ts` e `src/lib/analytics.ts` após refactor.
-- [ ] Unificar interfaces TypeScript para evitar duplicação entre frontend e backend.
+Adicionar um fluxo completo de logout que invalide a sessão e redirecione para a página de login.
 
