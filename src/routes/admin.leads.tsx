@@ -334,15 +334,17 @@ function LeadsPage() {
                         variant="outline"
                         size="sm"
                         className="gap-2 border-primary/20 hover:bg-primary/10"
-                        onClick={() =>
+                        onClick={() => {
+                          const projectName = prompt("Nome do Projeto:", `Projeto: ${lead.name}`);
+                          if (!projectName) return;
                           convertMutation.mutate({
                             data: {
                               leadId: lead.id,
-                              projectName: `Projeto: ${lead.name}`,
+                              projectName,
                               clientName: lead.name,
                             },
-                          })
-                        }
+                          });
+                        }}
 
                         disabled={convertMutation.isPending}
                       >

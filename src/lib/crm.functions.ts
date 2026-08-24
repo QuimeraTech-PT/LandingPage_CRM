@@ -193,6 +193,7 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       .update({
         status: data.status,
         estimated_value: data.estimated_value,
+        company_id: (data as any).company_id // Safely handle company_id if provided
       })
       .eq("id", data.id);
 
