@@ -44,6 +44,7 @@ export async function logActivity({
 
 export * from "./crm.companies.functions";
 export * from "./crm.tasks.functions";
+export * from "./crm.support.functions";
 
 export const getCRMStats = createServerFn({ method: "GET" })
 
