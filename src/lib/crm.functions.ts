@@ -216,13 +216,6 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       details: `Estado alterado para ${data.status}`
     });
 
-    await logActivity({
-      userId,
-      action: "update_status",
-      entityType: "lead",
-      entityId: data.id,
-      details: { status: data.status },
-    });
 
     return { success: true };
   });
