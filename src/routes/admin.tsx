@@ -41,6 +41,7 @@ function AdminLayout() {
     { label: "Projetos", icon: Briefcase, href: "/admin/projects" },
     { label: "Tarefas", icon: CheckSquare, href: "/admin/tasks" },
     { label: "Finanças", icon: Wallet, href: "/admin/finances" },
+    { label: "Suporte", icon: Ticket, href: "/admin/support" },
   ];
 
   const handleLogout = async () => {
