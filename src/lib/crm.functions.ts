@@ -612,23 +612,6 @@ export const markNotificationAsRead = createServerFn({ method: "POST" })
     return { success: true };
   });
 
-      .order("date", { ascending: false })
-      .order("created_at", { ascending: false });
-
-    if (data.type) query = query.eq("type", data.type);
-    if (data.cursor) query = query.lt("created_at", data.cursor);
-
-    const { data: items, error } = await query.limit(data.limit + 1);
-
-    if (error) throw error;
-
-    const hasNextPage = items.length > data.limit;
-    const finalItems = hasNextPage ? items.slice(0, -1) : items;
-    const nextCursor = hasNextPage ? finalItems[finalItems.length - 1].created_at : null;
-
-    return { items: finalItems, nextCursor };
-  });
-
 export const createTransaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
