@@ -33,6 +33,8 @@ export async function logActivity({
         entity_id: entityId,
         details,
         status,
+        old_value: oldValue,
+        new_value: newValue,
       },
     ]);
   } catch (e) {
@@ -256,7 +258,8 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    // 1. Get lead info
+
+    // 1. Get lead info with company reference if it exists
     const { data: lead, error: leadError } = await supabase
       .from("crm_leads")
       .select("*")
@@ -265,15 +268,64 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
     if (leadError || !lead) throw new Error("Lead não encontrada");
 
-    // 2. Create Project
+    let companyId = lead.company_id;
+
+    // 2. Resolve/Create Company
+    if (!companyId) {
+      // Try to find by name first
+      if (lead.company) {
+        const { data: existingCompany } = await supabase
+          .from("crm_companies")
+          .select("id")
+          .ilike("name", lead.company)
+          .maybeSingle();
+        
+        if (existingCompany) {
+          companyId = existingCompany.id;
+        } else {
+          // Create new company
+          const { data: newCompany, error: companyError } = await supabase
+            .from("crm_companies")
+            .insert([{
+              name: lead.company,
+              email: lead.email,
+              phone: lead.phone,
+              owner_id: userId,
+              status: "active"
+            }])
+            .select("id")
+            .single();
+          
+          if (!companyError) companyId = newCompany.id;
+        }
+      }
+    }
+
+    // 3. Create/Update Contact
+    const { data: contact, error: contactError } = await supabase
+      .from("crm_contacts")
+      .insert([{
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        company_id: companyId,
+        is_primary: true,
+        notes: `Convertido da lead: ${lead.notes || ''}`
+      }])
+      .select()
+      .single();
+
+    // 4. Create Project linked to Company
     const { data: project, error: projectError } = await supabase
       .from("crm_projects")
       .insert([
         {
           name: data.projectName,
           lead_id: data.leadId,
+          company_id: companyId,
           status: "planning",
           start_date: new Date().toISOString().split("T")[0],
+          total_value: lead.estimated_value
         },
       ])
       .select()
@@ -281,15 +333,22 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
     if (projectError) throw projectError;
 
+    // 5. Audit & Activity
     await logActivity({
       userId,
       action: "convert_lead",
       entityType: "project",
       entityId: project.id,
-      details: { leadId: data.leadId },
+      details: { leadId: data.leadId, companyId, contactId: contact?.id },
     });
 
-    // 2.1 Trigger Drive Folder Creation
+    // 6. Update Lead status
+    await supabase.from("crm_leads").update({ 
+      status: "closed_won" as any,
+      company_id: companyId 
+    }).eq("id", data.leadId);
+
+    // 7. Drive Folder (Async)
     try {
       const { createProjectFolder } = await import("./google-drive.functions");
       await createProjectFolder({
@@ -300,11 +359,8 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
         },
       });
     } catch (e) {
-      console.warn("Google Drive folder creation failed or not configured:", e);
+      console.warn("Drive failed:", e);
     }
-
-    // 3. Update Lead status
-    await supabase.from("crm_leads").update({ status: "closed_won" as any }).eq("id", data.leadId);
 
     return { success: true, project };
   });
