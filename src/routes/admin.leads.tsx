@@ -7,6 +7,7 @@ import {
   convertLeadToProject,
   updateLead,
   getCompanies,
+  deleteLead,
 } from "@/lib/crm.functions";
 import {
   Users,
@@ -113,6 +114,15 @@ function LeadsPage() {
       toast.success("Lead atualizada!");
     },
     onError: () => toast.error("Erro ao atualizar lead."),
+  });
+
+  const deleteLeadMutation = useMutation({
+    mutationFn: deleteLead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
+      toast.success("Lead eliminada.");
+    },
+    onError: () => toast.error("Não foi possível eliminar a lead."),
   });
 
   const handleCreateLead = (e: React.FormEvent<HTMLFormElement>) => {
@@ -367,6 +377,12 @@ function LeadsPage() {
                       variant="ghost"
                       size="icon"
                       className="text-muted-foreground hover:text-destructive"
+                      onClick={() => {
+                        if (window.confirm(`Eliminar a lead ${lead.name}?`)) {
+                          deleteLeadMutation.mutate({ data: { id: lead.id } });
+                        }
+                      }}
+                      disabled={deleteLeadMutation.isPending}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
