@@ -9,6 +9,7 @@ export const getTasks = createServerFn({ method: "GET" })
       projectId: z.string().uuid().optional(),
       leadId: z.string().uuid().optional(),
       status: z.string().optional(),
+      search: z.string().optional(),
     }).parse(data || {})
   )
   .handler(async ({ data, context }) => {
@@ -21,6 +22,7 @@ export const getTasks = createServerFn({ method: "GET" })
     if (data.leadId) query = query.eq("lead_id", data.leadId);
     // @ts-ignore
     if (data.status) query = query.eq("status", data.status);
+    if (data.search) query = query.ilike("title", `%${data.search}%`);
     const { data: tasks, error } = await query.order("due_date", { ascending: true });
     if (error) throw error;
     return tasks as any[];
