@@ -1,19 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const getRevenueForecast = createServerFn({ method: "GET" })
-  .handler(async () => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
     const [leads, finances] = await Promise.all([
-      supabaseAdmin.from("crm_leads").select("status, estimated_value"),
-      supabaseAdmin.from("crm_finances").select("amount, type, date"),
+      supabase.from("crm_leads").select("status, estimated_value"),
+      supabase.from("crm_finances").select("amount, type, date, status"),
     ]);
+
+    if (leads.error) throw leads.error;
+    if (finances.error) throw finances.error;
 
     const leadsData = leads.data || [];
     const financesData = finances.data || [];
 
-    // Confirmed revenue = paid income
+    // Only paid income is confirmed revenue.
     const confirmedRevenue = financesData
-      .filter((f) => f.type === "income")
+      .filter((f) => f.type === "income" && f.status === "paid")
       .reduce((acc, f) => acc + Number(f.amount), 0);
 
     // Probable revenue from funnel

@@ -42,6 +42,24 @@ export async function logActivity({
   }
 }
 
+export const createActivityLog = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({
+    entityType: z.string().min(1),
+    entityId: z.string().uuid(),
+    details: z.string().min(1).max(2000),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    await logActivity({
+      userId: context.userId,
+      action: "note",
+      entityType: data.entityType,
+      entityId: data.entityId,
+      details: data.details,
+    });
+    return { success: true };
+  });
+
 export function calculateProjectHealth(
   project: any,
   tasks: any[] = [],
@@ -674,4 +692,17 @@ export const getActivityLogs = createServerFn({ method: "GET" })
 
     if (error) throw error;
     return logs;
+  });
+
+export const deleteLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: lead, error: readError } = await supabase.from("crm_leads").select("name").eq("id", data.id).single();
+    if (readError) throw readError;
+    const { error } = await supabase.from("crm_leads").delete().eq("id", data.id);
+    if (error) throw error;
+    await logActivity({ userId, action: "delete", entityType: "lead", entityId: data.id, details: { name: lead.name } });
+    return { success: true };
   });
