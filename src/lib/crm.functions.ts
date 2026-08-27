@@ -693,3 +693,16 @@ export const getActivityLogs = createServerFn({ method: "GET" })
     if (error) throw error;
     return logs;
   });
+
+export const deleteLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: lead, error: readError } = await supabase.from("crm_leads").select("name").eq("id", data.id).single();
+    if (readError) throw readError;
+    const { error } = await supabase.from("crm_leads").delete().eq("id", data.id);
+    if (error) throw error;
+    await logActivity({ userId, action: "delete", entityType: "lead", entityId: data.id, details: { name: lead.name } });
+    return { success: true };
+  });

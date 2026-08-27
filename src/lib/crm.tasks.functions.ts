@@ -35,7 +35,7 @@ export const createTask = createServerFn({ method: "POST" })
       project_id: z.string().uuid().optional(),
       lead_id: z.string().uuid().optional(),
       due_date: z.string().optional(),
-      priority: z.string().optional(),
+      priority: z.enum(["low", "medium", "high"]).optional(),
     }).parse(data)
   )
   .handler(async ({ data, context }) => {
