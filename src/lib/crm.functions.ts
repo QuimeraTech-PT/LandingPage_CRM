@@ -42,6 +42,24 @@ export async function logActivity({
   }
 }
 
+export const createActivityLog = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({
+    entityType: z.string().min(1),
+    entityId: z.string().uuid(),
+    details: z.string().min(1).max(2000),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    await logActivity({
+      userId: context.userId,
+      action: "note",
+      entityType: data.entityType,
+      entityId: data.entityId,
+      details: data.details,
+    });
+    return { success: true };
+  });
+
 export function calculateProjectHealth(
   project: any,
   tasks: any[] = [],
