@@ -241,12 +241,12 @@ function RootComponent() {
           if (!existingGaScript) {
             const gaScript = document.createElement("script");
             gaScript.async = true;
-            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
             document.head.appendChild(gaScript);
           }
 
           window.gtag("js", new Date());
-          window.gtag("config", GA_MEASUREMENT_ID);
+          window.gtag("config", config.gaId);
 
           if (config.gtmId) {
             trackWebVitals();
