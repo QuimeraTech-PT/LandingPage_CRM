@@ -7,7 +7,10 @@ import { z } from "zod";
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Erro desconhecido";
 
-const getDriveClient = async () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DriveClient = any;
+
+const getDriveClient = async (): Promise<DriveClient | null> => {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
