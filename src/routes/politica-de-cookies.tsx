@@ -67,10 +67,11 @@ function CookiesPolicy() {
     toast.success("Preferências de cookies repostas com sucesso.");
 
     // Re-initialize analytics with default (denied) consent
-    const gtmId = import.meta.env.VITE_GTM_ID;
-    if (gtmId) {
-      initAnalytics(gtmId);
-    }
+    getAnalyticsConfig().then((config) => {
+      if (config.gtmId) {
+        initAnalytics(config.gtmId);
+      }
+    });
 
     setTimeout(() => {
       window.location.reload();
