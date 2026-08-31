@@ -9,6 +9,7 @@ import { PageTransition } from "@/components/site/PageTransition";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateAnalyticsConsent, initAnalytics } from "@/lib/analytics";
+import { getAnalyticsConfig } from "@/lib/analytics.functions";
 
 const title = "Política de Cookies — QuimeraTech";
 const description =
@@ -67,10 +68,11 @@ function CookiesPolicy() {
     toast.success("Preferências de cookies repostas com sucesso.");
 
     // Re-initialize analytics with default (denied) consent
-    const gtmId = import.meta.env.VITE_GTM_ID;
-    if (gtmId) {
-      initAnalytics(gtmId);
-    }
+    getAnalyticsConfig().then((config) => {
+      if (config.gtmId) {
+        initAnalytics(config.gtmId);
+      }
+    });
 
     setTimeout(() => {
       window.location.reload();
