@@ -11,7 +11,6 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CookieBanner, type CookieBannerHandle } from "@/components/site/CookieBanner";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingActions } from "@/components/site/FloatingActions";
@@ -47,11 +46,17 @@ function NotFoundComponent() {
   );
 }
 
+function reportRuntimeError(error: unknown, context: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+
+  console.error("Application error", context, error);
+}
+
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportRuntimeError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
