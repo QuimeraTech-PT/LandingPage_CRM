@@ -209,7 +209,6 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const cookieBannerRef = useRef<CookieBannerHandle>(null);
-  const GA_MEASUREMENT_ID = "G-3GVHY29RSD";
 
   useEffect(() => {
     const handleOpenConsent = () => {
