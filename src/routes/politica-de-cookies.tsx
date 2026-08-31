@@ -9,6 +9,7 @@ import { PageTransition } from "@/components/site/PageTransition";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateAnalyticsConsent, initAnalytics } from "@/lib/analytics";
+import { getAnalyticsConfig } from "@/lib/analytics.functions";
 
 const title = "Política de Cookies — QuimeraTech";
 const description =
