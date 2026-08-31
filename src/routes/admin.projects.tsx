@@ -147,7 +147,9 @@ function ProjectsPage() {
           <Briefcase className="h-8 w-8 text-primary" />
           Gestão de Projetos
         </h1>
-        <p className="text-sm text-muted-foreground font-medium">Controlo operacional, cronogramas e entregas.</p>
+        <p className="text-sm text-muted-foreground font-medium">
+          Controlo operacional, cronogramas e entregas.
+        </p>
       </header>
 
       <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
@@ -171,7 +173,7 @@ function ProjectsPage() {
             Kanban
           </Button>
         </div>
-        
+
         <Button className="gap-2 h-10 px-6 shadow-lg shadow-primary/20">
           <Plus className="h-4 w-4" /> Novo Projeto
         </Button>
@@ -442,7 +444,6 @@ function ProjectsPage() {
     </div>
   );
 }
-
 
 function ProjectKanbanCard({
   project,

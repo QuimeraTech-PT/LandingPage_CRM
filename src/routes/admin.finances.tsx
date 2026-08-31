@@ -46,6 +46,22 @@ export const Route = createFileRoute("/admin/finances")({
   component: FinancesPage,
 });
 
+type FinanceTransaction = {
+  id: string;
+  description: string;
+  amount: number | string;
+  type: "income" | "expense";
+  project_id: string | number | null;
+  category?: string | null;
+  status: string;
+  date: string;
+  due_date?: string | null;
+  invoice_url?: string | null;
+  crm_projects?: {
+    name: string;
+  } | null;
+};
+
 function FinancesPage() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -55,7 +71,7 @@ function FinancesPage() {
     queryFn: () => getTransactions({ data: {} }),
   });
 
-  const transactions = transactionsData.items;
+  const transactions: FinanceTransaction[] = transactionsData.items as FinanceTransaction[];
 
   const { data: projectsData } = useSuspenseQuery({
     queryKey: ["crm-projects"],
@@ -94,8 +110,8 @@ function FinancesPage() {
     });
   };
 
-  const totals = (transactions as any[]).reduce(
-    (acc: { income: number; expense: number }, t: any) => {
+  const totals = transactions.reduce(
+    (acc: { income: number; expense: number }, t: FinanceTransaction) => {
       if (t.type === "income") acc.income += Number(t.amount);
       else acc.expense += Number(t.amount);
       return acc;
@@ -110,7 +126,9 @@ function FinancesPage() {
           <Wallet className="h-8 w-8 text-primary" />
           Gestão Financeira
         </h1>
-        <p className="text-sm text-muted-foreground font-medium">Monitorização de cash flow, receitas e despesas operacionais.</p>
+        <p className="text-sm text-muted-foreground font-medium">
+          Monitorização de cash flow, receitas e despesas operacionais.
+        </p>
       </header>
 
       <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
@@ -130,7 +148,7 @@ function FinancesPage() {
               <Plus className="h-4 w-4" /> Nova Transação
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 sm:max-w-[500px]">
+          <DialogContent className="bg-card border-white/10 sm:max-w-125">
             <form onSubmit={handleCreate} className="space-y-4 py-4">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">Registar Transação</DialogTitle>
@@ -314,7 +332,7 @@ function FinancesPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {(transactions as any[]).map((t: any) => (
+            {transactions.map((t: FinanceTransaction) => (
               <div
                 key={t.id}
                 className="flex items-center justify-between p-4 rounded-lg bg-muted/20 border border-white/5 hover:bg-muted/30 transition-colors"
@@ -361,7 +379,7 @@ function FinancesPage() {
                       {new Intl.NumberFormat("pt-PT", {
                         style: "currency",
                         currency: "EUR",
-                      }).format(t.amount)}
+                      }).format(Number(t.amount))}
                     </div>
                     <Badge
                       variant="outline"
@@ -402,7 +420,7 @@ function FinancesPage() {
                 </div>
               </div>
             ))}
-            {(transactions as any[]).length === 0 && (
+            {transactions.length === 0 && (
               <div className="text-center py-10 text-muted-foreground">
                 Nenhuma transação registada.
               </div>

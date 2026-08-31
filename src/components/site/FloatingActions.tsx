@@ -152,7 +152,6 @@ export function FloatingActions() {
                     </div>
                   </motion.a>
 
-
                   <motion.button
                     onClick={scrollToTop}
                     role="menuitem"

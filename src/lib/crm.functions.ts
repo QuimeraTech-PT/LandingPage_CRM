@@ -44,11 +44,15 @@ export async function logActivity({
 
 export const createActivityLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({
-    entityType: z.string().min(1),
-    entityId: z.string().uuid(),
-    details: z.string().min(1).max(2000),
-  }).parse(data))
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        entityType: z.string().min(1),
+        entityId: z.string().uuid(),
+        details: z.string().min(1).max(2000),
+      })
+      .parse(data),
+  )
   .handler(async ({ data, context }) => {
     await logActivity({
       userId: context.userId,
@@ -60,29 +64,56 @@ export const createActivityLog = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+type ProjectHealthProject = {
+  id?: string;
+  budget?: number | string;
+  total_value?: number | string;
+  end_date?: string | null;
+  status?: string;
+};
+
+type ProjectHealthTask = {
+  project_id?: string;
+  status?: string;
+};
+
+type ProjectHealthTransaction = {
+  project_id?: string;
+  type?: string;
+  amount?: number | string | null;
+};
+
+type ProjectHealthActivity = {
+  entity_id?: string;
+  created_at?: string | null;
+};
+
 export function calculateProjectHealth(
-  project: any,
-  tasks: any[] = [],
-  transactions: any[] = [],
-  activities: any[] = []
+  project: ProjectHealthProject,
+  tasks: ProjectHealthTask[] = [],
+  transactions: ProjectHealthTransaction[] = [],
+  activities: ProjectHealthActivity[] = [],
 ) {
   let score = 70; // Baseline
   const rationale: string[] = [];
 
   // Check budget
   if (project.budget && project.total_value) {
+    const budget = Number(project.budget);
     const budgetUsed = transactions
-      .filter(t => t.project_id === project.id && t.type === 'expense')
+      .filter((t) => t.project_id === project.id && t.type === "expense")
       .reduce((sum, t) => sum + Number(t.amount), 0);
-    
-    if (budgetUsed > project.budget) {
-      score -= 30;
-      rationale.push("Orçamento excedido");
-    } else if (budgetUsed > project.budget * 0.8) {
-      score -= 10;
-      rationale.push("Orçamento próximo do limite (80%+)");
-    } else {
-      score += 10;
+
+    if (Number.isFinite(budget) && budget > 0) {
+      if (budgetUsed > budget) {
+        score -= 30;
+        rationale.push("Orçamento excedido");
+      } else if (budgetUsed > budget * 0.8) {
+        score -= 10;
+        rationale.push("Orçamento próximo do limite (80%+)");
+      } else {
+        score += 10;
+      }
     }
   }
 
@@ -91,22 +122,22 @@ export function calculateProjectHealth(
     const deadline = new Date(project.end_date);
     const now = new Date();
     const diffDays = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0 && project.status !== 'completed') {
+
+    if (diffDays < 0 && project.status !== "completed") {
       score -= 25;
       rationale.push("Prazo ultrapassado");
-    } else if (diffDays < 7 && project.status !== 'completed') {
+    } else if (diffDays < 7 && project.status !== "completed") {
       score -= 10;
       rationale.push("Deadline próximo (menos de 7 dias)");
     }
   }
 
   // Check tasks
-  const projectTasks = tasks.filter(t => t.project_id === project.id);
+  const projectTasks = tasks.filter((t) => t.project_id === project.id);
   if (projectTasks.length > 0) {
-    const completedTasks = projectTasks.filter(t => t.status === 'done').length;
+    const completedTasks = projectTasks.filter((t) => t.status === "done").length;
     const completionRate = completedTasks / projectTasks.length;
-    
+
     if (completionRate === 1) {
       score += 15;
       rationale.push("Todas as tarefas concluídas");
@@ -117,13 +148,18 @@ export function calculateProjectHealth(
   }
 
   // Check activity
-  const recentActivity = activities.filter(a => 
-    a.entity_id === project.id && 
-    new Date(a.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-  );
+  const recentActivity = activities.filter((a) => {
+    if (a.entity_id !== project.id || !a.created_at) return false;
+
+    const createdAt = new Date(a.created_at);
+    return (
+      Number.isFinite(createdAt.getTime()) &&
+      createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    );
+  });
   if (recentActivity.length > 0) {
     score += 10;
-  } else if (project.status === 'in_progress') {
+  } else if (project.status === "in_progress") {
     score -= 15;
     rationale.push("Sem atividade recente (7 dias)");
   }
@@ -138,13 +174,11 @@ export function calculateProjectHealth(
   return { score, status, rationale };
 }
 
-
 export * from "./crm.companies.functions";
 export * from "./crm.tasks.functions";
 export * from "./crm.support.functions";
 
 export const getCRMStats = createServerFn({ method: "GET" })
-
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase } = context;
@@ -159,9 +193,11 @@ export const getCRMStats = createServerFn({ method: "GET" })
     const financesData = finances.data || [];
 
     const totalLeads = leadsData.length;
-    const activeProjects = projectsData.filter(p => p.status === 'active' || p.status === 'planning').length;
-    
-    const wonLeads = leadsData.filter(l => l.status === 'closed_won').length;
+    const activeProjects = projectsData.filter(
+      (p) => p.status === "active" || p.status === "planning",
+    ).length;
+
+    const wonLeads = leadsData.filter((l) => l.status === "closed_won").length;
     const conversionRate = totalLeads > 0 ? (wonLeads / totalLeads) * 100 : 0;
 
     let revenue = 0;
@@ -171,22 +207,24 @@ export const getCRMStats = createServerFn({ method: "GET" })
     for (const f of financesData) {
       const amount = Number(f.amount);
       if (f.type === "income") {
-        if (f.status === 'paid') revenue += amount;
+        if (f.status === "paid") revenue += amount;
         else pendingPayments += amount;
       } else {
         expenses += amount;
       }
     }
 
-    const avgBudget = projectsData.length > 0 
-      ? projectsData.reduce((acc, p) => acc + Number(p.budget || 0), 0) / projectsData.length 
-      : 0;
+    const avgBudget =
+      projectsData.length > 0
+        ? projectsData.reduce((acc, p) => acc + Number(p.budget || 0), 0) / projectsData.length
+        : 0;
 
-    const upcomingDeadlines = projectsData.filter(p => 
-      p.end_date && 
-      p.status !== 'completed' && 
-      p.status !== 'cancelled' &&
-      new Date(p.end_date) > new Date()
+    const upcomingDeadlines = projectsData.filter(
+      (p) =>
+        p.end_date &&
+        p.status !== "completed" &&
+        p.status !== "cancelled" &&
+        new Date(p.end_date) > new Date(),
     ).length;
 
     return {
@@ -197,7 +235,7 @@ export const getCRMStats = createServerFn({ method: "GET" })
       conversionRate,
       avgBudget,
       pendingPayments,
-      upcomingDeadlines
+      upcomingDeadlines,
     };
   });
 
@@ -208,18 +246,18 @@ export const getLeads = createServerFn({ method: "GET" })
       .object({
         cursor: z.string().nullable().optional(),
         limit: z.number().optional().default(20),
-        status: z.string().nullable().optional(),
+        status: z
+          .enum(["new", "contacted", "proposal", "negotiation", "closed_won", "closed_lost"])
+          .nullable()
+          .optional(),
       })
       .parse(data || {}),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    let query = supabase
-      .from("crm_leads")
-      .select("*")
-      .order("created_at", { ascending: false });
+    let query = supabase.from("crm_leads").select("*").order("created_at", { ascending: false });
 
-    if (data.status) query = query.eq("status", data.status as any);
+    if (data.status) query = query.eq("status", data.status);
     if (data.cursor) query = query.lt("created_at", data.cursor);
 
     const { data: leads, error } = await query.limit(data.limit + 1);
@@ -286,7 +324,7 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    
+
     // Fetch old value for audit
     const { data: oldLead } = await supabase
       .from("crm_leads")
@@ -311,9 +349,8 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       entityId: data.id,
       oldValue: oldLead,
       newValue: { status: data.status, estimated_value: data.estimated_value },
-      details: `Estado alterado para ${data.status}`
+      details: `Estado alterado para ${data.status}`,
     });
-
 
     return { success: true };
   });
@@ -341,11 +378,7 @@ export const updateLead = createServerFn({ method: "POST" })
     const { id, ...updateData } = data;
 
     // Fetch old value for audit
-    const { data: oldLead } = await supabase
-      .from("crm_leads")
-      .select("*")
-      .eq("id", id)
-      .single();
+    const { data: oldLead } = await supabase.from("crm_leads").select("*").eq("id", id).single();
 
     const { error } = await supabase.from("crm_leads").update(updateData).eq("id", id);
     if (error) throw error;
@@ -357,7 +390,7 @@ export const updateLead = createServerFn({ method: "POST" })
       entityId: id,
       oldValue: oldLead,
       newValue: updateData,
-      details: "Lead atualizada manualmente"
+      details: "Lead atualizada manualmente",
     });
 
     return { success: true };
@@ -397,23 +430,25 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
           .select("id")
           .ilike("name", lead.company)
           .maybeSingle();
-        
+
         if (existingCompany) {
           companyId = existingCompany.id;
         } else {
           // Create new company
           const { data: newCompany, error: companyError } = await supabase
             .from("crm_companies")
-            .insert([{
-              name: lead.company,
-              email: lead.email,
-              phone: lead.phone,
-              owner_id: userId,
-              status: "active"
-            }])
+            .insert([
+              {
+                name: lead.company,
+                email: lead.email,
+                phone: lead.phone,
+                owner_id: userId,
+                status: "active",
+              },
+            ])
             .select("id")
             .single();
-          
+
           if (!companyError) companyId = newCompany.id;
         }
       }
@@ -422,14 +457,16 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     // 3. Create/Update Contact
     const { data: contact, error: contactError } = await supabase
       .from("crm_contacts")
-      .insert([{
-        name: lead.name,
-        email: lead.email,
-        phone: lead.phone,
-        company_id: companyId,
-        is_primary: true,
-        notes: `Convertido da lead: ${lead.notes || ''}`
-      }])
+      .insert([
+        {
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          company_id: companyId,
+          is_primary: true,
+          notes: `Convertido da lead: ${lead.notes || ""}`,
+        },
+      ])
       .select()
       .single();
 
@@ -443,7 +480,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
           company_id: companyId,
           status: "planning",
           start_date: new Date().toISOString().split("T")[0],
-          total_value: lead.estimated_value
+          total_value: lead.estimated_value,
         },
       ])
       .select()
@@ -461,10 +498,13 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
     });
 
     // 6. Update Lead status
-    await supabase.from("crm_leads").update({ 
-      status: "closed_won" as any,
-      company_id: companyId 
-    }).eq("id", data.leadId);
+    await supabase
+      .from("crm_leads")
+      .update({
+        status: "closed_won",
+        company_id: companyId,
+      })
+      .eq("id", data.leadId);
 
     // 7. Drive Folder (Async)
     try {
@@ -490,7 +530,10 @@ export const getProjects = createServerFn({ method: "GET" })
       .object({
         cursor: z.string().nullable().optional(),
         limit: z.number().optional().default(20),
-        status: z.string().nullable().optional(),
+        status: z
+          .enum(["planning", "active", "on_hold", "completed", "cancelled"])
+          .nullable()
+          .optional(),
       })
       .parse(data || {}),
   )
@@ -501,7 +544,7 @@ export const getProjects = createServerFn({ method: "GET" })
       .select("*, crm_leads(name, company), crm_finances(amount, type)")
       .order("created_at", { ascending: false });
 
-    if (data.status) query = query.eq("status", data.status as any);
+    if (data.status) query = query.eq("status", data.status);
     if (data.cursor) query = query.lt("created_at", data.cursor);
 
     const { data: projects, error } = await query.limit(data.limit + 1);
@@ -510,16 +553,22 @@ export const getProjects = createServerFn({ method: "GET" })
 
     const hasNextPage = projects.length > data.limit;
     const rawItems = hasNextPage ? projects.slice(0, -1) : projects;
-    
-    const items = rawItems.map((p) => ({
-      ...p,
-      total_income: (p.crm_finances as any[])
-        .filter((f) => f.type === "income")
-        .reduce((acc, f) => acc + Number(f.amount), 0),
-      total_expenses: (p.crm_finances as any[])
-        .filter((f) => f.type === "expense")
-        .reduce((acc, f) => acc + Number(f.amount), 0),
-    }));
+
+    const items = rawItems.map((p) => {
+      const finances =
+        (p.crm_finances as Array<{ type: string | null; amount: number | string | null }> | null) ??
+        [];
+
+      return {
+        ...p,
+        total_income: finances
+          .filter((f) => f.type === "income")
+          .reduce((acc, f) => acc + Number(f.amount ?? 0), 0),
+        total_expenses: finances
+          .filter((f) => f.type === "expense")
+          .reduce((acc, f) => acc + Number(f.amount ?? 0), 0),
+      };
+    });
 
     const nextCursor = hasNextPage ? items[items.length - 1].created_at : null;
 
@@ -562,7 +611,7 @@ export const updateProject = createServerFn({ method: "POST" })
       entityId: id,
       oldValue: oldProject,
       newValue: updateData,
-      details: "Projeto atualizado manualmente"
+      details: "Projeto atualizado manualmente",
     });
 
     return { success: true };
@@ -604,7 +653,7 @@ export const getNotifications = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from("crm_notifications")
       .select("*")
       .eq("user_id", userId)
@@ -620,7 +669,7 @@ export const markNotificationAsRead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from("crm_notifications")
       .update({ read: true })
       .eq("id", data.id)
@@ -699,10 +748,20 @@ export const deleteLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: lead, error: readError } = await supabase.from("crm_leads").select("name").eq("id", data.id).single();
+    const { data: lead, error: readError } = await supabase
+      .from("crm_leads")
+      .select("name")
+      .eq("id", data.id)
+      .single();
     if (readError) throw readError;
     const { error } = await supabase.from("crm_leads").delete().eq("id", data.id);
     if (error) throw error;
-    await logActivity({ userId, action: "delete", entityType: "lead", entityId: data.id, details: { name: lead.name } });
+    await logActivity({
+      userId,
+      action: "delete",
+      entityType: "lead",
+      entityId: data.id,
+      details: { name: lead.name },
+    });
     return { success: true };
   });

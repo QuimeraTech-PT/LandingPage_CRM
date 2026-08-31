@@ -6,10 +6,12 @@ import type { Json } from "@/integrations/supabase/types";
 export const getCompanies = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      limit: z.number().optional().default(50),
-      search: z.string().optional(),
-    }).parse(data || {})
+    z
+      .object({
+        limit: z.number().optional().default(50),
+        search: z.string().optional(),
+      })
+      .parse(data || {}),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -37,16 +39,18 @@ export const getCompanyById = createServerFn({ method: "GET" })
 export const createCompany = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      name: z.string(),
-      nif: z.string().optional().nullable(),
-      website: z.string().optional().nullable(),
-      sector: z.string().optional().nullable(),
-      size: z.string().optional().nullable(),
-      email: z.string().email().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      address: z.string().optional().nullable(),
-    }).parse(data)
+    z
+      .object({
+        name: z.string(),
+        nif: z.string().optional().nullable(),
+        website: z.string().optional().nullable(),
+        sector: z.string().optional().nullable(),
+        size: z.string().optional().nullable(),
+        email: z.string().email().optional().nullable(),
+        phone: z.string().optional().nullable(),
+        address: z.string().optional().nullable(),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -62,15 +66,17 @@ export const createCompany = createServerFn({ method: "POST" })
 export const updateCompany = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      name: z.string().optional(),
-      nif: z.string().optional().nullable(),
-      website: z.string().optional().nullable(),
-      sector: z.string().optional().nullable(),
-      size: z.string().optional().nullable(),
-      status: z.enum(["active", "inactive", "prospective"]).optional(),
-    }).parse(data)
+    z
+      .object({
+        id: z.string().uuid(),
+        name: z.string().optional(),
+        nif: z.string().optional().nullable(),
+        website: z.string().optional().nullable(),
+        sector: z.string().optional().nullable(),
+        size: z.string().optional().nullable(),
+        status: z.enum(["active", "inactive", "prospective"]).optional(),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -83,9 +89,11 @@ export const updateCompany = createServerFn({ method: "POST" })
 export const getContacts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      companyId: z.string().uuid().optional(),
-    }).parse(data || {})
+    z
+      .object({
+        companyId: z.string().uuid().optional(),
+      })
+      .parse(data || {}),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -99,18 +107,24 @@ export const getContacts = createServerFn({ method: "GET" })
 export const createContact = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      name: z.string(),
-      email: z.string().email().optional().nullable(),
-      phone: z.string().optional().nullable(),
-      role: z.string().optional().nullable(),
-      company_id: z.string().uuid(),
-      is_primary: z.boolean().optional().default(false),
-    }).parse(data)
+    z
+      .object({
+        name: z.string(),
+        email: z.string().email().optional().nullable(),
+        phone: z.string().optional().nullable(),
+        role: z.string().optional().nullable(),
+        company_id: z.string().uuid(),
+        is_primary: z.boolean().optional().default(false),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const { data: contact, error } = await supabase.from("crm_contacts").insert([data]).select().single();
+    const { data: contact, error } = await supabase
+      .from("crm_contacts")
+      .insert([data])
+      .select()
+      .single();
     if (error) throw error;
     return contact;
   });

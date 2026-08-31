@@ -1,10 +1,10 @@
 import { createFileRoute, redirect, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Briefcase, 
-  Wallet, 
+import {
+  LayoutDashboard,
+  Users,
+  Briefcase,
+  Wallet,
   Settings,
   LogOut,
   ChevronLeft,
@@ -12,7 +12,7 @@ import {
   Menu,
   Building2,
   CheckSquare,
-  Ticket
+  Ticket,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/admin")({
 function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
-  
+
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Leads", icon: Users, href: "/admin/leads" },
@@ -54,10 +54,10 @@ function AdminLayout() {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={cn(
           "relative z-40 flex flex-col border-r border-white/5 bg-card/50 backdrop-blur-xl transition-all duration-300 ease-in-out",
-          isSidebarOpen ? "w-64" : "w-20"
+          isSidebarOpen ? "w-64" : "w-20",
         )}
       >
         <div className="flex h-20 items-center justify-between px-6">
@@ -67,7 +67,9 @@ function AdminLayout() {
             </Link>
           ) : (
             <div className="w-full flex justify-center">
-              <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center font-bold text-primary">Q</div>
+              <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center font-bold text-primary">
+                Q
+              </div>
             </div>
           )}
         </div>
@@ -79,9 +81,9 @@ function AdminLayout() {
               to={item.href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all group",
-                location.pathname === item.href 
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                location.pathname === item.href
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
               )}
             >
               <item.icon className={cn("h-5 w-5 shrink-0", isSidebarOpen ? "" : "mx-auto")} />
@@ -104,7 +106,7 @@ function AdminLayout() {
             variant="ghost"
             className={cn(
               "w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors",
-              !isSidebarOpen && "justify-center"
+              !isSidebarOpen && "justify-center",
             )}
             onClick={handleLogout}
           >
@@ -118,16 +120,20 @@ function AdminLayout() {
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="absolute -right-3 top-24 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-card text-muted-foreground hover:text-primary shadow-lg transition-all"
         >
-          {isSidebarOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {isSidebarOpen ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
         </button>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto bg-background custom-scrollbar relative">
         {/* Background decorations */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-        
+        <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-125 h-125 bg-cyan-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+
         <div className="mx-auto max-w-7xl min-h-full">
           <Outlet />
         </div>

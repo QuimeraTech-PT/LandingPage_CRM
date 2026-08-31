@@ -118,7 +118,8 @@ export const updateAnalyticsConsent = (
   });
 
   // If consent was granted and GTM wasn't loaded yet, load it now
-  const hasConsent = typeof consent === "string" ? (consent === "all") : (consent.analytics || consent.marketing);
+  const hasConsent =
+    typeof consent === "string" ? consent === "all" : consent.analytics || consent.marketing;
   if (hasConsent && !document.querySelector(`script[src*="googletagmanager.com/gtm.js"]`)) {
     getAnalyticsConfig().then((config: { gtmId: string; gaId: string }) => {
       if (config.gtmId) {
@@ -246,7 +247,14 @@ export const trackWebVitals = async () => {
   try {
     const { onCLS, onLCP, onINP, onFCP, onTTFB } = await import("web-vitals");
 
-    const sendToGoogleAnalytics = ({ name, delta, id, value, rating, navigationType }: import("web-vitals").Metric) => {
+    const sendToGoogleAnalytics = ({
+      name,
+      delta,
+      id,
+      value,
+      rating,
+      navigationType,
+    }: import("web-vitals").Metric) => {
       trackEvent(name, {
         value: delta,
         metric_id: id,

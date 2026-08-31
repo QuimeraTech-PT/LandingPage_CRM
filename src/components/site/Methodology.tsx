@@ -221,7 +221,7 @@ function MethodologyContent() {
         <div className="mt-16 grid gap-8 lg:grid-cols-12 items-stretch" ref={containerRef}>
           {/* Steps Navigation */}
           <motion.div
-            className="lg:col-span-5 h-full order-1 lg:order-none"
+            className="lg:col-span-5 h-full order-1 lg:order-0"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -275,7 +275,7 @@ function MethodologyContent() {
           </motion.div>
 
           {/* Step Details Panel */}
-          <div className="lg:col-span-7 h-full order-2 lg:order-none" ref={detailsRef}>
+          <div className="lg:col-span-7 h-full order-2 lg:order-0" ref={detailsRef}>
             <AnimatePresence mode="wait">
               {activeStep ? (
                 <motion.div
@@ -299,7 +299,7 @@ function MethodologyContent() {
                   className="glass-card h-full p-6 sm:p-8 md:p-12 flex flex-col rounded-[2rem] sm:rounded-[2.5rem] border-white/5 bg-[#0F172A]/80 backdrop-blur-xl relative overflow-hidden"
                 >
                   {/* Subtle inner glow */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-br from-accent/5 to-transparent pointer-events-none" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6 sm:mb-8">
@@ -351,10 +351,13 @@ function MethodologyContent() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 + idx * 0.05 }}
-                            className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-[1.25rem] bg-white/5 border border-white/10 hover:border-accent/30 transition-colors group"
+                            className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-4xl bg-white/5 border border-white/10 hover:border-accent/30 transition-colors group"
                           >
                             <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full border border-accent/30 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-                              <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent aspect-square" aria-hidden="true" />
+                              <CheckCircle2
+                                className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-accent aspect-square"
+                                aria-hidden="true"
+                              />
                             </div>
                             <span className="text-xs sm:text-sm font-medium text-slate-200">
                               {checkitem}

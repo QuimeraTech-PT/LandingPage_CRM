@@ -2,7 +2,14 @@ import { createFileRoute, redirect, useNavigate, useSearch } from "@tanstack/rea
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { LogIn, ShieldCheck, Chrome, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -13,11 +20,11 @@ export const Route = createFileRoute("/auth")({
     // Validar token secreto
     const query = search as { secret?: string };
     const secretKey = import.meta.env.VITE_AUTH_SECRET_KEY || "";
-    
+
     if (!secretKey || query.secret !== secretKey) {
       throw redirect({ to: "/" });
     }
-    
+
     const { data } = await supabase.auth.getSession();
     if (data.session) {
       throw redirect({ to: "/admin" });
@@ -35,6 +42,13 @@ function AuthPage() {
   const navigate = useNavigate();
   const search = useSearch({ from: "/auth" });
 
+  const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return "Erro desconhecido";
+  };
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -44,14 +58,14 @@ function AuthPage() {
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+            access_type: "offline",
+            prompt: "consent",
           },
         },
       });
       if (error) throw error;
-    } catch (error: any) {
-      toast.error("Erro ao entrar com Google: " + error.message);
+    } catch (error: unknown) {
+      toast.error("Erro ao entrar com Google: " + getErrorMessage(error));
       setLoading(false);
     }
   };
@@ -60,13 +74,13 @@ function AuthPage() {
     setLoading(true);
     try {
       // Impersonate a test user in DEV
-      // First try to sign in with a default dev account if it exists, 
+      // First try to sign in with a default dev account if it exists,
       // otherwise we just use a mock successful login flow for UI testing
       // For real functional dev, we need a user in the auth table.
-      
+
       const testEmail = "dev@quimeratech.pt";
       const testPass = "quimeradev123";
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: testEmail,
         password: testPass,
@@ -78,9 +92,9 @@ function AuthPage() {
           email: testEmail,
           password: testPass,
         });
-        
+
         if (signUpError) throw signUpError;
-        
+
         // With auto-confirm enabled, sign up returns a session
         const { error: retryError } = await supabase.auth.signInWithPassword({
           email: testEmail,
@@ -91,8 +105,8 @@ function AuthPage() {
 
       toast.success("Entrou como Developer");
       navigate({ to: "/admin" });
-    } catch (error: any) {
-      toast.error("Erro no login de developer: " + error.message);
+    } catch (error: unknown) {
+      toast.error("Erro no login de developer: " + getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -102,8 +116,8 @@ function AuthPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 overflow-hidden relative">
       {/* Background decorations */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] bg-cyan-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-500/10 rounded-full blur-[120px]" />
       </div>
 
       <motion.div
@@ -139,7 +153,9 @@ function AuthPage() {
                   <span className="w-full border-t border-white/10" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Ambiente de Desenvolvimento</span>
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Ambiente de Desenvolvimento
+                  </span>
                 </div>
               </div>
             )}

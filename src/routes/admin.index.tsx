@@ -38,6 +38,7 @@ import type { Database, Json } from "@/integrations/supabase/types";
 
 type Lead = Database["public"]["Tables"]["crm_leads"]["Row"];
 type ActivityLog = Database["public"]["Tables"]["crm_activity_logs"]["Row"];
+type Task = Database["public"]["Tables"]["crm_tasks"]["Row"];
 
 const getLogDetail = (details: Json | null, key: string) => {
   if (!details || typeof details !== "object" || Array.isArray(details)) return undefined;
@@ -81,22 +82,37 @@ function AdminDashboard() {
   });
   const projects = Array.isArray(projectsData?.items) ? projectsData.items : [];
 
-
   const recentLeads = Array.isArray(leads.items) ? leads.items.slice(0, 5) : [];
 
-  const filteredLogs = useMemo(() => {
-    const rawLogs = logs as any;
-    const logsItems = Array.isArray(rawLogs.items) ? rawLogs.items : (Array.isArray(rawLogs) ? rawLogs : []);
-    
+  const taskItems = useMemo(() => {
+    const rawTasks = tasks as { items?: Task[] } | Task[] | null | undefined;
+    if (!rawTasks) return [] as Task[];
+    if (Array.isArray(rawTasks)) return rawTasks;
+    if ("items" in rawTasks && Array.isArray(rawTasks.items)) return rawTasks.items;
+    return [] as Task[];
+  }, [tasks]);
+
+  const filteredLogs = useMemo<ActivityLog[]>(() => {
+    const rawLogs = logs as { items?: ActivityLog[] } | ActivityLog[] | null | undefined;
+    const logsItems = (() => {
+      if (!rawLogs) return [] as ActivityLog[];
+      if (Array.isArray(rawLogs)) return rawLogs;
+      if ("items" in rawLogs && Array.isArray(rawLogs.items)) return rawLogs.items;
+      return [] as ActivityLog[];
+    })();
+
     return logsItems
-      .filter((log: any) => {
-        const matchesType = logFilter.type === "all" || log.entity_type === logFilter.type;
+      .filter((log: ActivityLog) => {
+        const entityType = log.entity_type ?? "";
+        const action = log.action ?? "";
+        const detailsText = JSON.stringify(log.details ?? {}) ?? "";
+        const matchesType = logFilter.type === "all" || entityType === logFilter.type;
         const searchStr = logFilter.search.toLowerCase();
         const matchesSearch =
           !searchStr ||
-          log.action.toLowerCase().includes(searchStr) ||
-          log.entity_type.toLowerCase().includes(searchStr) ||
-          JSON.stringify(log.details).toLowerCase().includes(searchStr);
+          action.toLowerCase().includes(searchStr) ||
+          entityType.toLowerCase().includes(searchStr) ||
+          detailsText.toLowerCase().includes(searchStr);
         return matchesType && matchesSearch;
       })
       .slice(0, 8);
@@ -112,39 +128,45 @@ function AdminDashboard() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const staleLeadsCount = Array.isArray(leads.items) 
-    ? leads.items.filter(l => 
-        l.status !== 'closed_won' && 
-        l.status !== 'closed_lost' && 
-        new Date(l.updated_at || l.created_at) < sevenDaysAgo
+  const staleLeadsCount = Array.isArray(leads.items)
+    ? leads.items.filter(
+        (l) =>
+          l.status !== "closed_won" &&
+          l.status !== "closed_lost" &&
+          new Date(l.updated_at || l.created_at) < sevenDaysAgo,
       ).length
     : 0;
 
   const upcomingDeadlines = Array.isArray(projects)
-    ? projects.filter(p => 
-        p.status !== 'completed' && 
-        p.end_date && 
-        new Date(p.end_date) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    ? projects.filter(
+        (p) =>
+          p.status !== "completed" &&
+          p.end_date &&
+          new Date(p.end_date) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       )
     : [];
 
   const insights = [
-    { 
-      text: staleLeadsCount > 0 ? `${staleLeadsCount} leads sem follow-up há mais de 7 dias.` : "Todas as leads têm follow-up em dia.", 
-      color: staleLeadsCount > 0 ? "text-yellow-500" : "text-green-500", 
-      icon: Clock 
+    {
+      text:
+        staleLeadsCount > 0
+          ? `${staleLeadsCount} leads sem follow-up há mais de 7 dias.`
+          : "Todas as leads têm follow-up em dia.",
+      color: staleLeadsCount > 0 ? "text-yellow-500" : "text-green-500",
+      icon: Clock,
     },
-    { 
-      text: `O pipeline tem ${Array.isArray(leads.items) ? leads.items.length : 0} oportunidades ativas.`, 
-      color: "text-primary", 
-      icon: TrendingUp 
+    {
+      text: `O pipeline tem ${Array.isArray(leads.items) ? leads.items.length : 0} oportunidades ativas.`,
+      color: "text-primary",
+      icon: TrendingUp,
     },
-    { 
-      text: upcomingDeadlines.length > 0 
-        ? `${upcomingDeadlines.length} projetos com deadline próximo.` 
-        : "Sem deadlines críticos nos próximos 7 dias.", 
-      color: upcomingDeadlines.length > 0 ? "text-red-500" : "text-green-500", 
-      icon: AlertTriangle 
+    {
+      text:
+        upcomingDeadlines.length > 0
+          ? `${upcomingDeadlines.length} projetos com deadline próximo.`
+          : "Sem deadlines críticos nos próximos 7 dias.",
+      color: upcomingDeadlines.length > 0 ? "text-red-500" : "text-green-500",
+      icon: AlertTriangle,
     },
   ];
 
@@ -167,22 +189,25 @@ function AdminDashboard() {
             </div>
             <div>
               <p className="text-[10px] uppercase font-bold text-muted-foreground">Tarefas Hoje</p>
-              <p className="text-xl font-black">{(tasks as any[])?.filter(t => t.status === 'todo').length || 0}</p>
+              <p className="text-xl font-black">
+                {taskItems.filter((t) => t.status === "todo").length}
+              </p>
             </div>
           </Card>
-          
+
           <Card className="bg-card/40 border-white/5 p-3 flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] uppercase font-bold text-muted-foreground">Insights Novos</p>
+              <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                Insights Novos
+              </p>
               <p className="text-xl font-black">3</p>
             </div>
           </Card>
         </div>
       </header>
-
 
       <CRMStats stats={stats} />
 
@@ -201,50 +226,55 @@ function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {["new", "contacted", "proposal", "negotiation", "closed_won"].map((status, idx) => {
-                  const count = funnelData[status] || 0;
-                  const total = Array.isArray(leads.items) ? leads.items.length : 1;
-                  const percentage = (count / Math.max(total, 1)) * 100;
-                  const labels: Record<string, string> = {
-                    new: "Novas Oportunidades",
-                    contacted: "Qualificação",
-                    proposal: "Proposta Enviada",
-                    negotiation: "Em Negociação",
-                    closed_won: "Fecho Ganho",
-                  };
-                  const colors = [
-                    "bg-blue-500/40",
-                    "bg-blue-500/60",
-                    "bg-cyan-500/80",
-                    "bg-primary",
-                    "bg-green-500",
-                  ];
+                {["new", "contacted", "proposal", "negotiation", "closed_won"].map(
+                  (status, idx) => {
+                    const count = funnelData[status] || 0;
+                    const total = Array.isArray(leads.items) ? leads.items.length : 1;
+                    const percentage = (count / Math.max(total, 1)) * 100;
+                    const labels: Record<string, string> = {
+                      new: "Novas Oportunidades",
+                      contacted: "Qualificação",
+                      proposal: "Proposta Enviada",
+                      negotiation: "Em Negociação",
+                      closed_won: "Fecho Ganho",
+                    };
+                    const colors = [
+                      "bg-blue-500/40",
+                      "bg-blue-500/60",
+                      "bg-cyan-500/80",
+                      "bg-primary",
+                      "bg-green-500",
+                    ];
 
-                  return (
-                    <motion.div 
-                      key={status} 
-                      className="space-y-2"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                    >
-                      <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        <span className="flex items-center gap-2">
-                          <div className={cn("h-2 w-2 rounded-full", colors[idx])} />
-                          {labels[status]}
-                        </span>
-                        <span className="text-foreground">{count}</span>
-                      </div>
-                      <div className="h-2.5 w-full bg-muted/30 rounded-full overflow-hidden border border-white/5">
-                        <motion.div
-                          className={cn("h-full transition-all duration-1000 ease-out", colors[idx])}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.max(percentage, 2)}%` }}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                    return (
+                      <motion.div
+                        key={status}
+                        className="space-y-2"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                          <span className="flex items-center gap-2">
+                            <div className={cn("h-2 w-2 rounded-full", colors[idx])} />
+                            {labels[status]}
+                          </span>
+                          <span className="text-foreground">{count}</span>
+                        </div>
+                        <div className="h-2.5 w-full bg-muted/30 rounded-full overflow-hidden border border-white/5">
+                          <motion.div
+                            className={cn(
+                              "h-full transition-all duration-1000 ease-out",
+                              colors[idx],
+                            )}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.max(percentage, 2)}%` }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  },
+                )}
               </div>
             </CardContent>
           </Card>
@@ -273,17 +303,22 @@ function AdminDashboard() {
                   className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-white/5 hover:bg-muted/20 hover:border-primary/20 transition-all cursor-default group"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{lead.name}</p>
+                    <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
+                      {lead.name}
+                    </p>
                     <p className="text-[10px] text-muted-foreground truncate uppercase tracking-tighter">
                       {lead.company || "Individual"}
                     </p>
                   </div>
-                  <Badge variant="outline" className={cn(
-                    "text-[9px] px-1.5 py-0 border-white/10",
-                    lead.status === 'new' && "text-blue-400 border-blue-400/20",
-                    lead.status === 'closed_won' && "text-green-400 border-green-400/20",
-                  )}>
-                    {lead.status.replace('_', ' ')}
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[9px] px-1.5 py-0 border-white/10",
+                      lead.status === "new" && "text-blue-400 border-blue-400/20",
+                      lead.status === "closed_won" && "text-green-400 border-green-400/20",
+                    )}
+                  >
+                    {lead.status.replace("_", " ")}
                   </Badge>
                 </motion.div>
               ))}
@@ -312,11 +347,23 @@ function AdminDashboard() {
           </CardHeader>
           <CardContent className="space-y-4">
             {[
-              { text: "3 leads sem follow-up há mais de 7 dias.", color: "text-yellow-500", icon: Clock },
-              { text: "O pipeline aumentou 18% este mês.", color: "text-green-500", icon: TrendingUp },
-              { text: "O projeto ACME está com deadline próximo.", color: "text-red-500", icon: AlertTriangle },
+              {
+                text: "3 leads sem follow-up há mais de 7 dias.",
+                color: "text-yellow-500",
+                icon: Clock,
+              },
+              {
+                text: "O pipeline aumentou 18% este mês.",
+                color: "text-green-500",
+                icon: TrendingUp,
+              },
+              {
+                text: "O projeto ACME está com deadline próximo.",
+                color: "text-red-500",
+                icon: AlertTriangle,
+              },
             ].map((insight, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -331,7 +378,6 @@ function AdminDashboard() {
         </Card>
 
         <Card className="col-span-1 bg-card/40 backdrop-blur-md border-white/5 shadow-xl relative overflow-hidden">
-
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 pointer-events-none" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg font-bold">
@@ -369,8 +415,8 @@ function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 mt-2 relative z-10 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-              <ActivityTimeline logs={filteredLogs as any} />
+            <div className="space-y-4 mt-2 relative z-10 max-h-100 overflow-y-auto pr-2 custom-scrollbar">
+              <ActivityTimeline logs={filteredLogs} />
             </div>
           </CardContent>
         </Card>

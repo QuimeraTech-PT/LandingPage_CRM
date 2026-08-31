@@ -42,9 +42,7 @@ export function ContentCard({
       : "bg-card/60 dark:bg-card/60 border-border dark:border-white/10";
 
   const iconBgStyles =
-    variant === "accent"
-      ? "bg-accent/5 dark:bg-accent/10"
-      : "bg-primary/10 dark:bg-primary/20";
+    variant === "accent" ? "bg-accent/5 dark:bg-accent/10" : "bg-primary/10 dark:bg-primary/20";
 
   return (
     <motion.div

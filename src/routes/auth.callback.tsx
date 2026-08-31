@@ -15,7 +15,7 @@ function AuthCallbackPage() {
       try {
         const { error } = await supabase.auth.getSession();
         if (error) throw error;
-        
+
         toast.success("Autenticação efetuada com sucesso!");
         navigate({ to: "/admin" });
       } catch (error: any) {

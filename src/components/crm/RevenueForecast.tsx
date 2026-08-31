@@ -61,11 +61,15 @@ export function RevenueForecast() {
           <div className="h-3 w-full bg-muted rounded-full overflow-hidden flex">
             <div
               className="h-full bg-green-500 transition-all"
-              style={{ width: `${totalProjected ? (forecast.confirmedRevenue / totalProjected) * 100 : 0}%` }}
+              style={{
+                width: `${totalProjected ? (forecast.confirmedRevenue / totalProjected) * 100 : 0}%`,
+              }}
             />
             <div
               className="h-full bg-primary/40 transition-all"
-              style={{ width: `${totalProjected ? (forecast.probableRevenue / totalProjected) * 100 : 0}%` }}
+              style={{
+                width: `${totalProjected ? (forecast.probableRevenue / totalProjected) * 100 : 0}%`,
+              }}
             />
           </div>
           <p className="text-[10px] text-muted-foreground italic">

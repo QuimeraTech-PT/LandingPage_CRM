@@ -187,7 +187,9 @@ function LeadsPage() {
           <Users className="h-8 w-8 text-primary" />
           Gestão de Leads
         </h1>
-        <p className="text-sm text-muted-foreground font-medium">Controlo centralizado de oportunidades e pipeline comercial.</p>
+        <p className="text-sm text-muted-foreground font-medium">
+          Controlo centralizado de oportunidades e pipeline comercial.
+        </p>
       </header>
 
       <div className="flex items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-xl">
@@ -218,43 +220,79 @@ function LeadsPage() {
               <Plus className="h-4 w-4" /> Nova Lead
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 sm:max-w-[500px]">
+          <DialogContent className="bg-card border-white/10 sm:max-w-125">
             <form onSubmit={handleCreateLead} className="space-y-4 py-4">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">Adicionar Oportunidade</DialogTitle>
-                <DialogDescription>Preencha os dados da nova lead para o pipeline.</DialogDescription>
+                <DialogDescription>
+                  Preencha os dados da nova lead para o pipeline.
+                </DialogDescription>
               </DialogHeader>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Nome do Contacto</Label>
-                  <Input id="name" name="name" placeholder="Ex: João Silva" required className="bg-muted/20 border-white/5" />
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="Ex: João Silva"
+                    required
+                    className="bg-muted/20 border-white/5"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="company">Empresa</Label>
-                  <Input id="company" name="company" placeholder="Ex: Tech Corp" className="bg-muted/20 border-white/5" />
+                  <Input
+                    id="company"
+                    name="company"
+                    placeholder="Ex: Tech Corp"
+                    className="bg-muted/20 border-white/5"
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" placeholder="joao@empresa.com" required className="bg-muted/20 border-white/5" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="joao@empresa.com"
+                    required
+                    className="bg-muted/20 border-white/5"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
-                  <Input id="phone" name="phone" placeholder="+351 9xx..." className="bg-muted/20 border-white/5" />
+                  <Input
+                    id="phone"
+                    name="phone"
+                    placeholder="+351 9xx..."
+                    className="bg-muted/20 border-white/5"
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="estimated_value">Valor Estimado (€)</Label>
-                <Input id="estimated_value" name="estimated_value" type="number" placeholder="5000" className="bg-muted/20 border-white/5" />
+                <Input
+                  id="estimated_value"
+                  name="estimated_value"
+                  type="number"
+                  placeholder="5000"
+                  className="bg-muted/20 border-white/5"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="notes">Notas / Contexto</Label>
-                <Textarea id="notes" name="notes" placeholder="Detalhes da oportunidade..." className="bg-muted/20 border-white/5 min-h-[100px]" />
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  placeholder="Detalhes da oportunidade..."
+                  className="bg-muted/20 border-white/5 min-h-25"
+                />
               </div>
 
               <DialogFooter className="pt-4">
@@ -491,7 +529,6 @@ function LeadsPage() {
           }}
         />
       )}
-
     </div>
   );
 }

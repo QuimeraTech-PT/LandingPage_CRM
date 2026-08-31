@@ -140,7 +140,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-PT">
       <head>
         <HeadContent />
-        
+
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -242,7 +242,9 @@ function RootComponent() {
             };
           }
 
-          const existingGaScript = document.querySelector(`script[src*="googletagmanager.com/gtag/js"]`);
+          const existingGaScript = document.querySelector(
+            `script[src*="googletagmanager.com/gtag/js"]`,
+          );
           if (!existingGaScript) {
             const gaScript = document.createElement("script");
             gaScript.async = true;

@@ -197,8 +197,7 @@ export function About() {
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">{"}"}</div>
                       <div className="h-2" />
                       <div className="pl-4 text-[#a626a4] dark:text-[#c678dd]">
-                        <span className="text-[#e45649] dark:text-[#e06c75]">optimize</span>(){" "}
-                        {"{"}
+                        <span className="text-[#e45649] dark:text-[#e06c75]">optimize</span>() {"{"}
                       </div>
                       <div className="pl-8 text-[#4078f2] dark:text-[#61afef]">
                         return <span className="text-[#383a42] dark:text-[#abb2bf]">this</span>.

@@ -27,7 +27,7 @@ export interface KanbanItemProps {
   subtitle?: string;
   value?: string;
   status: string;
-  data: any;
+  data: unknown;
 }
 
 export interface KanbanColumnProps {

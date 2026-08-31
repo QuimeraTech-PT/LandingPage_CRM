@@ -15,7 +15,10 @@ export function GlobalActions() {
     <div className="fixed bottom-8 right-8 z-50">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform bg-primary">
+          <Button
+            size="icon"
+            className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform bg-primary"
+          >
             <Plus className="h-6 w-6" />
           </Button>
         </DropdownMenuTrigger>
@@ -24,21 +27,21 @@ export function GlobalActions() {
             Ações Rápidas
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-white/5" />
-          
+
           <DropdownMenuItem asChild className="cursor-pointer gap-2 py-2.5">
             <Link to="/admin/leads">
               <Users className="h-4 w-4 text-blue-500" />
               <span>Nova Lead</span>
             </Link>
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem asChild className="cursor-pointer gap-2 py-2.5">
             <Link to="/admin/companies">
               <Building2 className="h-4 w-4 text-orange-500" />
               <span>Nova Empresa</span>
             </Link>
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem asChild className="cursor-pointer gap-2 py-2.5">
             <Link to="/admin/projects">
               <Briefcase className="h-4 w-4 text-cyan-500" />

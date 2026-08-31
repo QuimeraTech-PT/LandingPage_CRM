@@ -31,7 +31,6 @@ export const syncCookiePreferences = createServerFn({ method: "POST" })
 /**
  * Retrieves cookie preferences from the backend.
  */
-export const getSyncedCookiePreferences = createServerFn({ method: "GET" })
-  .handler(async () => {
-    return null;
-  });
+export const getSyncedCookiePreferences = createServerFn({ method: "GET" }).handler(async () => {
+  return null;
+});

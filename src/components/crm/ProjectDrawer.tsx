@@ -19,27 +19,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  History, 
-  Info, 
-  Calendar, 
-  Briefcase, 
-  Wallet, 
+import {
+  History,
+  Info,
+  Calendar,
+  Briefcase,
+  Wallet,
   Folder,
   TrendingUp,
   Clock,
   CheckCircle2,
   AlertTriangle,
-  Plus
+  Plus,
 } from "lucide-react";
 import { ActivityTimeline } from "./ActivityTimeline";
 import { ProjectFiles } from "./ProjectFiles";
 import { useQuery } from "@tanstack/react-query";
-import { getActivityLogs, getTasks, calculateProjectHealth, getTransactions } from "@/lib/crm.functions";
+import {
+  getActivityLogs,
+  getTasks,
+  calculateProjectHealth,
+  getTransactions,
+} from "@/lib/crm.functions";
 import { Badge } from "@/components/ui/badge";
 import { ProjectHealthScore } from "./ProjectHealthScore";
 import { cn } from "@/lib/utils";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 type Project = Database["public"]["Tables"]["crm_projects"]["Row"] & {
   crm_leads: { name: string | null; company: string | null } | null;
@@ -48,37 +53,136 @@ type Project = Database["public"]["Tables"]["crm_projects"]["Row"] & {
   total_expenses: number;
 };
 
+type ProjectUpdateData = {
+  id: string | number;
+  name: string;
+  status: string;
+  budget: number;
+  start_date: string;
+  end_date: string;
+};
+
+type ProjectActivityLog = {
+  id?: string;
+  entity_id?: string | null;
+  entity_type?: string;
+  action?: string;
+  created_at?: string | null;
+  details?: Json | null;
+  old_value?: Json | null;
+  new_value?: Json | null;
+  status?: string | null;
+  user_id?: string | null;
+};
+
+type TimelineLog = {
+  id: string;
+  entity_id: string | null;
+  entity_type: string;
+  action: string;
+  created_at: string;
+  details: Json;
+  old_value: Json;
+  new_value: Json;
+  status: string | null;
+  user_id: string | null;
+};
+
+type ProjectTask = {
+  id?: string | number | null;
+  title?: string | null;
+  due_date?: string | null;
+  priority?: string | null;
+  project_id?: string | null;
+  status?: string | null;
+};
+
+type ProjectTransaction = {
+  project_id?: string | null;
+  type?: string | null;
+  amount?: number | string | null;
+  category?: string | null;
+  description?: string | null;
+  status?: string | null;
+  date?: string | null;
+  due_date?: string | null;
+  created_at?: string | null;
+};
+
+type ProjectFinancesResponse = {
+  items?: ProjectTransaction[];
+};
+
 interface ProjectDrawerProps {
   project: Project;
   open: boolean;
   onClose: () => void;
-  onUpdate: (data: any) => void;
+  onUpdate: (data: ProjectUpdateData) => void;
 }
 
 export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawerProps) {
-  const { data: logs = [] } = useQuery({
+  const { data: logs = [] } = useQuery<ProjectActivityLog[]>({
     queryKey: ["crm-activity-logs", project.id],
     queryFn: () => getActivityLogs({ data: { entityType: "project", limit: 50 } }),
     enabled: open,
   });
 
-  const { data: tasks = [] } = useQuery({
+  const { data: tasks = [] } = useQuery<ProjectTask[]>({
     queryKey: ["crm-tasks", project.id],
     queryFn: () => getTasks({ data: { projectId: project.id } }),
     enabled: open,
   });
 
-  const { data: finances = { items: [] } } = useQuery({
+  const { data: finances = { items: [] } } = useQuery<ProjectFinancesResponse>({
     queryKey: ["crm-finances", project.id],
     queryFn: () => getTransactions({ data: { limit: 100 } }),
     enabled: open,
   });
 
+  const normalizedProjectForHealth = {
+    ...project,
+    budget: project.budget ?? 0,
+    total_value: project.total_value ?? 0,
+  };
+
+  const normalizedTasks = (tasks || []).map((task) => ({
+    ...task,
+    project_id: task.project_id ?? undefined,
+    status: task.status ?? undefined,
+  }));
+
+  const normalizedTransactions = (finances.items || []).map((transaction) => ({
+    ...transaction,
+    project_id: transaction.project_id ?? undefined,
+    type: transaction.type ?? undefined,
+    amount: transaction.amount ?? 0,
+  }));
+
+  // Usado pelo ActivityTimeline (espera entity_id: string | null)
+  const normalizedLogs: TimelineLog[] = (logs || []).map((log) => ({
+    id: log.id ?? crypto.randomUUID(),
+    entity_id: log.entity_id ?? null,
+    entity_type: log.entity_type ?? "project",
+    action: log.action ?? "updated",
+    created_at: log.created_at ?? new Date().toISOString(),
+    details: log.details ?? null,
+    old_value: log.old_value ?? null,
+    new_value: log.new_value ?? null,
+    status: log.status ?? null,
+    user_id: log.user_id ?? null,
+  }));
+
+  // Variante usada por calculateProjectHealth (espera entity_id: string | undefined)
+  const healthActivityLogs = normalizedLogs.map((log) => ({
+    ...log,
+    entity_id: log.entity_id ?? undefined,
+  }));
+
   const projectHealth = calculateProjectHealth(
-    project,
-    tasks as any[],
-    (finances as any).items || [],
-    logs as any[]
+    normalizedProjectForHealth,
+    normalizedTasks,
+    normalizedTransactions,
+    healthActivityLogs,
   );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -87,7 +191,7 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
     onUpdate({
       id: project.id,
       name: formData.get("name") as string,
-      status: formData.get("status") as any,
+      status: String(formData.get("status") ?? ""),
       budget: Number(formData.get("budget")),
       start_date: formData.get("start_date") as string,
       end_date: formData.get("end_date") as string,
@@ -107,7 +211,9 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
                 <Briefcase className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <SheetTitle className="text-2xl font-black tracking-tight truncate">{project.name}</SheetTitle>
+                <SheetTitle className="text-2xl font-black tracking-tight truncate">
+                  {project.name}
+                </SheetTitle>
                 <div className="flex items-center gap-2">
                   <SheetDescription className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
                     CLIENTE: {project.crm_leads?.name || "N/A"}
@@ -118,10 +224,8 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
                 </div>
               </div>
             </div>
-            
-            <ProjectHealthScore 
-              {...projectHealth} 
-            />
+
+            <ProjectHealthScore {...projectHealth} />
           </div>
         </SheetHeader>
 
@@ -147,22 +251,39 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
           <TabsContent value="overview" className="mt-6 space-y-8">
             <div className="grid grid-cols-2 gap-4">
               <Card className="bg-muted/10 border-white/5 p-4 space-y-2">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Orçamento</p>
-                <p className="text-2xl font-black">{new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(project.budget || 0)}</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  Orçamento
+                </p>
+                <p className="text-2xl font-black">
+                  {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                    project.budget || 0,
+                  )}
+                </p>
                 <div className="space-y-1">
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className={cn("h-full", budgetUsage > 90 ? "bg-red-500" : "bg-primary")} 
-                      style={{ width: `${Math.min(budgetUsage, 100)}%` }} 
+                    <div
+                      className={cn("h-full", budgetUsage > 90 ? "bg-red-500" : "bg-primary")}
+                      style={{ width: `${Math.min(budgetUsage, 100)}%` }}
                     />
                   </div>
-                  <p className="text-[9px] text-muted-foreground text-right">{budgetUsage.toFixed(1)}% utilizado</p>
+                  <p className="text-[9px] text-muted-foreground text-right">
+                    {budgetUsage.toFixed(1)}% utilizado
+                  </p>
                 </div>
               </Card>
               <Card className="bg-muted/10 border-white/5 p-4 space-y-2">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Margem</p>
-                <p className={cn("text-2xl font-black", margin >= 0 ? "text-green-500" : "text-red-500")}>
-                  {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(margin)}
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  Margem
+                </p>
+                <p
+                  className={cn(
+                    "text-2xl font-black",
+                    margin >= 0 ? "text-green-500" : "text-red-500",
+                  )}
+                >
+                  {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                    margin,
+                  )}
                 </p>
                 <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
                   <TrendingUp className="h-3 w-3" />
@@ -175,11 +296,26 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-xs uppercase font-bold text-muted-foreground">Nome do Projeto</Label>
-                    <Input id="name" name="name" defaultValue={project.name} className="bg-muted/20 border-white/5" />
+                    <Label
+                      htmlFor="name"
+                      className="text-xs uppercase font-bold text-muted-foreground"
+                    >
+                      Nome do Projeto
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      defaultValue={project.name}
+                      className="bg-muted/20 border-white/5"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="status" className="text-xs uppercase font-bold text-muted-foreground">Estado</Label>
+                    <Label
+                      htmlFor="status"
+                      className="text-xs uppercase font-bold text-muted-foreground"
+                    >
+                      Estado
+                    </Label>
                     <Select name="status" defaultValue={project.status}>
                       <SelectTrigger className="bg-muted/20 border-white/5 text-foreground">
                         <SelectValue />
@@ -197,51 +333,115 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="start_date" className="text-xs uppercase font-bold text-muted-foreground">Data Início</Label>
-                    <Input id="start_date" name="start_date" type="date" defaultValue={project.start_date || ""} className="bg-muted/20 border-white/5" />
+                    <Label
+                      htmlFor="start_date"
+                      className="text-xs uppercase font-bold text-muted-foreground"
+                    >
+                      Data Início
+                    </Label>
+                    <Input
+                      id="start_date"
+                      name="start_date"
+                      type="date"
+                      defaultValue={project.start_date || ""}
+                      className="bg-muted/20 border-white/5"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="end_date" className="text-xs uppercase font-bold text-muted-foreground">Deadline</Label>
-                    <Input id="end_date" name="end_date" type="date" defaultValue={project.end_date || ""} className="bg-muted/20 border-white/5" />
+                    <Label
+                      htmlFor="end_date"
+                      className="text-xs uppercase font-bold text-muted-foreground"
+                    >
+                      Deadline
+                    </Label>
+                    <Input
+                      id="end_date"
+                      name="end_date"
+                      type="date"
+                      defaultValue={project.end_date || ""}
+                      className="bg-muted/20 border-white/5"
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="budget" className="text-xs uppercase font-bold text-muted-foreground">Orçamento (€)</Label>
-                  <Input id="budget" name="budget" type="number" defaultValue={project.budget || 0} className="bg-muted/20 border-white/5" />
+                  <Label
+                    htmlFor="budget"
+                    className="text-xs uppercase font-bold text-muted-foreground"
+                  >
+                    Orçamento (€)
+                  </Label>
+                  <Input
+                    id="budget"
+                    name="budget"
+                    type="number"
+                    defaultValue={project.budget || 0}
+                    className="bg-muted/20 border-white/5"
+                  />
                 </div>
               </div>
 
               <div className="pt-4 border-t border-white/5 flex gap-3">
-                <Button type="submit" className="flex-1 shadow-lg shadow-primary/20">Guardar Alterações</Button>
-                <Button type="button" variant="outline" onClick={onClose}>Fechar</Button>
+                <Button type="submit" className="flex-1 shadow-lg shadow-primary/20">
+                  Guardar Alterações
+                </Button>
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Fechar
+                </Button>
               </div>
             </form>
           </TabsContent>
 
           <TabsContent value="tasks" className="mt-6 space-y-4">
-             <Button variant="outline" className="w-full gap-2 border-dashed border-primary/30 hover:bg-primary/5">
-                <Plus className="h-4 w-4" /> Nova Tarefa
-              </Button>
-              <div className="space-y-3">
-                {tasks.map((task: any) => (
-                  <div key={task.id} className="flex items-center justify-between p-3 bg-muted/10 border border-white/5 rounded-xl group hover:border-primary/20 transition-all">
-                    <div className="flex items-center gap-3">
-                      <div className={cn("p-1.5 rounded-lg", task.status === 'done' ? "bg-green-500/10 text-green-500" : "bg-primary/10 text-primary")}>
-                        {task.status === 'done' ? <CheckCircle2 className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold group-hover:text-primary transition-colors">{task.title}</p>
-                        <p className="text-[10px] text-muted-foreground">{task.due_date ? `Deadline: ${new Date(task.due_date).toLocaleDateString("pt-PT")}` : 'Sem data'}</p>
-                      </div>
+            <Button
+              variant="outline"
+              className="w-full gap-2 border-dashed border-primary/30 hover:bg-primary/5"
+            >
+              <Plus className="h-4 w-4" /> Nova Tarefa
+            </Button>
+            <div className="space-y-3">
+              {tasks.map((task: ProjectTask) => (
+                <div
+                  key={task.id}
+                  className="flex items-center justify-between p-3 bg-muted/10 border border-white/5 rounded-xl group hover:border-primary/20 transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        "p-1.5 rounded-lg",
+                        task.status === "done"
+                          ? "bg-green-500/10 text-green-500"
+                          : "bg-primary/10 text-primary",
+                      )}
+                    >
+                      {task.status === "done" ? (
+                        <CheckCircle2 className="h-4 w-4" />
+                      ) : (
+                        <Clock className="h-4 w-4" />
+                      )}
                     </div>
-                    <Badge variant="outline" className="text-[9px] border-white/5">{task.priority}</Badge>
+                    <div>
+                      <p className="text-sm font-bold group-hover:text-primary transition-colors">
+                        {task.title}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {task.due_date
+                          ? `Deadline: ${new Date(task.due_date).toLocaleDateString("pt-PT")}`
+                          : "Sem data"}
+                      </p>
+                    </div>
                   </div>
-                ))}
-                {tasks.length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground opacity-30 italic text-xs">Nenhuma tarefa.</div>
-                )}
-              </div>
+                  <Badge variant="outline" className="text-[9px] border-white/5">
+                    {task.priority}
+                  </Badge>
+                </div>
+              ))}
+              {tasks.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground opacity-30 italic text-xs">
+                  Nenhuma tarefa.
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="files" className="mt-6">
@@ -251,24 +451,41 @@ export function ProjectDrawer({ project, open, onClose, onUpdate }: ProjectDrawe
           <TabsContent value="finance" className="mt-6 space-y-4">
             <div className="flex flex-col gap-3">
               {project.crm_finances?.map((f, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-muted/10 border border-white/5 rounded-xl">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-3 bg-muted/10 border border-white/5 rounded-xl"
+                >
                   <div>
-                    <p className="text-xs font-bold">{f.type === 'income' ? 'Receita' : 'Despesa'}</p>
-                    <p className="text-[10px] text-muted-foreground capitalize">Transação Financeira</p>
+                    <p className="text-xs font-bold">
+                      {f.type === "income" ? "Receita" : "Despesa"}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground capitalize">
+                      Transação Financeira
+                    </p>
                   </div>
-                  <p className={cn("font-mono font-bold", f.type === 'income' ? "text-green-500" : "text-red-500")}>
-                    {f.type === 'income' ? '+' : '-'}{new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(f.amount)}
+                  <p
+                    className={cn(
+                      "font-mono font-bold",
+                      f.type === "income" ? "text-green-500" : "text-red-500",
+                    )}
+                  >
+                    {f.type === "income" ? "+" : "-"}
+                    {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(
+                      f.amount,
+                    )}
                   </p>
                 </div>
               ))}
               {(!project.crm_finances || project.crm_finances.length === 0) && (
-                <div className="text-center py-12 text-muted-foreground opacity-30 italic text-xs">Sem transações.</div>
+                <div className="text-center py-12 text-muted-foreground opacity-30 italic text-xs">
+                  Sem transações.
+                </div>
               )}
             </div>
           </TabsContent>
 
           <TabsContent value="activity" className="mt-6">
-            <ActivityTimeline logs={logs as any} />
+            <ActivityTimeline logs={normalizedLogs} />
           </TabsContent>
         </Tabs>
       </SheetContent>

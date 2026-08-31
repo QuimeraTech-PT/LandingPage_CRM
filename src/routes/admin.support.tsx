@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  Ticket, 
-  Plus, 
-  Search, 
-  Filter, 
-  Clock, 
-  AlertCircle, 
-  CheckCircle2, 
+import {
+  Ticket,
+  Plus,
+  Search,
+  Filter,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
   MoreVertical,
   User,
   Building2,
-  Briefcase
+  Briefcase,
 } from "lucide-react";
 import { getTickets, createTicket, updateTicketStatus } from "@/lib/crm.support.functions";
 import { getCompanies } from "@/lib/crm.companies.functions";
@@ -83,19 +83,54 @@ function SupportPage() {
   const handleCreateTicket = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const priority = formData.get("priority");
+    const normalizedPriority =
+      priority === "low" || priority === "medium" || priority === "high" || priority === "urgent"
+        ? priority
+        : "medium";
+
     createMutation.mutate({
       data: {
         company_id: formData.get("company_id") as string,
         subject: formData.get("subject") as string,
         description: formData.get("description") as string,
-        priority: formData.get("priority") as any,
+        priority: normalizedPriority,
       },
     });
   };
 
-  const filteredTickets = (tickets as any[])?.filter(ticket => {
-    const matchesSearch = ticket.subject.toLowerCase().includes(filter.search.toLowerCase()) ||
-                         ticket.crm_companies?.name.toLowerCase().includes(filter.search.toLowerCase());
+  type TicketStatus = "open" | "in_progress" | "waiting_client" | "resolved" | "closed";
+
+  type TicketFilterItem = {
+    id: string;
+    ticket_number?: string | number | null;
+    subject: string;
+    description?: string | null;
+    status: TicketStatus;
+    priority: string;
+    created_at?: string | Date | null;
+    crm_companies?: {
+      name?: string | null;
+    } | null;
+    crm_projects?: {
+      name?: string | null;
+    } | null;
+  };
+
+  type CompanyOption = {
+    id: string;
+    name: string;
+  };
+
+  const companyOptions = (companies as CompanyOption[] | undefined) ?? [];
+
+  const filteredTickets = (tickets as TicketFilterItem[] | undefined)?.filter((ticket) => {
+    const normalizedSearch = filter.search.toLowerCase();
+    const ticketSubject = ticket.subject?.toLowerCase() ?? "";
+    const companyName = ticket.crm_companies?.name?.toLowerCase() ?? "";
+
+    const matchesSearch =
+      ticketSubject.includes(normalizedSearch) || companyName.includes(normalizedSearch);
     const matchesStatus = filter.status === "all" || ticket.status === filter.status;
     return matchesSearch && matchesStatus;
   });
@@ -153,13 +188,13 @@ function SupportPage() {
               <Plus className="h-4 w-4" /> Novo Ticket
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 sm:max-w-[500px]">
+          <DialogContent className="bg-card border-white/10 sm:max-w-125">
             <form onSubmit={handleCreateTicket} className="space-y-4 py-4">
               <DialogHeader>
                 <DialogTitle>Abrir Pedido de Suporte</DialogTitle>
                 <DialogDescription>Registe um novo ticket para acompanhamento.</DialogDescription>
               </DialogHeader>
-              
+
               <div className="space-y-2">
                 <Label>Cliente / Empresa</Label>
                 <Select name="company_id" required>
@@ -167,7 +202,7 @@ function SupportPage() {
                     <SelectValue placeholder="Selecione a empresa" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-white/10">
-                    {(companies as any[])?.map(company => (
+                    {companyOptions.map((company) => (
                       <SelectItem key={company.id} value={company.id}>
                         {company.name}
                       </SelectItem>
@@ -178,7 +213,12 @@ function SupportPage() {
 
               <div className="space-y-2">
                 <Label>Assunto</Label>
-                <Input name="subject" placeholder="Breve resumo do problema" required className="bg-muted/20 border-white/5" />
+                <Input
+                  name="subject"
+                  placeholder="Breve resumo do problema"
+                  required
+                  className="bg-muted/20 border-white/5"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -200,7 +240,11 @@ function SupportPage() {
 
               <div className="space-y-2">
                 <Label>Descrição Detalhada</Label>
-                <Textarea name="description" placeholder="Explique a situação..." className="bg-muted/20 border-white/5 min-h-[120px]" />
+                <Textarea
+                  name="description"
+                  placeholder="Explique a situação..."
+                  className="bg-muted/20 border-white/5 min-h-30"
+                />
               </div>
 
               <DialogFooter className="pt-4">
@@ -216,15 +260,18 @@ function SupportPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center bg-card/40 p-4 rounded-xl border border-white/5 backdrop-blur-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Pesquisar tickets ou clientes..." 
+          <Input
+            placeholder="Pesquisar tickets ou clientes..."
             className="pl-10 bg-muted/10 border-white/5 focus:border-primary/50 transition-all"
             value={filter.search}
-            onChange={(e) => setFilter(prev => ({ ...prev, search: e.target.value }))}
+            onChange={(e) => setFilter((prev) => ({ ...prev, search: e.target.value }))}
           />
         </div>
-        <Select value={filter.status} onValueChange={(val) => setFilter(prev => ({ ...prev, status: val }))}>
-          <SelectTrigger className="w-[200px] bg-muted/10 border-white/5">
+        <Select
+          value={filter.status}
+          onValueChange={(val) => setFilter((prev) => ({ ...prev, status: val }))}
+        >
+          <SelectTrigger className="w-50 bg-muted/10 border-white/5">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-primary" />
               <SelectValue placeholder="Estado" />
@@ -246,11 +293,16 @@ function SupportPage() {
           <Card className="bg-card/40 border-dashed border-white/10 py-20 text-center">
             <Ticket className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
             <h3 className="text-lg font-bold">Nenhum ticket encontrado</h3>
-            <p className="text-sm text-muted-foreground">Tente ajustar os filtros ou crie um novo pedido.</p>
+            <p className="text-sm text-muted-foreground">
+              Tente ajustar os filtros ou crie um novo pedido.
+            </p>
           </Card>
         ) : (
           filteredTickets?.map((ticket) => (
-            <Card key={ticket.id} className="bg-card/50 border-white/10 hover:border-primary/30 transition-all group overflow-hidden">
+            <Card
+              key={ticket.id}
+              className="bg-card/50 border-white/10 hover:border-primary/30 transition-all group overflow-hidden"
+            >
               <CardContent className="p-0">
                 <div className="p-6 flex flex-col md:flex-row gap-6 items-start">
                   <div className="flex-1 space-y-4 w-full">
@@ -266,9 +318,13 @@ function SupportPage() {
                           {ticket.subject}
                         </h3>
                       </div>
-                      <Select 
-                        value={ticket.status} 
-                        onValueChange={(status) => updateStatusMutation.mutate({ data: { id: ticket.id, status: status as any } })}
+                      <Select
+                        value={ticket.status}
+                        onValueChange={(status) =>
+                          updateStatusMutation.mutate({
+                            data: { id: ticket.id, status: status as TicketStatus },
+                          })
+                        }
                       >
                         <SelectTrigger className="w-auto h-auto p-0 border-none bg-transparent focus:ring-0">
                           {getStatusBadge(ticket.status)}
@@ -300,7 +356,10 @@ function SupportPage() {
                       )}
                       <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground ml-auto">
                         <Clock className="h-3.5 w-3.5" />
-                        Criado em {format(new Date(ticket.created_at), "dd MMM yyyy", { locale: pt })}
+                        Criado em{" "}
+                        {ticket.created_at
+                          ? format(new Date(ticket.created_at), "dd MMM yyyy", { locale: pt })
+                          : "Data indisponível"}
                       </div>
                     </div>
                   </div>

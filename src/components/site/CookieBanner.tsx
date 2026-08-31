@@ -28,11 +28,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
   useEffect(() => {
     setMounted(true);
-    
+
     const initializeConsent = async () => {
       // 1. Try Local Storage first for speed
       const savedConsent = getAnalyticsConsent();
-      
+
       if (savedConsent) {
         setPreferences({
           essential: true,
@@ -43,7 +43,10 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       } else {
         // 2. If not in local storage, try to get from backend if authenticated
         try {
-          const synced = await getSyncedCookiePreferences() as { analytics: boolean; marketing: boolean } | null;
+          const synced = (await getSyncedCookiePreferences()) as {
+            analytics: boolean;
+            marketing: boolean;
+          } | null;
           if (synced) {
             setPreferences({
               essential: true,
@@ -74,7 +77,9 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       setIsVisible(true);
       // Wait for animation then focus
       setTimeout(() => {
-        const firstFocusable = document.querySelector('[role="region"][aria-label="Gestão de Cookies"] button');
+        const firstFocusable = document.querySelector(
+          '[role="region"][aria-label="Gestão de Cookies"] button',
+        );
         if (firstFocusable instanceof HTMLElement) firstFocusable.focus();
       }, 300);
     },
@@ -83,9 +88,11 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
   const savePreferences = async () => {
     updateAnalyticsConsent(preferences);
     setIsVisible(false);
-    
+
     try {
-      await syncCookiePreferences({ data: { analytics: preferences.analytics, marketing: preferences.marketing } });
+      await syncCookiePreferences({
+        data: { analytics: preferences.analytics, marketing: preferences.marketing },
+      });
     } catch (e) {
       // Silent fail
     }
@@ -258,15 +265,30 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-end border-t border-border dark:border-white/5 pt-6">
                 {showDetails ? (
-                  <Button variant="secondary" size="sm" onClick={savePreferences} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={savePreferences}
+                    className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
                     Guardar Preferências
                   </Button>
                 ) : (
-                  <Button variant="secondary" size="sm" onClick={acceptEssential} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={acceptEssential}
+                    className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
                     Apenas Essenciais
                   </Button>
                 )}
-                <Button variant="primary" size="sm" onClick={acceptAll} className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={acceptAll}
+                  className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
                   Aceitar Todos
                 </Button>
               </div>

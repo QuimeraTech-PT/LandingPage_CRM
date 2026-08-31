@@ -89,7 +89,7 @@ export function Pillars() {
               showBottomHighlight={true}
               onClick={() => {
                 import("@/lib/analytics").then(({ trackEvent }) =>
-                  trackEvent("pillar_click", { title, index: idx })
+                  trackEvent("pillar_click", { title, index: idx }),
                 );
               }}
             />

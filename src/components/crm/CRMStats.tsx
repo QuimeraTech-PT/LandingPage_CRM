@@ -1,5 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, TrendingUp, Wallet, ArrowUpRight, ArrowDownRight, Target, Clock } from "lucide-react";
+import {
+  Users,
+  Briefcase,
+  TrendingUp,
+  Wallet,
+  ArrowUpRight,
+  ArrowDownRight,
+  Target,
+  Clock,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 interface CRMStatsProps {
@@ -16,7 +25,7 @@ interface CRMStatsProps {
 }
 
 export function CRMStats({ stats }: CRMStatsProps) {
-  const formatCurrency = (value: number) => 
+  const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(value);
 
   const statCards = [
@@ -68,8 +77,10 @@ export function CRMStats({ stats }: CRMStatsProps) {
           transition={{ duration: 0.3, delay: index * 0.1 }}
         >
           <Card className="bg-card/40 backdrop-blur-md border-white/5 hover:border-primary/30 transition-all group overflow-hidden relative">
-            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-110 opacity-50`} />
-            
+            <div
+              className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-110 opacity-50`}
+            />
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
@@ -85,9 +96,7 @@ export function CRMStats({ stats }: CRMStatsProps) {
               </div>
               <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-white/5">
                 <div className={`h-1.5 w-1.5 rounded-full ${stat.color} animate-pulse`} />
-                <span className={`text-[10px] font-bold ${stat.color}`}>
-                  {stat.trend}
-                </span>
+                <span className={`text-[10px] font-bold ${stat.color}`}>{stat.trend}</span>
               </div>
             </CardContent>
           </Card>

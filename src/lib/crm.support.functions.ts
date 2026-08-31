@@ -3,24 +3,31 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { logActivity } from "./crm.functions";
 
+const ticketStatusValues = ["open", "in_progress", "waiting_client", "resolved", "closed"] as const;
+
 export const getTickets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => 
-    z.object({
-      companyId: z.string().uuid().optional(),
-      projectId: z.string().uuid().optional(),
-      status: z.string().optional(),
-      limit: z.number().default(20),
-    }).parse(data)
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        companyId: z.string().uuid().optional(),
+        projectId: z.string().uuid().optional(),
+        status: z.enum(ticketStatusValues).optional(),
+        limit: z.number().default(20),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    let query = supabase.from("crm_tickets").select("*, crm_companies(name), crm_projects(name)").order("created_at", { ascending: false });
+    let query = supabase
+      .from("crm_tickets")
+      .select("*, crm_companies(name), crm_projects(name)")
+      .order("created_at", { ascending: false });
 
     if (data.companyId) query = query.eq("company_id", data.companyId);
     if (data.projectId) query = query.eq("project_id", data.projectId);
-    if (data.status) query = query.eq("status", data.status as any);
-    
+    if (data.status) query = query.eq("status", data.status);
+
     const { data: tickets, error } = await query.limit(data.limit);
     if (error) throw error;
     return tickets;
@@ -29,20 +36,28 @@ export const getTickets = createServerFn({ method: "GET" })
 export const createTicket = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      company_id: z.string().uuid(),
-      project_id: z.string().uuid().optional(),
-      subject: z.string().min(3),
-      description: z.string().optional(),
-      priority: z.enum(["low", "medium", "high", "urgent"]),
-    }).parse(data)
+    z
+      .object({
+        company_id: z.string().uuid(),
+        project_id: z.string().uuid().optional(),
+        subject: z.string().min(3),
+        description: z.string().optional(),
+        priority: z.enum(["low", "medium", "high", "urgent"]),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: ticket, error } = await supabase.from("crm_tickets").insert([{
-      ...data,
-      status: "open",
-    }]).select().single();
+    const { data: ticket, error } = await supabase
+      .from("crm_tickets")
+      .insert([
+        {
+          ...data,
+          status: "open",
+        },
+      ])
+      .select()
+      .single();
 
     if (error) throw error;
 
@@ -60,14 +75,16 @@ export const createTicket = createServerFn({ method: "POST" })
 export const updateTicketStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      status: z.enum(["open", "in_progress", "waiting_client", "resolved", "closed"]),
-    }).parse(data)
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum(["open", "in_progress", "waiting_client", "resolved", "closed"]),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    
+
     const { data: oldTicket } = await supabase
       .from("crm_tickets")
       .select("status")
@@ -88,7 +105,7 @@ export const updateTicketStatus = createServerFn({ method: "POST" })
       entityId: data.id,
       oldValue: oldTicket,
       newValue: { status: data.status },
-      details: `Ticket alterado para ${data.status}`
+      details: `Ticket alterado para ${data.status}`,
     });
 
     return { success: true };

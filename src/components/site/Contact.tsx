@@ -152,7 +152,7 @@ export function Contact() {
                     autoComplete="name"
                     className={cn(
                       errors.nome ? "border-destructive focus-visible:ring-destructive" : "",
-                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     )}
                     aria-invalid={!!errors.nome}
                     aria-describedby={errors.nome ? "nome-error" : "nome-description"}
@@ -179,7 +179,7 @@ export function Contact() {
                     autoComplete="email"
                     className={cn(
                       errors.email ? "border-destructive focus-visible:ring-destructive" : "",
-                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     )}
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? "email-error" : "email-description"}
@@ -204,7 +204,7 @@ export function Contact() {
                     placeholder="Como podemos ajudar?"
                     className={cn(
                       errors.assunto ? "border-destructive focus-visible:ring-destructive" : "",
-                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     )}
                     aria-invalid={!!errors.assunto}
                     aria-describedby={errors.assunto ? "assunto-error" : "assunto-description"}
@@ -230,7 +230,7 @@ export function Contact() {
                     placeholder="Descreva brevemente o seu projeto..."
                     className={cn(
                       errors.mensagem ? "border-destructive focus-visible:ring-destructive" : "",
-                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     )}
                     aria-invalid={!!errors.mensagem}
                     aria-describedby={errors.mensagem ? "mensagem-error" : "mensagem-description"}
