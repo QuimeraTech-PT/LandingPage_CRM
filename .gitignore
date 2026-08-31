@@ -1,5 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.dist/
+dist/
+dist-ssr/
+.output/
+.vinxi/
+.tanstack/
+.nitro/
+build/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local runtime files
+*.local
+.dev.vars
+.wrangler/
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,31 +30,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
-
-# Environment files
-.env
-.env.*
-!.env.example
-
-# Wrangler / Cloudflare
-.wrangler/
-.dev.vars
-
-# Editor directories and files
-.vscode/*
+# Editor / OS
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+*.swp
+*.swo
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Package manager locks (keep only if your team intentionally wants them)
+# Uncomment if you want to track them:
+# package-lock.json
+# bun.lock
+
+# Mac/Linux temp files
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
