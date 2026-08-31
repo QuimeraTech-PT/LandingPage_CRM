@@ -135,7 +135,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-PT">
       <head>
         <HeadContent />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GVHY29RSD" />
+        
         <script
           dangerouslySetInnerHTML={{
             __html: `
