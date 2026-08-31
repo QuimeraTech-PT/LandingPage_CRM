@@ -229,7 +229,7 @@ function RootComponent() {
         }
 
         // GA4 only loads after analytics consent is granted.
-        if (currentConsent?.analytics) {
+        if (config.gaId && currentConsent?.analytics) {
           if (!window.gtag) {
             window.dataLayer = window.dataLayer || [];
             window.gtag = function (...args: unknown[]) {
