@@ -222,28 +222,28 @@ export function Footer() {
           </p>
           <div className="flex gap-6">
             <a
-              href="https://www.linkedin.com/company/quimeratech/"
+              href="https://www.linkedin.com/in/quimeratech/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="LinkedIn da QuimeraTech"
               onClick={() =>
                 import("@/lib/analytics").then(({ trackOutboundClick }) =>
-                  trackOutboundClick("https://www.linkedin.com/company/quimeratech/"),
+                  trackOutboundClick("https://www.linkedin.com/in/quimeratech/"),
                 )
               }
             >
               <Linkedin className="h-5 w-5" aria-hidden="true" />
             </a>
             <a
-              href="https://github.com/quimeratech"
+              href="https://github.com/QuimeraTechPT"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="GitHub da QuimeraTech"
               onClick={() =>
                 import("@/lib/analytics").then(({ trackOutboundClick }) =>
-                  trackOutboundClick("https://github.com/quimeratech"),
+                  trackOutboundClick("https://github.com/QuimeraTechPT"),
                 )
               }
             >

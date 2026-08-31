@@ -1,19 +1,32 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, ShieldCheck, Chrome } from "lucide-react";
+import { LogIn, ShieldCheck, Chrome, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/site/Logo";
 
 export const Route = createFileRoute("/auth")({
-  beforeLoad: async () => {
+  beforeLoad: async ({ search }) => {
+    // Validar token secreto
+    const query = search as { secret?: string };
+    const secretKey = import.meta.env.VITE_AUTH_SECRET_KEY || "";
+    
+    if (!secretKey || query.secret !== secretKey) {
+      throw redirect({ to: "/" });
+    }
+    
     const { data } = await supabase.auth.getSession();
     if (data.session) {
       throw redirect({ to: "/admin" });
     }
+  },
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      secret: search.secret as string | undefined,
+    };
   },
   component: AuthPage,
 });
@@ -22,6 +35,8 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const isDev = import.meta.env.DEV;
   const navigate = useNavigate();
+  const search = useSearch({ from: "/auth" });
+
 
   const handleGoogleLogin = async () => {
     setLoading(true);

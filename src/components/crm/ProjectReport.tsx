@@ -51,26 +51,40 @@ export function ProjectReport({ project, transactions }: ProjectReportProps) {
   const budgetAlert = budget > 0 && totalExpenses > budget;
   const budgetRisk = budget > 0 && totalExpenses > budget * 0.8 && !budgetAlert;
 
-  const handleDownload = async () => {
-    // Import html2pdf dynamically to avoid SSR issues
-    const html2pdf = (await import("html2pdf.js")).default;
-
+  const handleDownload = () => {
     const element = reportRef.current;
-    if (!element) return;
+    if (!element || typeof window === "undefined") {
+      toast.error("Não foi possível gerar o relatório neste ambiente.");
+      return;
+    }
 
-    const opt = {
-      margin: 10,
-      filename: `Relatorio_${project.name.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`,
-      image: { type: "jpeg" as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: "mm" as const, format: "a4" as const, orientation: "portrait" as const },
-    };
+    const printWindow = window.open("", "_blank", "width=1200,height=900");
+    if (!printWindow) {
+      toast.error("O navegador bloqueou a janela de impressão. Permite pop-ups para continuar.");
+      return;
+    }
 
-    toast.promise(html2pdf().from(element).set(opt).save(), {
-      loading: "A gerar PDF...",
-      success: "Relatório guardado!",
-      error: "Erro ao gerar PDF.",
-    });
+    const html = element.outerHTML;
+    const safeTitle = project.name.replace(/\s+/g, "_");
+
+    printWindow.document.write(`<!doctype html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Relatório_${safeTitle}</title>
+          <style>
+            body { margin: 0; padding: 24px; font-family: Arial, sans-serif; background: white; color: #0f172a; }
+            * { box-sizing: border-box; }
+            @page { size: A4 portrait; margin: 12mm; }
+          </style>
+        </head>
+        <body>${html}</body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => printWindow.print(), 300);
+    toast.success("A janela de impressão foi aberta.");
   };
 
   return (

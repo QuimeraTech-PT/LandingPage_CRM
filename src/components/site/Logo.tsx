@@ -1,7 +1,8 @@
-import logoAsset from "@/assets/quimeratech-logo-dark-v2.png.asset.json";
-import logoLightAsset from "@/assets/quimeratech-logo-light.png.asset.json";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+
+const logoAsset = "/QuimeraTech_DarkLogo.png";
+const logoLightAsset = "/QuimeraTech_LightLogo.png";
 
 interface LogoProps {
   className?: string;
@@ -21,7 +22,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
   const content = (
     <div className="relative flex items-center">
       <img
-        src={logoAsset.url}
+        src={logoAsset}
         alt="Logótipo QuimeraTech"
         className={cn(
           "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] transition-opacity duration-300",
@@ -36,7 +37,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
         fetchPriority="high"
       />
       <img
-        src={logoLightAsset.url}
+        src={logoLightAsset}
         alt="Logótipo QuimeraTech"
         className={cn(
           "w-auto transition-opacity duration-300",

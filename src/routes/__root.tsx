@@ -135,6 +135,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-PT">
       <head>
         <HeadContent />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GVHY29RSD" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -208,6 +209,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const cookieBannerRef = useRef<CookieBannerHandle>(null);
+  const GA_MEASUREMENT_ID = "G-3GVHY29RSD";
 
   useEffect(() => {
     const handleOpenConsent = () => {
@@ -221,26 +223,36 @@ function RootComponent() {
     const loadAnalytics = async () => {
       try {
         const config = await getAnalyticsConfig();
+        const currentConsent = getAnalyticsConsent();
+
         if (config.gtmId) {
           initAnalytics(config.gtmId);
+        }
 
-          // Initialize GA4 only if consent is already granted
-          const currentConsent = getAnalyticsConsent();
-          if (config.gaId && typeof window.gtag === "function" && currentConsent?.analytics) {
-            const gaScript = document.createElement("script");
-            gaScript.async = true;
-            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
-            document.head.appendChild(gaScript);
-
-            window.gtag("config", config.gaId);
+        // GA4 only loads after analytics consent is granted.
+        if (currentConsent?.analytics) {
+          if (!window.gtag) {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function (...args: unknown[]) {
+              window.dataLayer.push(args);
+            };
           }
 
-          // Initial state is already handled by the inline script
-          // updateAnalyticsConsent is now safer and doesn't need to be called here
-          // as gtag('consent', 'default', ...) already reflects the stored choice.
-          // Track Web Vitals
-          trackWebVitals();
-          initScrollTracking();
+          const existingGaScript = document.querySelector(`script[src*="googletagmanager.com/gtag/js"]`);
+          if (!existingGaScript) {
+            const gaScript = document.createElement("script");
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+            document.head.appendChild(gaScript);
+          }
+
+          window.gtag("js", new Date());
+          window.gtag("config", GA_MEASUREMENT_ID);
+
+          if (config.gtmId) {
+            trackWebVitals();
+            initScrollTracking();
+          }
         }
       } catch (error) {
         console.error("Failed to load analytics config:", error);

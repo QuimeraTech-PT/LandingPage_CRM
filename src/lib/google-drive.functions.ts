@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { google, drive_v3 } from "googleapis";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
@@ -8,27 +7,21 @@ import { z } from "zod";
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Erro desconhecido";
 
-const getDriveClient = () => {
+const getDriveClient = async () => {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
   if (!email || !key) {
-    console.warn("Google Drive: Credenciais não encontradas no ambiente.");
+    console.warn(
+      "Google Drive: credenciais não configuradas; integração desativada no Cloudflare Worker.",
+    );
     return null;
   }
 
-  try {
-    const auth = new google.auth.JWT({
-      email,
-      key,
-      scopes: ["https://www.googleapis.com/auth/drive.file"],
-    });
-
-    return google.drive({ version: "v3", auth });
-  } catch (e) {
-    console.error("Google Drive: Erro ao inicializar cliente JWT:", e);
-    return null;
-  }
+  console.warn(
+    "Google Drive: integração desativada no Cloudflare Worker para evitar módulos do Node incompatíveis.",
+  );
+  return null;
 };
 
 export const createProjectFolder = createServerFn({ method: "POST" })
@@ -66,7 +59,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
     };
 
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) {
         await logDriveActivity("create_folder_failure", { error: "Missing secrets" }, "failure");
         return { error: "Drive não configurado", status: "pending_config" };
@@ -74,7 +67,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
 
       const rootFolderId = process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID;
 
-      const folderMetadata: drive_v3.Schema$File = {
+      const folderMetadata = {
         name: `${data.clientName} - ${data.projectName}`,
         mimeType: "application/vnd.google-apps.folder",
         parents: rootFolderId ? [rootFolderId] : [],
@@ -115,7 +108,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) {
         return { error: "Drive não configurado", status: "pending_config", files: [] };
       }
@@ -149,7 +142,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       const buffer = Buffer.from(data.fileContent, "base64");
@@ -202,7 +195,7 @@ export const renameDriveFile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       await drive.files.update({
@@ -242,7 +235,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       await drive.files.update({
@@ -284,7 +277,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       await drive.files.update({
@@ -334,7 +327,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       const results = [];
@@ -385,7 +378,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       const results = [];
@@ -438,7 +431,7 @@ export const batchMoveDriveFiles = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     try {
-      const drive = getDriveClient();
+      const drive = await getDriveClient();
       if (!drive) throw new Error("Drive não configurado");
 
       const results = [];
