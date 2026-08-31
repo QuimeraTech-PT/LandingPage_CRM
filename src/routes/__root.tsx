@@ -135,7 +135,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-PT">
       <head>
         <HeadContent />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GVHY29RSD" />
+        
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -209,7 +209,6 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const cookieBannerRef = useRef<CookieBannerHandle>(null);
-  const GA_MEASUREMENT_ID = "G-3GVHY29RSD";
 
   useEffect(() => {
     const handleOpenConsent = () => {
@@ -230,7 +229,7 @@ function RootComponent() {
         }
 
         // GA4 only loads after analytics consent is granted.
-        if (currentConsent?.analytics) {
+        if (config.gaId && currentConsent?.analytics) {
           if (!window.gtag) {
             window.dataLayer = window.dataLayer || [];
             window.gtag = function (...args: unknown[]) {
@@ -242,12 +241,12 @@ function RootComponent() {
           if (!existingGaScript) {
             const gaScript = document.createElement("script");
             gaScript.async = true;
-            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
             document.head.appendChild(gaScript);
           }
 
           window.gtag("js", new Date());
-          window.gtag("config", GA_MEASUREMENT_ID);
+          window.gtag("config", config.gaId);
 
           if (config.gtmId) {
             trackWebVitals();

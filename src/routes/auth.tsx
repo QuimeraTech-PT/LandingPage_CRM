@@ -23,10 +23,8 @@ export const Route = createFileRoute("/auth")({
       throw redirect({ to: "/admin" });
     }
   },
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      secret: search.secret as string | undefined,
-    };
+  validateSearch: (search: Record<string, unknown>): { secret?: string } => {
+    return typeof search.secret === "string" ? { secret: search.secret } : {};
   },
   component: AuthPage,
 });
