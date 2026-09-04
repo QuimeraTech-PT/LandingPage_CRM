@@ -23,7 +23,7 @@ export function FloatingActions() {
   const ticking = useRef(false);
 
   // WhatsApp Configuration
-  const phoneNumber = "351912345678";
+  const phoneNumber = "351915005183";
   const message = encodeURIComponent(
     "Olá QuimeraTech, gostaria de saber mais sobre as vossas soluções.",
   );

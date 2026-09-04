@@ -26,7 +26,6 @@ export function PageTransition({ children }: { children: ReactNode }) {
     <motion.div
       ref={transitionRef}
       tabIndex={-1} // Make programmatically focusable
-      role="main"
       id="main-content"
       initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}

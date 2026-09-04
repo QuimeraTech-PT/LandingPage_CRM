@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const logoAsset = "/QuimeraTech_DarkLogo.png";
@@ -12,6 +13,14 @@ interface LogoProps {
 export function Logo({ className, size = "md" }: LogoProps) {
   const router = useRouterState();
   const isHome = router.location.pathname === "/" || router.location.pathname === "";
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const syncTheme = () => setIsDarkTheme(document.documentElement.classList.contains("dark"));
+    syncTheme();
+    window.addEventListener("themeChange", syncTheme);
+    return () => window.removeEventListener("themeChange", syncTheme);
+  }, []);
 
   const sizeClasses = {
     sm: "h-7 md:h-8",
@@ -22,26 +31,12 @@ export function Logo({ className, size = "md" }: LogoProps) {
   const content = (
     <div className="relative flex items-center">
       <img
-        src={logoAsset}
-        alt="Logótipo QuimeraTech"
-        className={cn(
-          "w-auto brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] transition-opacity duration-300",
-          "hidden dark:block",
-          sizeClasses[size],
-          className,
-        )}
-        width={1920}
-        height={720}
-        decoding="async"
-        loading="eager"
-        fetchPriority="high"
-      />
-      <img
-        src={logoLightAsset}
+        src={isDarkTheme ? logoAsset : logoLightAsset}
         alt="Logótipo QuimeraTech"
         className={cn(
           "w-auto transition-opacity duration-300",
-          "block dark:hidden opacity-90",
+          isDarkTheme && "brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]",
+          !isDarkTheme && "opacity-90",
           sizeClasses[size],
           className,
         )}

@@ -1,9 +1,8 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Linkedin, Github } from "lucide-react";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackOutboundClick } from "@/lib/analytics";
 import { Logo } from "./Logo";
-import { Button } from "@/components/ui/button";
 import { scrollToSection as performScroll } from "@/utils/scroll";
 
 export function Footer() {
@@ -227,11 +226,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="LinkedIn da QuimeraTech"
-              onClick={() =>
-                import("@/lib/analytics").then(({ trackOutboundClick }) =>
-                  trackOutboundClick("https://www.linkedin.com/in/quimeratech/"),
-                )
-              }
+              onClick={() => trackOutboundClick("https://www.linkedin.com/in/quimeratech/")}
             >
               <Linkedin className="h-5 w-5" aria-hidden="true" />
             </a>
@@ -241,11 +236,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               aria-label="GitHub da QuimeraTech"
-              onClick={() =>
-                import("@/lib/analytics").then(({ trackOutboundClick }) =>
-                  trackOutboundClick("https://github.com/QuimeraTechPT"),
-                )
-              }
+              onClick={() => trackOutboundClick("https://github.com/QuimeraTechPT")}
             >
               <Github className="h-5 w-5" aria-hidden="true" />
             </a>

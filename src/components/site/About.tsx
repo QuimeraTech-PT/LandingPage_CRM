@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
 import { Cpu, Rocket, Users } from "lucide-react";
 import { ContentCard } from "./ContentCard";
+import { trackEvent } from "@/lib/analytics";
 
 export function About() {
   const shouldReduceMotion = useReducedMotion();
@@ -53,12 +54,12 @@ export function About() {
           {/* Conteúdo Principal */}
           <div className="lg:col-span-7">
             <motion.div variants={itemVariants} className="space-y-6">
-              <div className="inline-flex items-center space-x-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 backdrop-blur-md">
+              <div className="inline-flex items-center space-x-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 backdrop-blur-md">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
                 </span>
-                <span className="text-xs font-bold tracking-[0.15em] text-primary uppercase">
+                <span className="text-xs font-bold tracking-[0.15em] text-foreground uppercase">
                   Quem Somos
                 </span>
               </div>
@@ -68,7 +69,7 @@ export function About() {
                 className="text-4xl leading-[1.1] font-bold tracking-tight md:text-5xl lg:text-6xl"
               >
                 QuimeraTech: <br />
-                <span className="bg-linear-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
                   Inovação em Software.
                 </span>
               </h2>
@@ -90,11 +91,7 @@ export function About() {
                     icon={stat.icon}
                     className="p-4 rounded-2xl"
                     showBottomHighlight={true}
-                    onClick={() =>
-                      import("@/lib/analytics").then(({ trackEvent }) =>
-                        trackEvent("about_card_click", { label: stat.label }),
-                      )
-                    }
+                    onClick={() => trackEvent("about_card_click", { label: stat.label })}
                   />
                 ))}
               </div>
@@ -222,9 +219,9 @@ export function About() {
               </div>
 
               {/* Badge de Tecnologia */}
-              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-primary/20 bg-background dark:bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
-                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                <span className="text-[10px] font-bold tracking-widest text-primary uppercase">
+              <div className="absolute -top-3 -right-3 flex items-center space-x-2 rounded-full border border-accent/20 bg-background dark:bg-surface/90 px-3 py-1.5 shadow-xl backdrop-blur-md z-10">
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                <span className="text-[10px] font-bold tracking-widest text-foreground uppercase">
                   Clean Code
                 </span>
               </div>

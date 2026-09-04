@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useSpring, useMotionValue, useReducedMotion } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 
 export function CursorFollower() {
   const shouldReduceMotion = useReducedMotion();
@@ -95,11 +96,9 @@ export function CursorFollower() {
   }, [cursorX, cursorY, isVisible, shouldReduceMotion, isEnabled, targetScale]);
 
   const handlePointerDown = () => {
-    import("@/lib/analytics").then(({ trackEvent }) => {
-      trackEvent("cursor_interaction", {
-        type: "click",
-        is_pointer: isPointer,
-      });
+    trackEvent("cursor_interaction", {
+      type: "click",
+      is_pointer: isPointer,
     });
   };
 

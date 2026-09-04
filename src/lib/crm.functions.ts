@@ -44,11 +44,11 @@ export async function logActivity({
 
 export const createActivityLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         entityType: z.string().min(1),
-        entityId: z.string().uuid(),
+        entityId: z.uuid(),
         details: z.string().min(1).max(2000),
       })
       .parse(data),
@@ -241,7 +241,7 @@ export const getCRMStats = createServerFn({ method: "GET" })
 
 export const getLeads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         cursor: z.string().nullable().optional(),
@@ -273,7 +273,7 @@ export const getLeads = createServerFn({ method: "GET" })
 
 export const createLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         name: z.string(),
@@ -306,10 +306,10 @@ export const createLead = createServerFn({ method: "POST" })
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         status: z.enum([
           "new",
           "contacted",
@@ -357,10 +357,10 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
 
 export const updateLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         name: z.string().optional(),
         email: z.string().nullable().optional(),
         phone: z.string().nullable().optional(),
@@ -398,10 +398,10 @@ export const updateLead = createServerFn({ method: "POST" })
 
 export const convertLeadToProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        leadId: z.string().uuid(),
+        leadId: z.uuid(),
         projectName: z.string(),
         clientName: z.string(),
       })
@@ -525,7 +525,7 @@ export const convertLeadToProject = createServerFn({ method: "POST" })
 
 export const getProjects = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         cursor: z.string().nullable().optional(),
@@ -577,10 +577,10 @@ export const getProjects = createServerFn({ method: "GET" })
 
 export const updateProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         name: z.string().optional(),
         status: z.enum(["planning", "active", "on_hold", "completed", "cancelled"]).optional(),
         google_drive_folder_id: z.string().nullable().optional(),
@@ -619,7 +619,7 @@ export const updateProject = createServerFn({ method: "POST" })
 
 export const getTransactions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         cursor: z.string().nullable().optional(),
@@ -666,7 +666,7 @@ export const getNotifications = createServerFn({ method: "GET" })
 
 export const markNotificationAsRead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -681,7 +681,7 @@ export const markNotificationAsRead = createServerFn({ method: "POST" })
 
 export const createTransaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         description: z.string(),
@@ -689,7 +689,7 @@ export const createTransaction = createServerFn({ method: "POST" })
         type: z.enum(["income", "expense"]),
         date: z.string(),
         due_date: z.string().nullable().optional(),
-        project_id: z.string().uuid().nullable().optional(),
+        project_id: z.uuid().nullable().optional(),
         category: z.string().nullable().optional(),
         status: z.string().optional().default("pending"),
         invoice_url: z.string().nullable().optional(),
@@ -714,7 +714,7 @@ export const createTransaction = createServerFn({ method: "POST" })
 
 export const getActivityLogs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         limit: z.number().optional().default(50),
@@ -745,7 +745,7 @@ export const getActivityLogs = createServerFn({ method: "GET" })
 
 export const deleteLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: lead, error: readError } = await supabase

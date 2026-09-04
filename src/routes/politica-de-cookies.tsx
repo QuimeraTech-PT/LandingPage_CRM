@@ -239,8 +239,8 @@ function CookiesPolicy() {
                 <p className="mt-4 leading-relaxed text-muted-foreground">
                   Se tiver alguma dúvida sobre a nossa utilização de cookies ou outras tecnologias,
                   envie-nos um e-mail para{" "}
-                  <a href="mailto:legal@quimeratech.pt" className="text-primary hover:underline">
-                    legal@quimeratech.pt
+                  <a href="mailto:legal@quimeratech.com" className="text-primary hover:underline">
+                    legal@quimeratech.com
                   </a>{" "}
                   ou consulte a nossa{" "}
                   <Link to="/politica-de-privacidade" className="text-primary hover:underline">

@@ -20,6 +20,7 @@ import {
   getAnalyticsConsent,
   trackWebVitals,
   initScrollTracking,
+  applyCspNonce,
 } from "@/lib/analytics";
 import { getAnalyticsConfig } from "@/lib/analytics.functions";
 import { CursorFollower } from "@/components/site/CursorFollower";
@@ -113,19 +114,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      {
-        rel: "preload",
-        href: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2",
-        as: "font",
-        type: "font/woff2",
-        crossOrigin: "anonymous",
-      },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap",
-      },
       { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" },
     ],
   }),
@@ -247,6 +235,7 @@ function RootComponent() {
           );
           if (!existingGaScript) {
             const gaScript = document.createElement("script");
+            applyCspNonce(gaScript);
             gaScript.async = true;
             gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${config.gaId}`;
             document.head.appendChild(gaScript);

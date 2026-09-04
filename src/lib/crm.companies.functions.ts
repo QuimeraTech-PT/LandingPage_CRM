@@ -1,11 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import type { Json } from "@/integrations/supabase/types";
 
 export const getCompanies = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         limit: z.number().optional().default(50),
@@ -24,7 +23,7 @@ export const getCompanies = createServerFn({ method: "GET" })
 
 export const getCompanyById = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.string().uuid().parse(data))
+  .validator((data: unknown) => z.uuid().parse(data))
   .handler(async ({ data: id, context }) => {
     const { supabase } = context;
     const { data, error } = await supabase
@@ -38,7 +37,7 @@ export const getCompanyById = createServerFn({ method: "GET" })
 
 export const createCompany = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         name: z.string(),
@@ -46,7 +45,7 @@ export const createCompany = createServerFn({ method: "POST" })
         website: z.string().optional().nullable(),
         sector: z.string().optional().nullable(),
         size: z.string().optional().nullable(),
-        email: z.string().email().optional().nullable(),
+        email: z.email().optional().nullable(),
         phone: z.string().optional().nullable(),
         address: z.string().optional().nullable(),
       })
@@ -65,10 +64,10 @@ export const createCompany = createServerFn({ method: "POST" })
 
 export const updateCompany = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         name: z.string().optional(),
         nif: z.string().optional().nullable(),
         website: z.string().optional().nullable(),
@@ -88,10 +87,10 @@ export const updateCompany = createServerFn({ method: "POST" })
 
 export const getContacts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        companyId: z.string().uuid().optional(),
+        companyId: z.uuid().optional(),
       })
       .parse(data || {}),
   )
@@ -106,14 +105,14 @@ export const getContacts = createServerFn({ method: "GET" })
 
 export const createContact = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         name: z.string(),
-        email: z.string().email().optional().nullable(),
+        email: z.email().optional().nullable(),
         phone: z.string().optional().nullable(),
         role: z.string().optional().nullable(),
-        company_id: z.string().uuid(),
+        company_id: z.uuid(),
         is_primary: z.boolean().optional().default(false),
       })
       .parse(data),

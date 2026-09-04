@@ -20,7 +20,7 @@ type CrmTaskWithRelations = {
 
 export const getTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string().uuid().optional(),
@@ -44,13 +44,13 @@ export const getTasks = createServerFn({ method: "GET" })
 
 export const createTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         title: z.string(),
         description: z.string().optional(),
-        project_id: z.string().uuid().optional(),
-        lead_id: z.string().uuid().optional(),
+        project_id: z.uuid().optional(),
+        lead_id: z.uuid().optional(),
         due_date: z.string().optional(),
         priority: z.enum(["low", "medium", "high"]).optional(),
       })
@@ -69,10 +69,10 @@ export const createTask = createServerFn({ method: "POST" })
 
 export const updateTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         title: z.string().optional(),
         description: z.string().optional(),
         status: z.enum(["todo", "in_progress", "blocked", "review", "done"]).optional(),

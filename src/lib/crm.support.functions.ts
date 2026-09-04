@@ -7,11 +7,11 @@ const ticketStatusValues = ["open", "in_progress", "waiting_client", "resolved",
 
 export const getTickets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        companyId: z.string().uuid().optional(),
-        projectId: z.string().uuid().optional(),
+        companyId: z.uuid().optional(),
+        projectId: z.uuid().optional(),
         status: z.enum(ticketStatusValues).optional(),
         limit: z.number().default(20),
       })
@@ -35,11 +35,11 @@ export const getTickets = createServerFn({ method: "GET" })
 
 export const createTicket = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        company_id: z.string().uuid(),
-        project_id: z.string().uuid().optional(),
+        company_id: z.uuid(),
+        project_id: z.uuid().optional(),
         subject: z.string().min(3),
         description: z.string().optional(),
         priority: z.enum(["low", "medium", "high", "urgent"]),
@@ -74,10 +74,10 @@ export const createTicket = createServerFn({ method: "POST" })
 
 export const updateTicketStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
-        id: z.string().uuid(),
+        id: z.uuid(),
         status: z.enum(["open", "in_progress", "waiting_client", "resolved", "closed"]),
       })
       .parse(data),

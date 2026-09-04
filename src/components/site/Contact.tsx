@@ -4,25 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Globe, Mail, Send, Loader2 } from "lucide-react";
+import { Mail, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { submitContactForm } from "@/lib/contact.functions";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { motion, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
+import { trackEvent, trackOutboundClick } from "@/lib/analytics";
 
-const contactSchema = z.object({
-  nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
-  email: z.string().email("Endereço de email inválido"),
-  assunto: z.string().min(3, "O assunto deve ter pelo menos 3 caracteres"),
-  mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
-  hp_field: z.string().optional(),
-});
+type ContactFormValues = {
+  nome: string;
+  email: string;
+  assunto: string;
+  mensagem: string;
+  hp_field?: string;
+};
 
-type ContactFormValues = z.infer<typeof contactSchema>;
+function validateContactForm(data: ContactFormValues) {
+  const errors: Partial<Record<keyof ContactFormValues, string>> = {};
+  if (data.nome.trim().length < 2) errors.nome = "O nome deve ter pelo menos 2 caracteres";
+  if (!/^\S+@\S+\.\S+$/.test(data.email)) errors.email = "Endereço de email inválido";
+  if (data.assunto.trim().length < 3) errors.assunto = "O assunto deve ter pelo menos 3 caracteres";
+  if (data.mensagem.trim().length < 10)
+    errors.mensagem = "A mensagem deve ter pelo menos 10 caracteres";
+  return errors;
+}
 
 export function Contact() {
   const shouldReduceMotion = useReducedMotion();
@@ -34,12 +41,19 @@ export function Contact() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
-  } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema),
-  });
+  } = useForm<ContactFormValues>();
 
   const onSubmit = async (data: ContactFormValues) => {
+    const validationErrors = validateContactForm(data);
+    if (Object.entries(validationErrors).length > 0) {
+      Object.entries(validationErrors).forEach(([field, message]) => {
+        setError(field as keyof ContactFormValues, { type: "validate", message });
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setSent(false);
 
@@ -53,11 +67,9 @@ export function Contact() {
       }
 
       // Track conversion in analytics
-      import("@/lib/analytics").then(({ trackEvent }) => {
-        trackEvent("contact_form_submit", {
-          assunto: data.assunto,
-          method: "web_form",
-        });
+      trackEvent("contact_form_submit", {
+        assunto: data.assunto,
+        method: "web_form",
       });
 
       setSent(true);
@@ -85,17 +97,24 @@ export function Contact() {
       className="bg-background py-24 text-foreground md:py-32"
       aria-labelledby="contact-heading"
     >
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8 ">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <motion.div
             initial={variants.fadeIn.initial}
             whileInView={variants.fadeIn.animate}
             viewport={{ once: true }}
             transition={transitions.default}
+            className="space-y-6"
           >
-            <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
-              Contactos
-            </p>
+            <div className="inline-flex items-center space-x-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+              </span>
+              <span className="text-xs font-bold tracking-[0.15em] text-foreground uppercase">
+                Contactos
+              </span>
+            </div>
             <h2
               id="contact-heading"
               className="text-3xl leading-[1.2] font-bold tracking-tight md:text-4xl"
@@ -110,11 +129,7 @@ export function Contact() {
             <div className="mt-10 space-y-4">
               <a
                 href="mailto:general@quimeratech.com"
-                onClick={() =>
-                  import("@/lib/analytics").then(({ trackOutboundClick }) =>
-                    trackOutboundClick("mailto:general@quimeratech.com"),
-                  )
-                }
+                onClick={() => trackOutboundClick("mailto:general@quimeratech.com")}
                 className="flex items-center gap-4 rounded-3xl border border-border dark:border-white/10 bg-card/60 dark:bg-card/60 p-5 transition-all duration-500 hover:border-primary/50 shadow-premium hover:shadow-premium-hover hover:-translate-y-2 glass-card-hover backdrop-blur-xl"
               >
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary">

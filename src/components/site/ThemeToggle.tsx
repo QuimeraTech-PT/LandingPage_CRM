@@ -19,6 +19,7 @@ export function ThemeToggle() {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    window.dispatchEvent(new Event("themeChange"));
   }, []);
 
   const toggleTheme = () => {
@@ -31,6 +32,7 @@ export function ThemeToggle() {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    window.dispatchEvent(new Event("themeChange"));
   };
 
   return (

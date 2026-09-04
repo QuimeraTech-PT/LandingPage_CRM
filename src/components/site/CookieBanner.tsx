@@ -2,8 +2,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "re
 import { Button } from "@/components/ui/button";
 import { Cookie, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
-import { updateAnalyticsConsent, getAnalyticsConsent } from "@/lib/analytics";
+import { updateAnalyticsConsent, getAnalyticsConsent, trackEvent } from "@/lib/analytics";
 import { syncCookiePreferences, getSyncedCookiePreferences } from "@/lib/analytics.functions";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
@@ -97,10 +96,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       // Silent fail
     }
 
-    import("@/lib/analytics").then(({ trackEvent }) => {
-      trackEvent("cookie_consent_saved", { ...preferences });
-      if (lastActiveElement.current) lastActiveElement.current.focus();
-    });
+    trackEvent("cookie_consent_saved", { ...preferences });
+    if (lastActiveElement.current) lastActiveElement.current.focus();
   };
 
   const acceptAll = async () => {
@@ -115,10 +112,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       // Silent fail
     }
 
-    import("@/lib/analytics").then(({ trackEvent }) => {
-      trackEvent("cookie_consent_accepted", { type: "all" });
-      if (lastActiveElement.current) lastActiveElement.current.focus();
-    });
+    trackEvent("cookie_consent_accepted", { type: "all" });
+    if (lastActiveElement.current) lastActiveElement.current.focus();
   };
 
   const acceptEssential = async () => {
@@ -133,10 +128,8 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
       // Silent fail
     }
 
-    import("@/lib/analytics").then(({ trackEvent }) => {
-      trackEvent("cookie_consent_accepted", { type: "essential" });
-      if (lastActiveElement.current) lastActiveElement.current.focus();
-    });
+    trackEvent("cookie_consent_accepted", { type: "essential" });
+    if (lastActiveElement.current) lastActiveElement.current.focus();
   };
 
   if (!mounted) return null;

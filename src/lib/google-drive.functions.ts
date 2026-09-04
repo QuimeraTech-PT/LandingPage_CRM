@@ -29,7 +29,7 @@ const getDriveClient = async (): Promise<DriveClient | null> => {
 
 export const createProjectFolder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -102,7 +102,7 @@ export const createProjectFolder = createServerFn({ method: "POST" })
 
 export const listProjectFiles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         folderId: z.string(),
@@ -131,7 +131,7 @@ export const listProjectFiles = createServerFn({ method: "GET" })
 
 export const uploadFileToProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -186,7 +186,7 @@ export const uploadFileToProject = createServerFn({ method: "POST" })
 
 export const renameDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -226,7 +226,7 @@ export const renameDriveFile = createServerFn({ method: "POST" })
 
 export const deleteDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -266,7 +266,7 @@ export const deleteDriveFile = createServerFn({ method: "POST" })
 
 export const moveDriveFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -314,7 +314,7 @@ export const moveDriveFile = createServerFn({ method: "POST" })
 
 export const batchRenameDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -365,7 +365,7 @@ export const batchRenameDriveFiles = createServerFn({ method: "POST" })
 
 export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),
@@ -416,7 +416,7 @@ export const batchDeleteDriveFiles = createServerFn({ method: "POST" })
 
 export const batchMoveDriveFiles = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         projectId: z.string(),

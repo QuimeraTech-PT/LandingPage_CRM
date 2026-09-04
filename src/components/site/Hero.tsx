@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
+import { trackEvent } from "@/lib/analytics";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
@@ -134,9 +135,7 @@ export function Hero() {
               className="w-full sm:w-auto"
               rightIcon={<ArrowRight className="h-5 w-5" />}
               onClick={() =>
-                import("@/lib/analytics").then(({ trackEvent }) =>
-                  trackEvent("hero_cta_click", { target: "especialidades", type: "primary" }),
-                )
+                trackEvent("hero_cta_click", { target: "especialidades", type: "primary" })
               }
             >
               <a href="#especialidades">Descubra as Nossas Soluções</a>
@@ -147,9 +146,7 @@ export function Hero() {
               variant="secondary"
               className="w-full sm:w-auto"
               onClick={() =>
-                import("@/lib/analytics").then(({ trackEvent }) =>
-                  trackEvent("hero_cta_click", { target: "contactos", type: "secondary" }),
-                )
+                trackEvent("hero_cta_click", { target: "contactos", type: "secondary" })
               }
             >
               <a href="#contactos">Fale Connosco</a>

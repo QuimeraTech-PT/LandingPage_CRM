@@ -49,23 +49,23 @@ export const Route = createFileRoute("/")({
       jsonLd({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "@id": "https://quimeratech.pt/#website",
-        url: "https://quimeratech.pt",
+        "@id": "https://quimeratech.com/#website",
+        url: "https://quimeratech.com",
         name: "QuimeraTech",
         description:
           "Software House de Excelência em Portugal, especializada em CRM personalizado e Cloud Architecture.",
-        publisher: { "@id": "https://quimeratech.pt/#organization" },
+        publisher: { "@id": "https://quimeratech.com/#organization" },
         inLanguage: "pt-PT",
       }),
       jsonLd({
         "@context": "https://schema.org",
         "@type": "Organization",
-        "@id": "https://quimeratech.pt/#organization",
+        "@id": "https://quimeratech.com/#organization",
         name: "QuimeraTech",
-        url: "https://quimeratech.pt",
+        url: "https://quimeratech.com",
         logo: {
           "@type": "ImageObject",
-          url: "https://quimeratech.pt/logo.png",
+          url: "https://quimeratech.com/logo.png",
           width: 512,
           height: 512,
         },
@@ -79,7 +79,7 @@ export const Route = createFileRoute("/")({
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "customer support",
-          email: "hello@quimeratech.pt",
+          email: "general@quimeratech.com",
           availableLanguage: ["Portuguese", "English"],
         },
         sameAs: ["https://www.linkedin.com/company/quimeratech/", "https://github.com/quimeratech"],
@@ -96,7 +96,7 @@ export const Route = createFileRoute("/")({
           },
           {
             q: "Como posso entrar em contacto para um projeto?",
-            a: "Pode contactar-nos através do e-mail hello@quimeratech.pt ou preencher o formulário na nossa secção de contactos para agendar uma consultoria gratuita.",
+            a: "Pode contactar-nos através do e-mail general@quimeratech.com ou preencher o formulário na nossa secção de contactos para agendar uma consultoria gratuita.",
           },
         ]),
       ),

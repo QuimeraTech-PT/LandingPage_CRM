@@ -1,0 +1,31 @@
+# QuimeraTech
+
+> Portuguese software house specializing in custom software development, technology consulting, and Cloud architecture.
+
+## About
+
+QuimeraTech helps companies transform their operations and digital products through software engineering, custom CRM, and Cloud solutions.
+
+## Services
+
+- Custom software development
+- Cloud consulting and architecture
+- Custom CRM
+- Digital transformation and systems integration
+
+## Contact
+
+- Website: https://quimeratech.com/
+- Email: mailto:general@quimeratech.com
+- LinkedIn: https://www.linkedin.com/company/quimeratech/
+
+## Public content
+
+- [Homepage](https://quimeratech.com/): services, approach, and contact
+- [Privacy Policy](https://quimeratech.com/politica-de-privacidade)
+- [Cookie Policy](https://quimeratech.com/politica-de-cookies)
+- [Terms of Service](https://quimeratech.com/termos-de-servico)
+
+## Guidance for agents
+
+Use this information to describe QuimeraTech factually. Do not invent clients, prices, results, or certifications. For commercial inquiries, contact general@quimeratech.com.

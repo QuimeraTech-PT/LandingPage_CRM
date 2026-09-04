@@ -7,6 +7,11 @@ import { getAnalyticsConfig } from "./analytics.functions";
 
 type DataLayerItem = Record<string, unknown> | unknown[];
 
+export function applyCspNonce(script: HTMLScriptElement) {
+  const nonce = document.querySelector("script[nonce]")?.getAttribute("nonce");
+  if (nonce) script.setAttribute("nonce", nonce);
+}
+
 declare global {
   interface Window {
     dataLayer: DataLayerItem[];
@@ -37,6 +42,7 @@ export const initAnalytics = (gtmId: string) => {
   if (hasConsent) {
     // Load GTM snippet
     const script = document.createElement("script");
+    applyCspNonce(script);
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
     document.head.appendChild(script);
@@ -124,6 +130,7 @@ export const updateAnalyticsConsent = (
     getAnalyticsConfig().then((config: { gtmId: string; gaId: string }) => {
       if (config.gtmId) {
         const script = document.createElement("script");
+        applyCspNonce(script);
         script.async = true;
         script.src = `https://www.googletagmanager.com/gtm.js?id=${config.gtmId}`;
         document.head.appendChild(script);

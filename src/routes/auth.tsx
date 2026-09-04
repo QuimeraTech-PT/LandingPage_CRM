@@ -78,7 +78,7 @@ function AuthPage() {
       // otherwise we just use a mock successful login flow for UI testing
       // For real functional dev, we need a user in the auth table.
 
-      const testEmail = "dev@quimeratech.pt";
+      const testEmail = "dev@quimeratech.com";
       const testPass = "quimeradev123";
 
       const { data, error } = await supabase.auth.signInWithPassword({

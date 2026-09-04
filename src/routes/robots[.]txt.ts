@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/robots/txt")({
+export const Route = createFileRoute("/robots.txt")({
   server: {
     handlers: {
       GET: async () => {
@@ -8,9 +8,10 @@ export const Route = createFileRoute("/robots/txt")({
 Allow: /
 Disallow: /api/
 
-Sitemap: https://quimeratech.pt/sitemap.xml
-Sitemap: https://quimeratech.pt/sitemap-pages.xml
-Sitemap: https://quimeratech.pt/sitemap-legal.xml`;
+llms: https://quimeratech.com/llms.txt
+Sitemap: https://quimeratech.com/sitemap.xml
+Sitemap: https://quimeratech.com/sitemap-pages.xml
+Sitemap: https://quimeratech.com/sitemap-legal.xml`;
 
         return new Response(robots, {
           headers: {

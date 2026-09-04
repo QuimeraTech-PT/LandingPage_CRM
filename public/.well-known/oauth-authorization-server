@@ -1,0 +1,26 @@
+{
+  "issuer": "https://quimeratech.com",
+  "authorization_endpoint": "https://quimeratech.com/auth",
+  "scopes_supported": ["agent:access"],
+  "response_types_supported": [],
+  "grant_types_supported": [],
+  "registration_endpoint": "mailto:general@quimeratech.com",
+  "agent_auth": {
+    "skill": "https://quimeratech.com/auth.md",
+    "register_uri": "https://quimeratech.com/#contact",
+    "method": "manual",
+    "registration_method": "manual",
+    "methods_supported": ["manual"],
+    "registration_methods": [
+      {
+        "name": "Manual agent provisioning",
+        "method": "manual",
+        "type": "manual",
+        "register_uri": "https://quimeratech.com/#contact",
+        "request": "Email the agent identity, organization, purpose, and requested services.",
+        "approval": "QuimeraTech validates the request and privately provides credentials and endpoint instructions after approval.",
+        "credentials": "Provisioned privately after explicit approval; no credentials are issued by this document."
+      }
+    ]
+  }
+}

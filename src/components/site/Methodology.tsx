@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
+import { trackEvent } from "@/lib/analytics";
 
 const phases = [
   {
@@ -151,13 +152,11 @@ function MethodologyContent() {
   const handleStepClick = useCallback(
     (step: string, title: string) => {
       setActiveStep((prev) => (prev === step ? null : step));
-      import("@/lib/analytics").then(({ trackEvent }) =>
-        trackEvent("methodology_step_click", {
-          step,
-          title,
-          action: activeStep === step ? "collapse" : "expand",
-        }),
-      );
+      trackEvent("methodology_step_click", {
+        step,
+        title,
+        action: activeStep === step ? "collapse" : "expand",
+      });
     },
     [activeStep],
   );
@@ -201,10 +200,16 @@ function MethodologyContent() {
       <div className="glow-aurora right-1/4 bottom-0 h-100 w-100 bg-accent/10" aria-hidden="true" />
 
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="max-w-3xl">
-          <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
-            Nossa Metodologia
-          </p>
+        <div className="max-w-3xl space-y-6">
+          <div className="inline-flex items-center space-x-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+            </span>
+            <span className="text-xs font-bold tracking-[0.15em] text-foreground uppercase">
+              A Nossa Metodologia
+            </span>
+          </div>
           <h2
             id="methodology-heading"
             className="text-3xl leading-[1.1] font-bold tracking-tight md:text-4xl lg:text-5xl"
@@ -280,17 +285,9 @@ function MethodologyContent() {
               {activeStep ? (
                 <motion.div
                   key={activeStep}
-                  initial={
-                    shouldReduceMotion
-                      ? { opacity: 0 }
-                      : { opacity: 0, scale: 0.98, filter: "blur(10px)" }
-                  }
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  exit={
-                    shouldReduceMotion
-                      ? { opacity: 0 }
-                      : { opacity: 0, scale: 0.98, filter: "blur(10px)" }
-                  }
+                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
                   transition={{
                     type: "spring",
                     stiffness: 300,

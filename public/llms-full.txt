@@ -1,0 +1,30 @@
+# QuimeraTech
+
+## Description
+
+QuimeraTech is a software house based in Portugal. It develops digital solutions for companies seeking custom software, technology consulting, Cloud architecture, custom CRM, and digital transformation.
+
+## How we work
+
+The team combines business discovery, architecture, development, and continuous improvement to create digital products aligned with each organization's goals.
+
+## Frequently asked questions
+
+### What services does QuimeraTech provide?
+
+Custom software development, Cloud Architecture consulting, custom CRM development, and digital transformation.
+
+### Where does QuimeraTech operate?
+
+QuimeraTech operates from Portugal and works with clients globally.
+
+### How can I start a conversation?
+
+Email general@quimeratech.com or use the contact form available at https://quimeratech.com/.
+
+## Sources
+
+- https://quimeratech.com/
+- https://quimeratech.com/politica-de-privacidade
+- https://quimeratech.com/politica-de-cookies
+- https://quimeratech.com/termos-de-servico

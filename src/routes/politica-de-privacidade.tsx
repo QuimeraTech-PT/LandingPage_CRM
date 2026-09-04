@@ -171,10 +171,10 @@ function PrivacyPolicy() {
                   <br />
                   <br />
                   <a
-                    href="mailto:legal@quimeratech.pt"
+                    href="mailto:legal@quimeratech.com"
                     className="text-primary font-medium hover:underline"
                   >
-                    legal@quimeratech.pt
+                    legal@quimeratech.com
                   </a>
                 </p>
               </div>

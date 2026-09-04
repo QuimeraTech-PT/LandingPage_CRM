@@ -1,0 +1,14 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "QuimeraTech Public Web Service",
+    "version": "1.0.0",
+    "description": "Public website resources for QuimeraTech. Administrative and CRM operations are not public APIs."
+  },
+  "servers": [
+    {
+      "url": "https://quimeratech.com"
+    }
+  ],
+  "paths": {}
+}

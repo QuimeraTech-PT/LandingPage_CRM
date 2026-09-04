@@ -16,7 +16,7 @@ export const getAnalyticsConfig = createServerFn({ method: "GET" }).handler(asyn
  * (Sync logic removed temporarily during auth refactor)
  */
 export const syncCookiePreferences = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
+  .validator((data: unknown) =>
     z
       .object({
         analytics: z.boolean(),

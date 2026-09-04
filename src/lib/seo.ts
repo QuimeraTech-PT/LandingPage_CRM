@@ -1,4 +1,4 @@
-export const SITE_URL = "https://quimeratech.pt";
+export const SITE_URL = "https://quimeratech.com";
 export const SITE_NAME = "QuimeraTech | Inovação em Software e Cloud";
 export const SITE_LOCALE = "pt_PT";
 

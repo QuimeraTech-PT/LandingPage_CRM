@@ -2,6 +2,7 @@ import { Cpu, Handshake, Lightbulb, TrendingUp } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
 import { ContentCard } from "./ContentCard";
+import { trackEvent } from "@/lib/analytics";
 
 const containerVariants = variants.staggerContainer;
 
@@ -54,10 +55,16 @@ export function Pillars() {
       />
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="max-w-3xl">
-          <p className="mb-4 text-xs font-semibold tracking-[0.18em] text-accent uppercase">
-            Nossos Pilares
-          </p>
+        <div className="max-w-3xl space-y-6">
+          <div className="inline-flex items-center space-x-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+            </span>
+            <span className="text-xs font-bold tracking-[0.15em] text-foreground uppercase">
+              Os Nossos Pilares
+            </span>
+          </div>
           <h2
             id="pillars-heading"
             className="text-3xl leading-[1.1] font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl"
@@ -79,20 +86,17 @@ export function Pillars() {
           viewport={{ once: true, margin: "-100px" }}
         >
           {pillars.map(({ icon: Icon, title, description }, idx) => (
-            <ContentCard
-              key={title}
-              title={title}
-              description={description}
-              icon={Icon}
-              variant="default"
-              className="p-8"
-              showBottomHighlight={true}
-              onClick={() => {
-                import("@/lib/analytics").then(({ trackEvent }) =>
-                  trackEvent("pillar_click", { title, index: idx }),
-                );
-              }}
-            />
+            <li key={title}>
+              <ContentCard
+                title={title}
+                description={description}
+                icon={Icon}
+                variant="default"
+                className="h-full p-8"
+                showBottomHighlight={true}
+                onClick={() => trackEvent("pillar_click", { title, index: idx })}
+              />
+            </li>
           ))}
         </motion.ul>
       </div>

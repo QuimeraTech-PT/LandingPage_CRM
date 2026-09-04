@@ -1,3 +1,8 @@
+@import "@fontsource/poppins/latin-ext-300.css";
+@import "@fontsource/poppins/latin-ext-400.css";
+@import "@fontsource/poppins/latin-ext-600.css";
+@import "@fontsource/poppins/latin-ext-700.css";
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -164,7 +169,7 @@
 
 /* Glassmorphism 2.0 & Brand Visuals */
 @utility glass-card {
-  @apply bg-card/60 backdrop-blur-xl border border-border shadow-premium rounded-3xl transition-all duration-300;
+  @apply bg-card/60 backdrop-blur-xl border border-border shadow-premium rounded-3xl transition-[background-color,box-shadow] duration-300;
   position: relative;
   overflow: hidden;
 
@@ -211,7 +216,7 @@
 }
 
 @utility glass-card-hover {
-  @apply transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-4 focus-within:ring-offset-background;
+  @apply transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-4 focus-within:ring-offset-background;
 
   &:hover {
     @apply border-hover-border shadow-premium-hover -translate-y-2;
@@ -257,7 +262,7 @@
 
 @utility text-gradient-brand {
   @apply bg-clip-text text-transparent bg-linear-to-r from-accent via-primary to-accent bg-size-[200%_auto];
-  animation: text-gradient 6s linear infinite;
+  animation: text-gradient 6s linear 3;
 
   .force-reduced-motion & {
     @apply text-foreground bg-none animate-none;
