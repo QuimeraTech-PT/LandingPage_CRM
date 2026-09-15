@@ -1,14 +1,17 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { type ReactNode, useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { hasHydratedOnce } from "@/lib/hydration-flag";
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const shouldReduceMotion = useReducedMotion();
   const { location } = useRouterState();
   const transitionRef = useRef<HTMLDivElement>(null);
+  const skipEntryAnimation = hasHydratedOnce.current;
 
   // Manage focus on route change for screen readers
   useEffect(() => {
+    hasHydratedOnce.current = true;
     // We skip the initial mount to avoid stealing focus from the skip link or main nav
     // unless the path has actually changed.
     if (transitionRef.current) {
@@ -27,7 +30,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
       ref={transitionRef}
       tabIndex={-1} // Make programmatically focusable
       id="main-content"
-      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+      initial={
+        skipEntryAnimation ? false : shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }
+      }
       animate={{ opacity: 1, y: 0 }}
       exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
       transition={{

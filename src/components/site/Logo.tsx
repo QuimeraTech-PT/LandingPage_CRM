@@ -1,9 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-
-const logoAsset = "/QuimeraTech_DarkLogo.png";
-const logoLightAsset = "/QuimeraTech_LightLogo.png";
+import logoAsset from "@/assets/QuimeraTech_DarkLogo.png";
+import logoLightAsset from "@/assets/QuimeraTech_LightLogo.png";
 
 interface LogoProps {
   className?: string;
@@ -40,8 +39,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
           sizeClasses[size],
           className,
         )}
-        width={1920}
-        height={720}
+        width={480}
+        height={180}
         decoding="async"
         loading="eager"
         fetchPriority="high"

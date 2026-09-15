@@ -4,9 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { transitions, variants } from "@/lib/animations";
 import { trackEvent } from "@/lib/analytics";
+import { hasHydratedOnce } from "@/lib/hydration-flag";
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
+  const skipEntryAnimation = hasHydratedOnce.current;
 
   // High priority for hero visuals
   useEffect(() => {
@@ -95,9 +97,8 @@ export function Hero() {
         <motion.div
           className="mx-auto max-w-3xl text-center"
           variants={containerVariants}
-          initial="hidden"
+          initial={skipEntryAnimation ? false : "hidden"}
           animate="visible"
-          viewport={{ once: true }}
         >
           <motion.div
             variants={itemVariants}
