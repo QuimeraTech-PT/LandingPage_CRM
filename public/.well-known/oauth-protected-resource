@@ -1,6 +1,0 @@
-{
-  "resource": "https://quimeratech.com/",
-  "authorization_servers": ["https://quimeratech.com"],
-  "scopes_supported": ["agent:access"],
-  "bearer_methods_supported": ["header"]
-}

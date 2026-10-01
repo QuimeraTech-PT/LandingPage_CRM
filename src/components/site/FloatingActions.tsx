@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ArrowUp, MessageCircle, ChevronUp, LogIn } from "lucide-react";
+import { ArrowUp, MessageCircle, ChevronUp } from "lucide-react";
 import { transitions } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { updateAnalyticsConsent } from "@/lib/analytics"; // We'll use gtag directly if available or dataLayer
-import { useLocation, Link } from "@tanstack/react-router";
+import { useLocation } from "@tanstack/react-router";
 
 type FloatingActionEvent = {
   event: "floating_action_click";
@@ -17,6 +16,7 @@ export function FloatingActions() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isContactSectionVisible, setIsContactSectionVisible] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const location = useLocation();
   const lastScrollY = useRef(0);
@@ -80,6 +80,24 @@ export function FloatingActions() {
     return () => window.removeEventListener("mobileMenuToggle", handleMenuToggle);
   }, []);
 
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setIsContactSectionVisible(false);
+      return;
+    }
+
+    const contactSection = document.getElementById("contactos");
+    if (!contactSection) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsContactSectionVisible(entry.isIntersecting);
+      if (entry.isIntersecting) setIsOpen(false);
+    });
+    observer.observe(contactSection);
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
   const scrollToTop = () => {
     trackClick("scroll_to_top");
     const isReducedMotion =
@@ -92,9 +110,7 @@ export function FloatingActions() {
     setIsOpen(false);
   };
 
-  if (location.pathname.startsWith("/admin") || location.pathname === "/auth") {
-    return null;
-  }
+  if (isContactSectionVisible) return null;
 
   return (
     <div

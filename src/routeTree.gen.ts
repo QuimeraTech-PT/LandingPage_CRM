@@ -10,8 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PoliticaDeCookiesRouteImport } from './routes/politica-de-cookies'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
@@ -19,28 +17,10 @@ import { Route as SitemapLegalDotxmlRouteImport } from './routes/sitemap-legal[.
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermosDeServicoRouteImport } from './routes/termos-de-servico'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminCompaniesRouteImport } from './routes/admin.companies'
-import { Route as AdminFinancesRouteImport } from './routes/admin.finances'
-import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
-import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
-import { Route as AdminSupportRouteImport } from './routes/admin.support'
-import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
-import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaDeCookiesRoute = PoliticaDeCookiesRouteImport.update({
@@ -78,51 +58,9 @@ const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
   path: '/termos-de-servico',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCompaniesRoute = AdminCompaniesRouteImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFinancesRoute = AdminFinancesRouteImport.update({
-  id: '/finances',
-  path: '/finances',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLeadsRoute = AdminLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProjectsRoute = AdminProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSupportRoute = AdminSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTasksRoute = AdminTasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => AuthRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -130,18 +68,9 @@ export interface FileRoutesByFullPath {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/admin/companies': typeof AdminCompaniesRoute
-  '/admin/finances': typeof AdminFinancesRoute
-  '/admin/leads': typeof AdminLeadsRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/support': typeof AdminSupportRoute
-  '/admin/tasks': typeof AdminTasksRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -149,20 +78,10 @@ export interface FileRoutesByTo {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/admin/companies': typeof AdminCompaniesRoute
-  '/admin/finances': typeof AdminFinancesRoute
-  '/admin/leads': typeof AdminLeadsRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/support': typeof AdminSupportRoute
-  '/admin/tasks': typeof AdminTasksRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
   '/politica-de-cookies': typeof PoliticaDeCookiesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -170,21 +89,11 @@ export interface FileRoutesById {
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos-de-servico': typeof TermosDeServicoRoute
-  '/admin/companies': typeof AdminCompaniesRoute
-  '/admin/finances': typeof AdminFinancesRoute
-  '/admin/leads': typeof AdminLeadsRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/admin/support': typeof AdminSupportRoute
-  '/admin/tasks': typeof AdminTasksRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
-    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/robots.txt'
@@ -192,18 +101,9 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap.xml'
     | '/termos-de-servico'
-    | '/admin/companies'
-    | '/admin/finances'
-    | '/admin/leads'
-    | '/admin/projects'
-    | '/admin/support'
-    | '/admin/tasks'
-    | '/auth/callback'
-    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/robots.txt'
@@ -211,19 +111,9 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap.xml'
     | '/termos-de-servico'
-    | '/admin/companies'
-    | '/admin/finances'
-    | '/admin/leads'
-    | '/admin/projects'
-    | '/admin/support'
-    | '/admin/tasks'
-    | '/auth/callback'
-    | '/admin'
   id:
     | '__root__'
     | '/'
-    | '/admin'
-    | '/auth'
     | '/politica-de-cookies'
     | '/politica-de-privacidade'
     | '/robots.txt'
@@ -231,20 +121,10 @@ export interface FileRouteTypes {
     | '/sitemap-pages.xml'
     | '/sitemap.xml'
     | '/termos-de-servico'
-    | '/admin/companies'
-    | '/admin/finances'
-    | '/admin/leads'
-    | '/admin/projects'
-    | '/admin/support'
-    | '/admin/tasks'
-    | '/auth/callback'
-    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
   PoliticaDeCookiesRoute: typeof PoliticaDeCookiesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
@@ -261,20 +141,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-de-cookies': {
@@ -326,101 +192,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosDeServicoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/companies': {
-      id: '/admin/companies'
-      path: '/companies'
-      fullPath: '/admin/companies'
-      preLoaderRoute: typeof AdminCompaniesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/finances': {
-      id: '/admin/finances'
-      path: '/finances'
-      fullPath: '/admin/finances'
-      preLoaderRoute: typeof AdminFinancesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/leads': {
-      id: '/admin/leads'
-      path: '/leads'
-      fullPath: '/admin/leads'
-      preLoaderRoute: typeof AdminLeadsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/projects': {
-      id: '/admin/projects'
-      path: '/projects'
-      fullPath: '/admin/projects'
-      preLoaderRoute: typeof AdminProjectsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/support': {
-      id: '/admin/support'
-      path: '/support'
-      fullPath: '/admin/support'
-      preLoaderRoute: typeof AdminSupportRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/tasks': {
-      id: '/admin/tasks'
-      path: '/tasks'
-      fullPath: '/admin/tasks'
-      preLoaderRoute: typeof AdminTasksRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/auth/callback': {
-      id: '/auth/callback'
-      path: '/callback'
-      fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof AuthRoute
-    }
   }
 }
 
-interface AdminRouteChildren {
-  AdminCompaniesRoute: typeof AdminCompaniesRoute
-  AdminFinancesRoute: typeof AdminFinancesRoute
-  AdminLeadsRoute: typeof AdminLeadsRoute
-  AdminProjectsRoute: typeof AdminProjectsRoute
-  AdminSupportRoute: typeof AdminSupportRoute
-  AdminTasksRoute: typeof AdminTasksRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminCompaniesRoute: AdminCompaniesRoute,
-  AdminFinancesRoute: AdminFinancesRoute,
-  AdminLeadsRoute: AdminLeadsRoute,
-  AdminProjectsRoute: AdminProjectsRoute,
-  AdminSupportRoute: AdminSupportRoute,
-  AdminTasksRoute: AdminTasksRoute,
-  AdminIndexRoute: AdminIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
-interface AuthRouteChildren {
-  AuthCallbackRoute: typeof AuthCallbackRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthCallbackRoute: AuthCallbackRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AuthRoute: AuthRouteWithChildren,
   PoliticaDeCookiesRoute: PoliticaDeCookiesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,

@@ -1,16 +1,6 @@
 # QuimeraTech Landing Page
 
-Site institucional e painel administrativo da QuimeraTech, construído com React, Vite e TanStack Router. O projeto combina a landing page pública com áreas internas de CRM e gestão operacional, incluindo autenticação protegida, dashboards e integrações com Supabase.
-
-## Acesso protegido ao admin
-
-A rota `/auth` está protegida por uma `VITE_AUTH_SECRET_KEY` e só pode ser acedida com a query string correta:
-
-```text
-https://<seu-domínio>/auth?secret=YOUR_SECRET_KEY
-```
-
-Sem a chave correta, o utilizador é redirecionado para a página inicial. Este mecanismo serve para evitar que o link de login apareça publicamente e seja descoberto sem autorização.
+Site institucional público da QuimeraTech, construído com React, Vite e TanStack Start. Inclui páginas institucionais e legais, conteúdo otimizado para pesquisa e um formulário que cria novos leads na base de dados do CRM através do Supabase.
 
 ## Stack principal
 
@@ -19,18 +9,17 @@ Sem a chave correta, o utilizador é redirecionado para a página inicial. Este 
 - TanStack Router / Start
 - TypeScript
 - Tailwind CSS
-- Supabase
 - shadcn/ui
 - Framer Motion
+- Supabase (captura de pedidos de contacto)
+- Cloudflare Workers (deploy)
 
 ## Funcionalidades
 
 - Landing page pública com hero, sobre, especialidades, metodologia, pilares e contacto
 - SEO otimizado com meta tags e schema JSON
-- Autenticação protegida para administração
-- Área admin com dashboard, leads, empresas, projetos, tarefas, finanças e suporte
-- Integrações com Supabase e Google
-- Proteção de acesso ao painel via segredo configurável
+- Formulário de contacto com validação e criação server-side de leads, organizações, contactos e oportunidades no CRM
+- Consentimento de cookies e integração opcional com Google Analytics / Tag Manager
 
 ## Requisitos
 
@@ -39,25 +28,24 @@ Sem a chave correta, o utilizador é redirecionado para a página inicial. Este 
 
 ## Setup local
 
-```bash
+```powershell
 git clone <url-do-repositorio>
 cd landingpage
 npm install
-cp .env.example .env
+Copy-Item .env.example .env
 npm run dev
 ```
 
 ## Variáveis de ambiente
 
-Copie o conteúdo de [.env.example](.env.example) para um arquivo `.env` local e ajuste os valores:
+Copie [.env.example](.env.example) para `.env` e configure os valores. A chave Supabase de service role é apenas para o servidor: não a prefixe com `VITE_`, não a exponha no cliente e configure-a como secret no Cloudflare em produção.
 
 ```env
 GOOGLE_TAG_MANAGER_ID=GTM-XXXXXXX
 GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
-VITE_AUTH_SECRET_KEY=your_super_secret_key_change_this_in_production
+SUPABASE_URL=https://<project-id>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_server_only_service_role_key
 ```
-
-> O acesso ao painel administrativo exige a query string `?secret=YOUR_SECRET_KEY` na rota `/auth`.
 
 ## Scripts
 
@@ -75,17 +63,15 @@ npm run format
 .
 ├── public/                 # assets públicos e arquivos estáticos
 ├── src/
-│   ├── components/        # UI reutilizável e componentes do site/CRM
-│   ├── integrations/     # clientes Supabase e integrações externas
+│   ├── components/        # componentes do site e UI
+│   ├── integrations/     # integração Supabase server-side
 │   ├── lib/              # funções utilitárias, SEO e integrações
 │   ├── routes/           # rotas do TanStack Router
 │   ├── assets/           # imagens/logo do projeto
 │   ├── styles.css        # estilos globais
 │   ├── router.tsx        # configuração de rotas
 │   └── start.ts          # bootstrap do app
-├── supabase/              # migrations e configuração do Supabase
-├── .env.example           # template de variáveis de ambiente
-├── AUTH_PROTECTION_GUIDE.md
+├── .env.example          # template de variáveis de ambiente
 ├── components.json
 ├── eslint.config.js
 ├── package.json
@@ -97,15 +83,14 @@ npm run format
 
 ## Deploy
 
-A aplicação pode ser publicada com Cloudflare Worker / Vite + TanStack Start. O projeto inclui configuração para deploy do worker e autenticação via segredo do ambiente.
+A aplicação é compilada como Cloudflare Worker pelo preset Cloudflare do Nitro. Execute `npm run build` e publique o build com o Wrangler/Nitro configurado para o Worker de produção.
 
 ## Segurança
 
 - Não commitar `.env` real ou segredos sensíveis
-- Manter `VITE_AUTH_SECRET_KEY` diferente por ambiente
+- Manter `SUPABASE_SERVICE_ROLE_KEY` apenas no servidor e diferente por ambiente
 - Usar HTTPS em produção
-- Consultar [AUTH_PROTECTION_GUIDE.md](AUTH_PROTECTION_GUIDE.md) para detalhes da protecção do admin
 
 ## Observações
 
-Este repositório inclui a landing page pública e o ambiente admin interno da QuimeraTech, sendo uma base para desenvolvimento de software, CRM e gestão operacional em Portugal.
+Este repositório contém o site público da QuimeraTech, não a interface interna do CRM. O formulário de contacto mantém a integração server-side com a base de dados do CRM para registar novos leads e os respetivos dados associados.

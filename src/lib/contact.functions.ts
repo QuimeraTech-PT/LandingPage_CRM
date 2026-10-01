@@ -10,6 +10,16 @@ const contactSchema = z.object({
   hp_field: z.string().optional(), // Honeypot field
 });
 
+// Common free email providers to filter out for B2B org naming
+const freeEmailDomains = [
+  "gmail.com",
+  "yahoo.com",
+  "hotmail.com",
+  "outlook.com",
+  "sapo.pt",
+  "icloud.com",
+];
+
 export const submitContactForm = createServerFn({ method: "POST" })
   .validator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
@@ -19,53 +29,96 @@ export const submitContactForm = createServerFn({ method: "POST" })
       return { success: true, spam: true }; // Silent rejection
     }
 
-    // 1. Gravar a submissão principal no Supabase
-    const { data: submission, error: dbError } = await supabaseAdmin
-      .from("contact_submissions")
-      .insert([
-        {
-          nome: data.nome,
-          email: data.email,
-          assunto: data.assunto,
-          mensagem: data.mensagem,
-        },
-      ])
-      .select()
-      .single();
+    try {
+      // 1. Determine Organization Name from Email Domain
+      const domain = data.email.split("@")[1];
+      const isCorporate = !freeEmailDomains.includes(domain.toLowerCase());
+      const orgName = isCorporate
+        ? domain.split(".")[0].toUpperCase()
+        : `${data.nome} (Individual)`;
 
-    if (dbError) {
-      console.error("Erro ao gravar contacto:", dbError);
+      // 2. Upsert Organization
+      let { data: org } = await supabaseAdmin
+        .from("organizations")
+        .select("id")
+        .eq("name", orgName)
+        .maybeSingle();
+
+      if (!org) {
+        const { data: newOrg, error: insertOrgError } = await supabaseAdmin
+          .from("organizations")
+          .insert([{ name: orgName, industry: "Inbound Lead" }])
+          .select("id")
+          .single();
+
+        if (insertOrgError) throw insertOrgError;
+        org = newOrg;
+      }
+
+      // 3. Upsert Contact
+      const { data: existingContact } = await supabaseAdmin
+        .from("contacts")
+        .select("id")
+        .eq("email", data.email)
+        .maybeSingle();
+
+      if (!existingContact) {
+        await supabaseAdmin.from("contacts").insert([
+          {
+            org_id: org.id,
+            name: data.nome,
+            email: data.email,
+            role: "Inbound Prospect",
+            is_primary: true,
+          },
+        ]);
+      }
+
+      // 4. Create the Deal in the CRM Pipeline
+      const { data: deal, error: dealError } = await supabaseAdmin
+        .from("deals")
+        .insert([
+          {
+            org_id: org.id,
+            title: data.assunto || `Inquiry from ${data.nome}`,
+            stage: "Lead", // Drops exactly into your Kanban board
+            priority: "Medium",
+            expected_value: 0,
+            service_type: "Inbound Request",
+          },
+        ])
+        .select("id")
+        .single();
+
+      if (dealError) throw dealError;
+
+      // 5. Log the raw message in the Client360 Activity Logger
+      await supabaseAdmin.from("activity_logs").insert([
+        {
+          organization_id: org.id,
+          type: "Email",
+          summary: "Landing Page Form Submission",
+          description: data.mensagem,
+          created_by: "System Webhook",
+        },
+      ]);
+
+      // 6. Fire Notification to the ERP TopHeader
+      await supabaseAdmin.from("notifications").insert([
+        {
+          title: "New Inbound Lead!",
+          message: `${data.nome} just submitted a request: "${data.assunto}"`,
+          type: "success",
+          target_view: "pipeline",
+          target_id: deal.id,
+          is_read: false,
+        },
+      ]);
+
+      return { success: true };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Erro ao processar formulário de contacto:", errorMessage);
       throw new Error("Erro ao processar o seu pedido.");
     }
-
-    // 2. Criar Lead no CRM automaticamente
-    const { error: crmError } = await supabaseAdmin.from("crm_leads").insert([
-      {
-        name: data.nome,
-        email: data.email,
-        notes: `Assunto: ${data.assunto}\n\nMensagem: ${data.mensagem}`,
-        source: "website",
-      },
-    ]);
-
-    if (crmError) {
-      console.error("Erro ao criar lead no CRM:", crmError);
-      // Não bloqueamos o formulário se o CRM falhar, apenas logamos
-    }
-
-    // 3. Local Audit Status
-    const submissionStatus = "stored_locally_and_crm";
-    const errorMessage = null;
-
-    // 4. Registar no audit log
-    await supabaseAdmin.from("contact_audit_logs").insert([
-      {
-        submission_id: submission.id,
-        email_to: data.email,
-        status: submissionStatus,
-        error_message: errorMessage,
-      },
-    ]);
-
-    return { success: true };
   });

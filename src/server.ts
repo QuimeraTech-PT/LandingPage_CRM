@@ -101,7 +101,7 @@ async function addSecurityHeaders(response: Response): Promise<Response> {
   const scriptSource = nonce ? `'nonce-${nonce}' 'strict-dynamic'` : "'self'";
   headers.set(
     "Content-Security-Policy",
-    `default-src 'self'; script-src ${scriptSource} 'sha256-/41pF9u1laVVK9oDKU5Ggxx5qOQGuoGf/RmXC9FOc5A=' 'sha256-NEQyMawf/TgZL8zDfyYBPPezU30xErihypeIb7JdGHE='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co https://www.googletagmanager.com https://www.google-analytics.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'`,
+    `default-src 'self'; script-src ${scriptSource} 'sha256-/41pF9u1laVVK9oDKU5Ggxx5qOQGuoGf/RmXC9FOc5A=' 'sha256-NEQyMawf/TgZL8zDfyYBPPezU30xErihypeIb7JdGHE='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google.pt; font-src 'self'; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.analytics.google.com; frame-src https://www.googletagmanager.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'`,
   );
   if (!nonce) {
     return new Response(response.body, {

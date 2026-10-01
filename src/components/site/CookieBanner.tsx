@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Cookie, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { updateAnalyticsConsent, getAnalyticsConsent, trackEvent } from "@/lib/analytics";
-import { syncCookiePreferences, getSyncedCookiePreferences } from "@/lib/analytics.functions";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -40,26 +39,7 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
         });
         updateAnalyticsConsent(savedConsent);
       } else {
-        // 2. If not in local storage, try to get from backend if authenticated
-        try {
-          const synced = (await getSyncedCookiePreferences()) as {
-            analytics: boolean;
-            marketing: boolean;
-          } | null;
-          if (synced) {
-            setPreferences({
-              essential: true,
-              analytics: !!synced.analytics,
-              marketing: !!synced.marketing,
-            });
-            updateAnalyticsConsent(synced);
-            return; // Don't show banner
-          }
-        } catch (e) {
-          console.debug("Not authenticated or failed to fetch synced preferences");
-        }
-
-        // 3. Show banner if no consent found
+        // Show the banner if no local consent has been saved.
         if (location.pathname !== "/politica-de-cookies") {
           setIsVisible(true);
         }
@@ -84,50 +64,27 @@ export const CookieBanner = forwardRef<CookieBannerHandle>((_, ref) => {
     },
   }));
 
-  const savePreferences = async () => {
+  const savePreferences = () => {
     updateAnalyticsConsent(preferences);
     setIsVisible(false);
-
-    try {
-      await syncCookiePreferences({
-        data: { analytics: preferences.analytics, marketing: preferences.marketing },
-      });
-    } catch (e) {
-      // Silent fail
-    }
-
     trackEvent("cookie_consent_saved", { ...preferences });
     if (lastActiveElement.current) lastActiveElement.current.focus();
   };
 
-  const acceptAll = async () => {
+  const acceptAll = () => {
     const all = { essential: true, analytics: true, marketing: true };
     setPreferences(all);
     updateAnalyticsConsent("all");
     setIsVisible(false);
-
-    try {
-      await syncCookiePreferences({ data: { analytics: true, marketing: true } });
-    } catch (e) {
-      // Silent fail
-    }
-
     trackEvent("cookie_consent_accepted", { type: "all" });
     if (lastActiveElement.current) lastActiveElement.current.focus();
   };
 
-  const acceptEssential = async () => {
+  const acceptEssential = () => {
     const essential = { essential: true, analytics: false, marketing: false };
     setPreferences(essential);
     updateAnalyticsConsent("essential");
     setIsVisible(false);
-
-    try {
-      await syncCookiePreferences({ data: { analytics: false, marketing: false } });
-    } catch (e) {
-      // Silent fail
-    }
-
     trackEvent("cookie_consent_accepted", { type: "essential" });
     if (lastActiveElement.current) lastActiveElement.current.focus();
   };
